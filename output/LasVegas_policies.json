@@ -1,0 +1,343 @@
+[
+  {
+    "policy_commitment": "Reduce water consumption citywide to 90 gallons per person per day through code changes, pricing, incentives, and education.",
+    "source_quote": "Water\nIn the face of a changing climate, this plan is closely linked to  Southern  Nevada  Water  Authority's  Water  Resources Plan  and aligns  a  target  to  reduce  water  consumption  to 90 gallons per person per day. This can be done by making corresponding code changes, pricing, incentives, and education efforts   to meet regional water resources and conservation goals.",
+    "has_measurable_target": "Yes \u2014 90 gallons per person per day",
+    "has_deadline": "No",
+    "has_legal_mandate": "No",
+    "has_geographic_scope": "Yes \u2014 Citywide",
+    "is_actionable": true,
+    "soundness_confidence": 0.82,
+    "validation_reasoning": "The policy sets a clear, quantifiable target (90 gallons per person per day) and defines the spatial scope (citywide). It also names implementation levers (code changes, pricing, incentives, education), indicating actionable pathways, though no explicit timeline or binding legal mechanism is stated. Per validation criteria, the presence of a measurable target and spatial specificity is sufficient to deem it actionable/sound even with weaker timelines/enforcement.",
+    "weak_language_detected": "aligns; plan; can be done; efforts; education; goals",
+    "strong_language_detected": "90 gallons per person per day; citywide; code changes; pricing; incentives; linkage to Water Resources Plan",
+    "climate_strategy_type": "Resource Efficiency",
+    "additional_strategy_types": [
+      "Adaptation"
+    ],
+    "causal_mechanism": "Reduce per-capita water demand through codes, pricing, incentives, and education, thereby lowering water withdrawals and treatment/pumping energy use; this conserves scarce water resources, enhances drought resilience, and indirectly reduces GHG emissions.",
+    "policy_instruments": [
+      "Code changes (e.g.",
+      "plumbing/landscape codes)",
+      "water pricing reforms",
+      "incentives/rebates",
+      "public education and outreach (demand management)"
+    ],
+    "classification_signals": [
+      "- \"reduce water consumption to 90 gallons per person per day\"\n- \"code changes\"\n- \"pricing\"\n- \"incentives\"\n- \"education\"\n- \"conservation goals\"\n- Linkage to \"Water Resources Plan\""
+    ],
+    "classification_confidence": 0.9,
+    "co_benefits_identified": [
+      "- Indirect GHG reductions from lower energy use in water supply/treatment\n- Improved drought resilience and supply reliability\n- Reduced wastewater generation and treatment loads\n- Cost savings for consumers/utilities and deferred infrastructure investments\n- Increased public awareness of conservation"
+    ],
+    "extraction_notes": "Sets a citywide, measurable water-use target and describes concrete instruments (codes, pricing, incentives, education) to reduce demand in the face of climate risk.",
+    "classification_notes": "Could be classified as Adaptation if the emphasis is solely on drought resilience; however, the mechanisms and explicit per-capita efficiency target favor Resource Efficiency as primary. Indirect mitigation via reduced energy for water services is noted but not primary."
+  },
+  {
+    "policy_commitment": "Increase urban tree canopy to 20% and plant at least 100,000 high-quality native/adaptive trees; implement LVMC and zoning amendments for trees.",
+    "source_quote": "Urban Forestry\nDue to notable increases in the urban heat island effect, steps must be taken to reduce heat hazards with appropriate green infrastructure, including:\n\n- LVMC and zoning amendments for trees\n- At least 100,000 public and private high quality, native and adaptive trees that increase the canopy to 20%",
+    "has_measurable_target": "Yes \u2014 100,000 trees; canopy to 20%",
+    "has_deadline": "No",
+    "has_legal_mandate": "Yes \u2014 LVMC and zoning amendments for trees",
+    "has_geographic_scope": "Yes \u2014 citywide canopy target",
+    "is_actionable": true,
+    "soundness_confidence": 0.9,
+    "validation_reasoning": "The policy includes clear, measurable outcomes: plant at least 100,000 trees and increase urban tree canopy to 20%\u2014both are quantifiable targets. It also specifies a binding mechanism via LVMC and zoning amendments, indicating regulatory backing. Spatial scope is citywide (urban canopy/LVMC). While no timeline is provided and terms like \u201cappropriate\u201d and \u201chigh-quality\u201d are somewhat subjective, the presence of strong quantitative targets and legal mechanisms makes the policy actionable and trackable.",
+    "weak_language_detected": "\"appropriate\", \"high-quality\", no timeline",
+    "strong_language_detected": "\"at least 100,000 trees\", \"increase the canopy to 20%\", \"LVMC and zoning amendments\", citywide scope",
+    "climate_strategy_type": "Adaptation",
+    "additional_strategy_types": [
+      "Nature-Based Solutions",
+      "Mitigation"
+    ],
+    "causal_mechanism": "Increase urban tree canopy through planting native/adaptive trees and strengthening tree-related codes/zoning to deliver shading and evapotranspiration, lowering ambient temperatures and heat exposure, thereby reducing urban heat island impacts and improving resilience to extreme heat.",
+    "policy_instruments": [
+      "- LVMC (municipal code) and zoning amendments for trees\n- Quantitative canopy target (20%)\n- Large-scale tree planting program (100",
+      "000 native/adaptive trees)\n- Use of green infrastructure on public and private lands"
+    ],
+    "classification_signals": [
+      "\"urban heat island effect\"",
+      "\"reduce heat hazards\"",
+      "\"green infrastructure\"",
+      "\"LVMC and zoning amendments for trees\"",
+      "\"at least 100",
+      "000 high quality",
+      "native and adaptive trees\"",
+      "\"increase the canopy to 20%\""
+    ],
+    "classification_confidence": 0.9,
+    "co_benefits_identified": [
+      "Improved air quality",
+      "stormwater management and flood mitigation",
+      "biodiversity and habitat enhancement",
+      "carbon sequestration",
+      "urban aesthetics and mental health benefits",
+      "reduced energy use and peak cooling demand",
+      "noise reduction."
+    ],
+    "extraction_notes": "Specifies concrete tree-planting and policy amendments to expand shade, addressing heat-island effects and resilience.",
+    "classification_notes": "Ambiguity between classifying primarily as Nature-Based Solutions versus Adaptation since both apply; chose Adaptation due to explicit objective to reduce heat hazards. Mitigation could be emphasized if the policy framed canopy expansion mainly for carbon sequestration."
+  },
+  {
+    "policy_commitment": "Increase park acreage to 7 acres per 1,000 residents and ensure 85% of dwelling units are within a short walk of a park or trail.",
+    "source_quote": "- Develop  a  Parks  System  Plan  and achieve  CAPRA certification\n- Increase park acreage to 7 acres per 1,000 residents, specifically in noted areas of need\n- Ensure 85% of dwelling units are within a short walk of a park or trail",
+    "has_measurable_target": "Yes \u2014 7 acres per 1,000 residents; 85% of dwellings",
+    "has_deadline": "No",
+    "has_legal_mandate": "No",
+    "has_geographic_scope": "Yes \u2014 citywide with noted areas of need",
+    "is_actionable": true,
+    "soundness_confidence": 0.82,
+    "validation_reasoning": "The policy includes clear, quantifiable targets: 7 acres of parkland per 1,000 residents and 85% of dwelling units within walking distance of a park/trail. These are measurable outcomes enabling tracking against numeric benchmarks. It also has spatial specificity (citywide with noted areas of need). While it lacks a timeline and binding mechanism, and contains some process-oriented elements (\u201cDevelop a Parks System Plan,\u201d \u201cachieve CAPRA certification\u201d) and an ambiguous term (\u201cshort walk\u201d), the presence of strong quantitative targets and defined scope satisfies the criteria for a VALID policy.",
+    "weak_language_detected": "develop, plan, achieve certification, CAPRA, short walk (ambiguous), areas of need (vague)",
+    "strong_language_detected": "7 acres per 1,000 residents, 85% of dwelling units, citywide scope, measurable access target, spatial targeting",
+    "climate_strategy_type": "Nature-Based Solutions",
+    "additional_strategy_types": [
+      "Adaptation",
+      "Mitigation"
+    ],
+    "causal_mechanism": "Increase vegetated parkland and green corridors to provide ecosystem services\u2014urban cooling, stormwater infiltration, and modest carbon sequestration\u2014thereby reducing climate risks and contributing to emissions sinks.",
+    "policy_instruments": [
+      "- Parkland acquisition and dedication requirements\n- Capital investment in park development and trail expansion\n- Access standard: 85% of dwelling units within walking distance\n- System-wide parks planning and CAPRA accreditation to guide quality and management\n- Targeting underserved areas to locate new parks where gaps exist"
+    ],
+    "classification_signals": [
+      "\"Increase park acreage\"",
+      "\"7 acres per 1",
+      "000 residents\"",
+      "\"short walk of a park or trail\"",
+      "\"Parks System Plan\"",
+      "\"areas of need\""
+    ],
+    "classification_confidence": 0.69,
+    "co_benefits_identified": [
+      "Public health and recreation",
+      "mental health",
+      "equity in access to open space",
+      "active transportation",
+      "air quality improvements",
+      "urban biodiversity and habitat",
+      "property value uplift",
+      "social cohesion."
+    ],
+    "extraction_notes": "Sets explicit targets for park provision and accessibility, linking parks to livability and resilience.",
+    "classification_notes": "Climate benefits depend on design and vegetation extent; some parks may be highly manicured or paved, limiting NBS functions. Trails may be impervious. Access targets alone do not guarantee ecological performance without canopy/native plant requirements."
+  },
+  {
+    "policy_commitment": "Prioritize environmental justice by achieving an air quality index of 100 or better, eliminating brownfields through redevelopment, improving stormwater pollution prevention, and engaging diverse residents in planning and transportation decisions.",
+    "source_quote": "Environmental Justice\nReducing exposure and risk to low-income and minority communities must be prioritized, especially for new transportation and infrastructure projects. \n\n- Ensure an air quality index of 100 or better\n- Eliminate brownfields within the City by redevelopment\n- Improve stormwater pollution prevention efforts\n- Engage residents of all races, ethnicities, abilities and means  in  the  planning  and  transportation  decisionmaking process",
+    "has_measurable_target": "Yes \u2014 air quality index 100 or better",
+    "has_deadline": "No",
+    "has_legal_mandate": "No",
+    "has_geographic_scope": "Yes \u2014 targeted to low-income and minority communities",
+    "is_actionable": true,
+    "soundness_confidence": 0.84,
+    "validation_reasoning": "- Quantifiable targets: \u201cair quality index of 100 or better\u201d is a measurable metric; \u201cEliminate brownfields within the City\u201d is an absolute, count-based endpoint (zero brownfields).\n- Spatial specificity: \u201cwithin the City\u201d defines jurisdiction; the framing prioritizes low-income and minority communities.\n- Missing elements: no timeline or binding/legal mechanism; some components are process-oriented (\u201cengage residents,\u201d \u201cimprove \u2026 efforts\u201d) without baselines or metrics.\n- Verdict: Despite gaps, the presence of clear, measurable targets and defined scope satisfies validity criteria.",
+    "weak_language_detected": "prioritize; engage; improve; efforts; decisionmaking process",
+    "strong_language_detected": "air quality index of 100 or better (quantified metric); eliminate brownfields (absolute target); within the City (spatial scope); redevelopment (implementation pathway)",
+    "climate_strategy_type": "Adaptation",
+    "additional_strategy_types": [
+      "Mitigation"
+    ],
+    "causal_mechanism": "Reduces climate risk from more intense precipitation by strengthening stormwater pollution prevention (e.g., upgraded drainage, infiltration, and runoff controls), thereby limiting flooding and water contamination in vulnerable communities.",
+    "policy_instruments": [
+      "- Stormwater best management practices and infrastructure upgrades (e.g.",
+      "retention",
+      "infiltration",
+      "treatment)\n- Performance targets/standards (air quality index target)\n- Emission reduction measures in transportation/infrastructure projects to meet air quality goals\n- Brownfield remediation and redevelopment programs/incentives\n- Community engagement requirements in planning and transportation decisions"
+    ],
+    "classification_signals": [
+      "- \u201cImprove stormwater pollution prevention efforts\u201d\n- \u201cEnsure an air quality index of 100 or better\u201d\n- \u201cEliminate brownfields \u2026 by redevelopment\u201d\n- \u201cEnvironmental Justice \u2026 low-income and minority communities\u201d\n- \u201cPlanning and transportation decisionmaking\u201d"
+    ],
+    "classification_confidence": 0.62,
+    "co_benefits_identified": [
+      "- Public health improvements (reduced exposure to air and water pollutants)\n- Environmental justice and equity in decisionmaking\n- Economic revitalization from brownfield redevelopment\n- Potential urban heat island reduction and amenity value if green infrastructure is used"
+    ],
+    "extraction_notes": "Defines equity-focused actions to reduce exposure to pollution and involve communities in planning processes.",
+    "classification_notes": "- Air quality goals focus on local pollutants; whether they drive significant GHG reductions (Mitigation) depends on implementation details.\n- Stormwater \u201cpollution prevention\u201d could be delivered via grey or green infrastructure; if explicitly green, Nature-Based Solutions would also apply.\n- Brownfield remediation has uncertain direct climate impact."
+  },
+  {
+    "policy_commitment": "Energy: Transition the local energy supply toward the use of renewables.",
+    "source_quote": "STAR/LEED objectives include:\n\n- Business Retention and Development: Foster economic prosperity and stability\n\n- \u2022\n\n- Targeted Industry Development: Increase local competitiveness\n\n- Green Market Development: Increase overall green market demand\n\n- Energy: Transition the local energy supply toward the use of renewables",
+    "has_measurable_target": "No",
+    "has_deadline": "No",
+    "has_legal_mandate": "No",
+    "has_geographic_scope": "Yes \u2014 citywide",
+    "is_actionable": true,
+    "soundness_confidence": 0.7,
+    "validation_reasoning": "- Lacks quantifiable targets and a timeline; no binding mechanism indicated.\n- Does have spatial specificity (\u201clocal\u201d/citywide scope).\n- Clearly specifies a technological shift: transitioning the energy supply toward renewables.\n- Per criteria, strong presence of a technological shift and defined scope makes it actionable enough to be VALID despite missing metrics and deadlines.",
+    "weak_language_detected": "objectives, foster, increase, toward, development, green market demand",
+    "strong_language_detected": "transition, renewables, local energy supply, citywide scope",
+    "climate_strategy_type": "Mitigation",
+    "additional_strategy_types": [],
+    "causal_mechanism": "Reduce GHG emissions by replacing fossil-based electricity/heat with renewable generation (e.g., solar, wind), lowering carbon intensity of the energy supply.",
+    "policy_instruments": [
+      "Unspecified in text; potential mechanisms could include renewable portfolio standards",
+      "incentives/rebates",
+      "feed-in tariffs",
+      "public procurement/PPAs",
+      "community solar programs",
+      "net metering",
+      "and grid interconnection/supportive permitting."
+    ],
+    "classification_signals": [
+      "\"Energy\"",
+      "\"Transition\"",
+      "\"local energy supply\"",
+      "\"use of renewables\""
+    ],
+    "classification_confidence": 0.93,
+    "co_benefits_identified": [
+      "Economic development and jobs",
+      "improved air quality and public health",
+      "energy security and price stability",
+      "potential grid resilience if distributed renewables are used"
+    ],
+    "extraction_notes": "Sets a policy direction for decarbonizing energy supply by prioritizing renewable energy, aligning with climate mitigation goals.",
+    "classification_notes": "Could indirectly improve resilience (e.g., distributed renewables + storage) and economic development, but these are co-benefits not specified as mechanisms; the objective remains mitigation-focused."
+  },
+  {
+    "policy_commitment": "Develop and implement RTC On Board Mobility Plan to enable high capacity transit on key TOD corridors.",
+    "source_quote": "Tied  closely  to  the 2050  General  Plan  for  future  land use,  the City  and  RTC  must  develop  and  implement  the recommendations  from  RTC's  On  Board  Mobility  Plan that  will  enable  high  capacity  transit  to  be  built  on  key TOD corridors, including Maryland Pkwy, Charleston Blvd, Decatur Blvd, Sahara Ave, and Las Vegas Blvd.",
+    "has_measurable_target": "No",
+    "has_deadline": "No",
+    "has_legal_mandate": "No",
+    "has_geographic_scope": "Yes \u2014 corridors",
+    "is_actionable": true,
+    "soundness_confidence": 0.78,
+    "validation_reasoning": "The policy lacks quantifiable targets (no metrics or baseline), timelines (no delivery date), and explicit legal/regulatory binding. However, it has clear spatial specificity by naming exact corridors (Maryland Pkwy, Charleston Blvd, Decatur Blvd, Sahara Ave, Las Vegas Blvd) and signals a technological/modal shift by enabling high-capacity transit to be built. Per the criteria, strong spatial specificity or a defined technological shift is sufficient to deem the policy actionable/measurable despite other gaps.",
+    "weak_language_detected": "develop; implement; enable; recommendations; plan; tied to General Plan; must (non-legal)",
+    "strong_language_detected": "Named corridors (Maryland Pkwy, Charleston Blvd, Decatur Blvd, Sahara Ave, Las Vegas Blvd); spatial specificity; build high-capacity transit (modal/technology shift)",
+    "climate_strategy_type": "Mitigation",
+    "additional_strategy_types": [
+      "Resource Efficiency"
+    ],
+    "causal_mechanism": "- Enable high-capacity transit in key corridors to shift trips from single-occupancy vehicles to public transit, reducing VMT and per-passenger emissions.\n- Support TOD to concentrate development near transit, shortening trip lengths and increasing transit ridership over time.\n- Potential to deploy higher-efficiency or zero-emission transit vehicles further lowering operational emissions per passenger-km.",
+    "policy_instruments": [
+      "- Implement recommendations of regional Mobility Plan (planning and execution)\n- Corridor-based high-capacity transit investments (e.g.",
+      "BRT/LRT",
+      "dedicated lanes",
+      "signal priority)\n- Land use-transport integration via TOD corridors\n- Capital project delivery and right-of-way allocation\n- Interagency coordination (City and RTC)"
+    ],
+    "classification_signals": [
+      "\"enable high capacity transit\"; \"TOD corridors\"; \"develop and implement ... Mobility Plan\"; specific transit corridors listed (Maryland Pkwy",
+      "Charleston Blvd",
+      "Decatur Blvd",
+      "Sahara Ave",
+      "Las Vegas Blvd)"
+    ],
+    "classification_confidence": 0.86,
+    "co_benefits_identified": [
+      "Improved air quality; reduced congestion; enhanced accessibility and equity; road safety; economic development along corridors; reduced household transport costs; public health from active travel connections."
+    ],
+    "extraction_notes": "Specifies a concrete transit intervention targeting high-capacity transit along TOD corridors to reduce emissions and transportation demand.",
+    "classification_notes": "- Actual emissions impact depends on ridership, service design, and vehicle propulsion (diesel vs. electric). Even with fossil-fueled buses, mode shift generally lowers per-capita emissions.\n- If the plan\u2019s main aim were congestion relief without mode shift, mitigation benefits could be weaker; TOD reference strengthens mitigation inference."
+  },
+  {
+    "policy_commitment": "Adopt layered Complete Street network to improve modal split and jobs-housing balance; coordinate major projects with state and regional partners.",
+    "source_quote": "A  comprehensive  transportation  analysis  links  a  wide  range  of improvements to move people and freight.  The plan recommends a new layered Complete Street network to improve the City's overall modal split and jobs-housing balance.",
+    "has_measurable_target": "No",
+    "has_deadline": "No",
+    "has_legal_mandate": "No",
+    "has_geographic_scope": "Yes \u2014 citywide",
+    "is_actionable": true,
+    "soundness_confidence": 0.68,
+    "validation_reasoning": "The policy lacks quantifiable targets, timelines, and binding mechanisms, and includes aspirational/process language (\u201cimprove,\u201d \u201ccoordinate,\u201d \u201cplan recommends\u201d). However, it is citywide in scope (spatial specificity) and specifies a concrete intervention\u2014adopting a layered Complete Street network\u2014which indicates a tangible infrastructure/technology shift to support mode share change. Per the validation criteria, strong soundness in at least one dimension (spatial specificity and concrete network adoption) is sufficient to deem it actionable.",
+    "weak_language_detected": "improve; coordinate; plan recommends; jobs-housing balance; comprehensive analysis",
+    "strong_language_detected": "adopt; Complete Street network; citywide scope; concrete infrastructure/network shift",
+    "climate_strategy_type": "Mitigation",
+    "additional_strategy_types": [
+      "Resource Efficiency"
+    ],
+    "causal_mechanism": "Shift trips from single-occupancy vehicles to walking, cycling, and transit and shorten commute distances through a better jobs-housing balance, thereby reducing VMT, fuel consumption, and tailpipe GHG emissions.",
+    "policy_instruments": [
+      "- Adoption of Complete Streets design standards and a layered multimodal network\n- Reallocation of roadway space to active and transit modes (e.g.",
+      "bike lanes",
+      "bus priority",
+      "pedestrian improvements)\n- Integrated transportation-land use planning to improve jobs-housing balance\n- Coordination with state/regional agencies for major corridor and freight projects"
+    ],
+    "classification_signals": [
+      "\"Complete Street network\"; \"improve the City's overall modal split\"; \"jobs-housing balance\"; \"move people and freight\"; \"coordinate major projects with state and regional partners\""
+    ],
+    "classification_confidence": 0.82,
+    "co_benefits_identified": [
+      "Improved road safety; public health from active mobility; reduced congestion and local air pollution; enhanced accessibility and equity; economic vitality from better connectivity; noise reduction; freight reliability."
+    ],
+    "extraction_notes": "Establishes a specific transportation infrastructure approach to improve efficiency and reduce emissions through better land-use connectivity.",
+    "classification_notes": "- Could be misread as Resource Efficiency because it optimizes movement of people and freight; however, the central intent is modal shift and VMT reduction (mitigation).\n- \"Jobs-housing balance\" implies land-use actions not fully detailed; assumed as part of transport-land use integration supporting mitigation."
+  },
+  {
+    "policy_commitment": "Implement Smarter Vegas, a citywide fiber network, and transportation electrification to enable connected and autonomous vehicles.",
+    "source_quote": "As technology  improves  over  time,  the City  must  be  prepared to embrace the Internet of Things, which greatly enhances and supports economic development strategies. Implementing  the  Smarter  Vegas  plan,  a  citywide  fiber network,  and  transportation  electrification  will  enable  a range of new options, including connected and  autonomous vehicles.",
+    "has_measurable_target": "No",
+    "has_deadline": "No",
+    "has_legal_mandate": "No",
+    "has_geographic_scope": "Yes \u2014 citywide",
+    "is_actionable": true,
+    "soundness_confidence": 0.78,
+    "validation_reasoning": "The policy lacks quantifiable targets, timeline, and binding mechanisms. However, it has clear spatial specificity (\u201ccitywide\u201d) and outlines tangible technological shifts and implementation actions (\u201cimplementing the Smarter Vegas plan,\u201d \u201ccitywide fiber network,\u201d \u201ctransportation electrification,\u201d enabling connected/autonomous vehicles). Under the criteria, spatial specificity and concrete tech transition are sufficient to consider it actionable even if other elements are weaker. Note: some enabling/aspirational phrasing remains.",
+    "weak_language_detected": "enable, range of new options, must be prepared, as technology improves, plan (without legal mandate)",
+    "strong_language_detected": "implementing, citywide (spatial specificity), fiber network (infrastructure deployment), transportation electrification (technological shift), connected and autonomous vehicles",
+    "climate_strategy_type": "Mitigation",
+    "additional_strategy_types": [
+      "Resource Efficiency"
+    ],
+    "causal_mechanism": "Reduce transportation-sector emissions by shifting from internal combustion engines to electric drivetrains and improving operational efficiency through connected/automated mobility enabled by a citywide fiber network (less idling, smoother flows, optimized routing).",
+    "policy_instruments": [
+      "- Invest in and deploy a citywide fiber backbone to enable V2X communications\n- Implement transportation electrification (e.g.",
+      "EV charging infrastructure",
+      "fleet electrification)\n- Enable connected and autonomous vehicle operations via digital infrastructure and IoT integration\n- Smart mobility/traffic management leveraging connectivity"
+    ],
+    "classification_signals": [
+      "\u201ctransportation electrification\u201d",
+      "\u201cconnected and autonomous vehicles\u201d",
+      "\u201ccitywide fiber network\u201d",
+      "\u201cInternet of Things\u201d",
+      "\u201cSmarter Vegas plan\u201d"
+    ],
+    "classification_confidence": 0.73,
+    "co_benefits_identified": [
+      "Improved air quality and public health",
+      "reduced noise",
+      "traffic safety gains",
+      "congestion reduction",
+      "digital connectivity/economic development benefits."
+    ],
+    "extraction_notes": "Outlines a broad modernization policy combining digital infrastructure and electrification to support climate and mobility goals.",
+    "classification_notes": "Potential rebound effects from AVs could increase VMT and emissions if not managed; mitigation impact depends on electricity generation mix and actual EV adoption. The fiber network is enabling infrastructure and may not yield mitigation benefits without accompanying EV/CAV deployment and traffic management policies."
+  },
+  {
+    "policy_commitment": "Infuse resilience in all City development; acknowledge heat island and climate change are threats; emphasize land use planning to reduce water demand and heat island impacts; incorporate resiliency into land-use planning, policies, and standards.",
+    "source_quote": "SHAPING LAS VEGAS\n\nFROM GUIDING PRINCIPLES TO MEASURABLE RECOMMENDATIONS\n...\nTo achieve a resilient Las Vegas, we must:\n\nInfuse resilience in all aspects of City development and systems at a physical and operational level.\n\nAcknowledge both heat island effect and climate change are threats.\n\nEmphasize land use planning can reduce water demand and heat island impacts.\n\nIntentionally incorporate key issues of resiliency and climate action/adaptation into all land-use planning, policies, and standards.\n\nConsider energy and water related goals to reduce demand such as human-scaled interventions, building scale incentive programs, deep energy retrofits, building code provisions, and partnerships at the City scale.",
+    "has_measurable_target": "No",
+    "has_deadline": "No",
+    "has_legal_mandate": "No",
+    "has_geographic_scope": "Yes \u2014 citywide",
+    "is_actionable": true,
+    "soundness_confidence": 0.65,
+    "validation_reasoning": "The statement is largely aspirational (\u201cinfuse,\u201d \u201cacknowledge,\u201d \u201cemphasize,\u201d \u201cincorporate,\u201d \u201cconsider\u201d) and lacks quantifiable targets, timelines, or explicit legal mandates. However, it clearly defines spatial scope (City of Las Vegas/citywide) and identifies concrete implementation levers (land-use standards, building code provisions, deep energy retrofits) that indicate actionable pathways even if not yet quantified. Under the criteria, the presence of clear spatial specificity\u2014and references to structural interventions\u2014meets at least one strong dimension, warranting a VALID classification despite weaknesses elsewhere.",
+    "weak_language_detected": "infuse; acknowledge; emphasize; incorporate; consider; guiding principles; partnerships; incentive programs; resilient",
+    "strong_language_detected": "City of Las Vegas/citywide scope; land-use planning, policies, and standards; building code provisions; deep energy retrofits; reducing water demand; addressing heat island impacts",
+    "climate_strategy_type": "Adaptation",
+    "additional_strategy_types": [
+      "Resource Efficiency",
+      "Mitigation"
+    ],
+    "causal_mechanism": "Integrates resilience and climate adaptation into land-use planning, policies, and building standards to reduce urban heat exposure and vulnerability, manage water scarcity, and enhance citywide capacity to cope with climate impacts.",
+    "policy_instruments": [
+      "- Integrate resilience criteria into land-use planning",
+      "policies",
+      "and standards\n- Building code provisions to support resilience and efficiency\n- Building-scale incentive programs for upgrades/retrofits\n- Deep energy retrofits\n- Human-scaled interventions (e.g.",
+      "shading/cooling-oriented urban design)\n- City-scale partnerships to implement measures"
+    ],
+    "classification_signals": [
+      "- \"Infuse resilience in all aspects of City development\"\n- \"Acknowledge both heat island effect and climate change are threats\"\n- \"Emphasize land use planning can reduce water demand and heat island impacts\"\n- \"incorporate ... adaptation into all land-use planning",
+      "policies",
+      "and standards\"\n- \"energy and water related goals to reduce demand\"\n- \"deep energy retrofits\" and \"building code provisions\""
+    ],
+    "classification_confidence": 0.74,
+    "co_benefits_identified": [
+      "Public health benefits from reduced heat stress; lower utility costs; grid reliability; drought resilience; improved urban comfort and walkability; economic resilience; potential air quality improvements."
+    ],
+    "extraction_notes": "Articulates resilience and climate adaptation as core principles embedded in land-use planning and standards.",
+    "classification_notes": "- Heat island mitigation can straddle adaptation and mitigation; here framed mainly as adaptation.\n- The language is high-level/strategic; specific measures are implied rather than detailed.\n- If implementation relies on urban greening/green infrastructure, Nature-Based Solutions could also apply."
+  }
+]

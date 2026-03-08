@@ -578,14 +578,34 @@ def process_document(
 if __name__ == "__main__": 
 
 
+    # policies = process_document(
+    #     pdf_path="./../GENIUS/docs/cities/seattle_markdown.md",
+    #     country="United States",
+    #     state_or_province="Seattle",
+    #     city="Washington",
+    #     expert_knowledge_path="./RLM_proc_instr.pdf",
+    #     output_path="./output/seattle_policies.json",
+    # )
+
+    # policies = process_document(
+    #     pdf_path="./../GENIUS/docs/cities/LV.md",
+    #     country="United States",
+    #     state_or_province="Nevada",
+    #     city="LasVegas",
+    #     expert_knowledge_path="./RLM_proc_instr.pdf",
+    #     output_path="./output/LasVegas_policies.json",
+    # )
+
     policies = process_document(
-        pdf_path="./../GENIUS/docs/cities/seattle_markdown.md",
+        pdf_path="./../GENIUS/docs/cities/chicago.md",
         country="United States",
-        state_or_province="Seattle",
-        city="Washington",
+        state_or_province="Chicago",
+        city="Illinois",
         expert_knowledge_path="./RLM_proc_instr.pdf",
-        output_path="./output/seattle_policies.json",
+        output_path="./output/chicago_policies.json",
     )
+
+
     # import argparse
 
     # parser = argparse.ArgumentParser(

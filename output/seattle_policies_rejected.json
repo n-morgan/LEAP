@@ -1,0 +1,16 @@
+[
+  {
+    "policy_statement": "Reorganize Seattle's streets to grow healthy communities and vibrant public spaces, while encouraging and guiding innovation in transportation technology.",
+    "verbatim_text": "As transportation becomes increasingly shared, active, self-driving, electric, and data-driven, Seattle is planning ahead to ensure the fast-paced changes in mobility help us create a safe, equitable, sustainable city serving our diverse needs. The 2017 New Mobility Playbook sets out a course for how Seattle will ensure that future of transportation in Seattle aligns with our city's goals and values and will position Seattle to encourage and guide innovation in transportation technology, reorganizing our streets to grow healthy communities and vibrant public spaces.",
+    "has_quantifiable_target": "No",
+    "has_timeline": "No",
+    "has_binding_mechanism": "No",
+    "has_spatial_specificity": "Yes \u2014 Seattle",
+    "extraction_rationale": "Contains a concrete intervention (reorganizing streets) within Seattle aimed at safer, equitable, and sustainable mobility and mentions enabling innovation in transportation tech, meeting policy criteria.",
+    "rejection_reason": "The statement is spatially specific to Seattle, but it lacks measurable elements: no quantifiable targets (e.g., numbers, units), no timeline or deadlines, and no binding mechanisms (law/regulation). The language is largely aspirational/process-oriented (planning ahead, ensure, encourage, guide, playbook) without defined outcomes or baselines. While it references potential shifts in mobility and intent to \u201creorganize streets,\u201d it does not commit to a concrete, enforceable, or measurable action. Therefore, despite clear geographic scope, it reads more as a vision than an actionable policy.",
+    "validation_result": "NON-SOUND",
+    "confidence_score": 0.73,
+    "weak_signals": "planning ahead; ensure; encourage; guide; playbook; align with goals and values; vibrant; healthy; innovation; equitable; sustainable",
+    "strong_signals": "Spatial scope: Seattle; directional action: reorganizing streets; references to modal/technology trends (shared, active, self-driving, electric)"
+  }
+]

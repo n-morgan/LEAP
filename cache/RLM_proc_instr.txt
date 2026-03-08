@@ -1,0 +1,292 @@
+This framework formalizes the workflow into a "Policy Extraction &amp; Validation Protocol.'
+
+## 1. Structural Discovery: The Outline Heuristic
+
+NDCs are not standardized; they vary by country. To find policy-rich sections, you must look for specific keywords that signal the country's commitments.
+
+## Standard Sections
+
+- Mitigation: Actions aimed at reducing greenhouse gas (GHG) emissions (e.g., transitioning to renewables).
+- Adaptation: Actions aimed at adjusting to the current and future effects of climate change (e.g., sea walls, drought-resistant crops).
+- Means of Implementation (MoI): Where finance, technology transfer, and capacitybuilding are discussed.
+
+## Non-Standard Indicators (Where to look if the above are missing)
+
+If the outline is vague, look for these "Proxy Sections" in the Table of Contents:
+
+- Sectoral Planning: Sections titled "Energy," "Transport," "Agriculture," or "Waste Management."
+- Priority Areas: Often listed as "Key Pillars" or "Strategic Directions."
+- Cross-Cutting Issues: Sections on gender, youth, or indigenous peoples often contain localized adaptation policies.
+- Investment Portfolios: Lists of projects seeking international funding.
+
+## 2. Extraction: The Policy Nomenclature
+
+Policies are rarely labeled "Policy #1." Countries use diverse terminology to describe their commitments. A comprehensive extraction tool should scan for:
+
+- Action-Oriented: Action Plan, Action Item, Measure, Initiative, Intervention, Program.
+- Strategic: Roadmap, Strategy, Long-term Vision, Policy Framework, Master Plan.
+- Regulatory: Legislative Act, Decree, Mandate, Building Code, Standard (e.g., MEPS Minimum Energy Performance Standards).
+- Economic: Fiscal Instrument, Subsidy, Carbon Tax, Feed-in Tariff, Incentive Scheme.
+- Project-Based: Pilot Project, Flagship Program, Infrastructure Investment.
+
+## 3. The Validation Framework: Valid vs. Non-Sound
+
+The core of your system is distinguishing between "rhetoric" and "commitment." We can define a Valid Policy through three dimensions: Specificity, Tangibility, and Scalability.
+
+## A. Characteristics of a Valid Policy
+
+A policy is valid if it contains Observable Parameters .
+
+1. Quantifiable Targets: The policy includes numbers, dates, and units.
+2. o Example: "Retrofit 5,000 public buildings for 30% energy efficiency by 2030."
+2. Binding Mechanisms: The policy is backed by law or regulation, not just "encouragement."
+4. o Example: "Implementing a mandatory 10% biofuel blend for all commercial transport by 2027."
+3. Spatial Specificity: It identifies exactly where the impact will occur.
+6. o Example: "Restoring 500 hectares of mangroves in the [X] River Delta."
+4. Technological Shift: It specifies a transition from one state to another.
+8. o Example: "Phasing out all coal-fired power plants with a capacity over 100MW by 2040."
+
+## B. Characteristics of a Non-Sound Policy
+
+A policy is "non-sound" or "weak" if it is Performative or Vague .
+
+1. Process without Outcome: Focuses on meetings rather than results.
+2. o Example: "Strengthening dialogue with environmental NGOs" or "Promoting awareness of climate change."
+2. Aspirational Language: Uses verbs like "seek to," "explore," "strive," or "aim" without a roadmap.
+4. o Example: "We aim to explore the possibility of hydrogen power in the future."
+3. Lack of Baseline: Offers a change without stating the starting point.
+6. o Example: "We will increase green spaces" (without saying by how much or where).
+4. Administrative Maintenance: Standard government operations rebranded as climate action.
+8. o Example: "Maintaining the existing Ministry of Environment budget."
+
+## 3. District energy systems
+
+- If framed as decarbonizing heating and cooling → Mitigation
+- If framed as ensuring energy reliability during extreme weather → Adaptation (Resilience)
+- Often legitimately both , but the dominant intent must be identified.
+
+## 4. Floodable parks and wetlands
+
+- If framed as reducing flood risk through natural absorption → Nature-Based Solutions + Adaptation
+- If framed as biodiversity enhancement with no climate-ris k framing → Nature-Based Solutions only
+
+## 5. Infrastructure hardening
+
+- →
+- Strengthening power grids, water systems, transport networks to withstand storms or heat Adaptation (Resilience) Even if energy-related, this is not mitigation unless emissions reduction is the main
+
+objective.
+
+## Resilience should be a tag or attribute, not a standalone class
+
+- Resilience is not a distinct policy mechanism
+- It describes how well a system performs under stress , not what it does
+- Treating it as a class leads to overlap and confusion with adaptation
+
+Logic: Use Adaptation as the category, and represent resilience as a subcategory .
+
+## Example
+
+- •
+
+- Category: Adaptation
+
+- Sub-category: Resilience
+
+| Policy Type                                                      | Valid / High Merit                                     | Non-Sound / Low Merit   |
+|------------------------------------------------------------------|--------------------------------------------------------|-------------------------|
+| Convert 20k city buses to electric by 2035.                      | Encourage citizens to use public transport more often. | Transport               |
+| Increase urban canopy cover by 2% via mandatory green roofs.     | Study the benefits of trees in urban environments.     | Urban                   |
+| Implementation of a $25/ton carbon tax on heavy industry.        | Support the idea of "polluter pays" in principle.      | Fiscal                  |
+| Update national codes to require Net-Zero status for new builds. | Promote sustainable architecture through workshops.    | Building                |
+| Install 5GW of offshore wind capacity by 2030.                   | Facilitate partnerships for renewable energy research. | Energy                  |
+
+## 5. The "Global Consistency" Filter
+
+Valid policies are often replicable . A strong policy is one that has a proven "logic of intervention." If a policy like "Building Codes" appears across multiple NDCs, it gains validity because:
+
+- Implementation exists: There is a known path to execute it.
+- Benchmarking is possible: You can compare the stringency of one country's building code against another's.
+- Data availability: These policies usually produce measurable data (e.g., energy saved per square meter).
+
+## Mitigation
+
+Mitigation  policies  are  designed  to  influence  the  climate  system  by  changing  the  amount  of greenhouse gases humans release into the atmosphere or by increasing the ability of natural or engineered systems to remove those gases from the atmosphere. The central idea behind mitigation is that human activities such as energy production, transportation, industrial processes, and land use are major contributors to climate change, and that altering these activities can slow or limit future warming.
+
+A policy falls under mitigation when its main purpose is to reduce emissions at their source, avoid future  emissions,  or  actively  remove  carbon  dioxide  or  other  greenhouse  gases  from  the atmosphere. This includes policies that shift energy supply toward low-carbon sources, reduce reliance on fossil fuels, improve the carbon intensity of production systems, or expand carbon sinks through deliberate intervention. Even when mitigation policies deliver additional benefits, such as improved air quality or economic savings, they are classified as mitigation if their primary intent is to affect greenhouse gas concentrations and long-term climate forcing.
+
+Mitigation  policies  are  forward-looking  in  nature.  They  are  concerned  with  preventing  future climate change rather than responding to climate impacts that have already begun. If a policy's success is measured by emissions reduced, carbon sequestered, or progress toward decarbonization targets, it is a mitigation policy.
+
+## Operational Definition
+
+A policy is Mitigation if its primary causal pathway is:
+
+Human activity → ↓ GHG emissions OR ↑ carbon sinks → ↓ atmospheric forcing
+
+What the model should look for
+
+- Direct or indirect emissions reduction
+- Energy system transformation
+- Decarbonization targets or trajectories
+- Carbon sequestration framed in climate terms
+
+Typical policy mechanisms
+
+- Renewable energy mandates
+- Electrification (transport, buildings)
+- Carbon pricing, offsets, caps
+- Fuel switching
+- Carbon capture or storage
+
+## Disambiguation rule
+
+If the policy acts on the climate system itself , not on vulnerability to impacts → Mitigation .
+
+## Adaptation
+
+Adaptation policies are designed to reduce the negative consequences of climate change by helping people,  ecosystems,  and  infrastructure  cope  with  current  or  expected  climate  impacts.  Unlike mitigation,  adaptation  does  not  attempt  to  slow  climate  change  itself.  Instead,  it  assumes  that climate change is already happening or will happen and focuses on reducing harm. Resilience is a core component of adaptation. It refers to a system's capacity to continue functioning under climate stress, to absorb disturbances without collapsing, and to recover quickly after disruption. A policy that strengthens resilience does so by improving robustness, flexibility, redundancy, preparedness, or recovery capacity in the face of climate hazards such as heatwaves, flooding, droughts, storms, or sea-level rise. A policy should be classified as adaptation when its primary logic begins with a climate risk and ends with reduced exposure, reduced sensitivity, or increased adaptive capacity, resulting in reduced vulnerability, reduced damage, or faster recovery. This includes actions that protect  people,  infrastructure,  ecosystems,  or  services  from  climate  impacts,  even  when  those actions also produce economic, environmental, or emissions-related co-benefits.
+
+If a policy measures success in terms of reduced losses, maintained service continuity, avoided disruption, or increased preparedness under climate stress, it belongs in the adaptation category. When the policy explicitly strengthens the ability to withstand or recover from climate impacts, it should be understood as resilience-focused adaptation. Adaptation policies are often place-specific and context-dependent because climate impacts vary across regions. They may involve physical interventions, institutional changes, planning processes, or social programs. Even if an adaptation policy  leads  to  secondary  benefits  such  as  reduced  emissions  or  economic  savings,  it  remains classified as adaptation if its primary goal is to manage climate risk and protect people or assets from harm.
+
+If a policy's logic begins with anticipated climate impacts and ends with increased resilience, preparedness, or safety, it should be classified as adaptation.
+
+## Operational Definition
+
+A policy is Adaptation if its primary causal pathway is:
+
+Climate hazard → ↓ exposure OR ↓ sensitivity OR ↑ adaptive capacity
+
+What the model should look for
+
+- Explicit reference to climate impacts (heat, flooding, drought, sea-level rise)
+- Resilience , preparedness , or risk reduction
+- Protection of people, assets, or systems from future climate conditions
+
+Typical policy mechanisms
+
+- Flood defenses
+- Heat action plans
+- Climate-resilient infrastructure
+- Emergency response capacity
+- Insurance or risk-transfer instruments
+
+## Disambiguation rule
+
+If the policy assumes climate change will occur and responds to its effects → Adaptation .
+
+## Resource Efficiency
+
+Resource efficiency policies aim to deliver the same level of service, output, or quality of life while using fewer physical resources such as energy, water, materials, or land. The core idea is that many systems are inefficient and consume more resources than necessary, and that improving efficiency can reduce costs, waste, and environmental pressure.
+
+A policy  belongs  to  the  resource  efficiency  category  when  its  primary  objective  is  to  reduce resource  inputs  or  waste  outputs  per  unit  of  activity,  regardless  of  whether  climate  change  is explicitly mentioned. These policies often focus on optimizing performance,  improving technology, or encouraging behavioral change so that less energy, water, or material is required to achieve the same result.
+
+Resource efficiency policies may indirectly reduce greenhouse gas emissions, especially when energy use is lowered, but emissions reduction is not the defining feature. The defining feature is improved efficiency rather than climate impact. A policy that emphasizes performance standards, efficiency benchmarks, lifecycle optimization, or waste reduction without centering its justification on climate mitigation should be classified as resource efficiency.
+
+If a policy can be fully understood and justified even in the absence of climate change concerns, it is likely a resource efficiency policy.
+
+## Operational Definition
+
+A policy is Resource Efficiency if its primary causal pathway is:
+
+Same service → ↓ energy / water / material input OR ↓ waste output
+
+What the model should look for
+
+- Efficiency improvements without requiring climate justification
+- Optimization of inputs, flows, or lifecycles
+- Performance-based standards
+
+Typical policy mechanisms
+
+- Energy efficiency codes
+- Water efficiency standards
+- Circular economy policies
+- Waste reduction / recycling mandates
+- Industrial process optimization
+
+Disambiguation rule
+
+If emissions reduction is a secondary consequence , not the primary goal → Resource Efficiency .
+
+## Nature-Based Solutions
+
+Nature-based solutions are policies that intentionally use natural systems or ecological processes to address environmental, climate, or societal challenges. The central premise is that ecosystems such as forests, wetlands, soils, and coastal systems can provide services that reduce risk, enhance resilience, or support climate goals when they are protected, restored, or managed appropriately.
+
+A policy is classified as a nature-based solution when its effectiveness depends on the functioning of living systems rather than solely on engineered or technological infrastructure. These policies may address climate mitigation by enhancing carbon storage, adaptation by reducing exposure to hazards such as flooding or heat, or broader sustainability goals such as biodiversity protection and human well-being.
+
+Nature-based solutions are defined by their mechanism, not their outcome. Even when a policy targets  adaptation  or  mitigation,  it  should  be  labeled  as  a  nature-based  solution  if  the  primary means of achieving that goal relies on ecosystems or ecological restoration. Built or hybrid systems can fall into this category when they intentionally integrate natural processes as a core component.
+
+If  removing  the  ecological  element  would  fundamentally  break  the  policy's  effectiveness,  the policy belongs in the nature-based solutions category.
+
+## Operational Definition
+
+A policy is Nature-Based Solutions if its primary causal pathway is:
+
+Ecosystem protection/restoration → climate OR resilience OR co -benefits
+
+What the model should look for
+
+- Explicit use of ecosystems as infrastructure
+- Restoration, conservation, or enhancement of natural systems
+- Solutions that rely on biological processes
+
+Typical policy mechanisms
+
+- Urban forests
+- Wetland restoration
+- Green roofs and corridors
+- Mangroves, dunes, riparian buffers
+
+## Disambiguation rule
+
+If the mechanism depends on living systems rather than engineered systems → NbS .
+
+## CrossCategory Resolution Rules
+
+When classifying policies, priority should always be given to the policy's primary causal logic rather than secondary benefits, aspirational language, or co-benefits. A single policy may legitimately belong to more than one category, but each category should only be assigned when the underlying cause-effect relationship clearly matches the definition described above.
+
+These rules prevent confusion and improve classification accuracy.
+
+Rule 1: Primary mechanism &gt; secondary benefits
+
+Classify by what the policy does , not by claimed co-benefits.
+
+Example:
+
+'Energy efficiency to reduce emissions' → Resource Efficiency , not Mitigation.
+
+Rule 2: Climate system vs climate impacts
+
+- Acts on emissions/carbon cycle → Mitigation
+- Acts on hazards/vulnerability → Adaptation
+
+Rule 3: Natural vs engineered pathways
+
+- Ecosystemmediated → NbS
+- Technological / infrastructural → other categories
+- Mitigation + NbS
+- Adaptation + NbS
+- Resource Efficiency + Mitigation, but the primary label should be identifiable .
+
+Rule 4:
+
+Multi-label is allowed
+
+Policies can legitimately be:
+
+## Edge Cases for Adaptation Classification
+
+## 1. Green roofs
+
+- If framed as reducing urban heat exposure, managing stormwater, or protecting buildings from extreme weather → Adaptation (Resilience)
+- If framed primarily as ecosystem restoration or urban ecology → Nature-Based Solutions
+- If framed primarily as carbon storage → Mitigation (secondary)
+
+Primary mechanism decides.
+
+## 2. Passive cooling and shading
+
+- If framed as protecting occupants during heatwaves or maintaining livable indoor temperatures during power outages → Adaptation (Resilience)
+- If framed as reducing energy demand or emissions → Resource Efficiency
+
+Classification Logic : is the goal survival and comfort under heat stress, or reduced energy consumption?
