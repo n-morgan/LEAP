@@ -1,7 +1,5 @@
 [
   {
-    "role": "individual",
-    "parent_statement": "",
     "policy_commitment": "Commit to expanding and sustaining local and regional investments in transit and bike/pedestrian infrastructure to reduce single-occupant vehicle (SOV) use in Seattle.",
     "source_quote": "Local and regional investments in transit and bike and pedestrian infrastructure have led to significant reductions in single occupant vehicle (SOV) use in Seattle. The period when Seattle has experienced some of its most rapid growth, 2010-2017, has also seen significant progress in commuter mode shift toward more sustainable modes of transportation.",
     "has_measurable_target": "No",
@@ -13,7 +11,7 @@
     "validation_reasoning": "The policy lacks quantifiable targets, a timeline, and any binding/legal mechanism, which are weaknesses. However, it does specify a clear geographic scope (Seattle) and identifies concrete intervention types (expanding and sustaining investments in transit and bike/pedestrian infrastructure) aimed at a defined outcome (reducing SOV use). Spatial specificity is explicitly present, and the intervention implies a modal/technological shift away from SOV toward transit and active modes. Under the criteria, having strong specificity in at least one dimension (location and actionable intervention type) is sufficient to consider it VALID, though with limited robustness due to missing metrics and deadlines.",
     "weak_language_detected": "commit; expand; sustain; investments (unspecified); reduce (no metric); no timeline; no legal/regulatory mechanism; significant reductions/progress (unquantified in verbatim)",
     "strong_language_detected": "Seattle (clear spatial scope); transit and bike/ped infrastructure (concrete interventions); reduce SOV use (specific objective); mode shift away from SOV",
-    "primary_category": "Mitigation",
+    "climate_strategy_type": "Mitigation",
     "additional_strategy_types": [
       "Resource Efficiency"
     ],
@@ -43,8 +41,6 @@
     "classification_notes": "Emission reductions depend on transit energy sources and occupancy; if transit is diesel-based and underutilized, net reductions may vary. However, aggregate mode shift and active travel generally yield mitigation benefits."
   },
   {
-    "role": "individual",
-    "parent_statement": "",
     "policy_commitment": "Initiate and operate a pilot program to permit the installation of publicly-available electric vehicle charging stations on non-residential streets in urban villages, urban centers, and commercial streets, with siting and data-sharing guidelines and criteria-based review to align with City policy goals.",
     "source_quote": "To date, over 60 applications have been received from three applicants, including Seattle City Light, who installed the first station in February 2018. The pilot program has strict siting and data sharing guidelines, and applications are reviewed against criteria which will ensure alignment with City policy goals including supporting shared vehicle use and meeting travel needs not well-served by transit. Pilot program results will be reviewed in mid-2018.",
     "has_measurable_target": "No",
@@ -56,7 +52,7 @@
     "validation_reasoning": "The policy is actionable: it establishes a permit-based program with strict siting and data-sharing guidelines and criteria-based review (regulatory/binding mechanism). It specifies spatial scope (non-residential streets in urban villages, urban centers, and commercial streets). It includes a timeline checkpoint (results reviewed mid-2018) and demonstrates implementation (60+ applications, first station installed Feb 2018). While it lacks a numeric target, the presence of binding procedures, clear scope, and timeline make it sound per the criteria.",
     "weak_language_detected": "pilot program, align with City policy goals, reviewed, criteria-based review (process), goals",
     "strong_language_detected": "permit the installation, publicly-available electric vehicle charging stations, strict siting and data-sharing guidelines, applications reviewed against criteria, non-residential streets in urban villages/urban centers/commercial streets, first station installed Feb 2018, over 60 applications, mid-2018 review",
-    "primary_category": "Mitigation",
+    "climate_strategy_type": "Mitigation",
     "additional_strategy_types": [],
     "causal_mechanism": "Expand publicly accessible EV charging in urban areas to increase EV adoption and utilization (including shared EVs), displacing gasoline/diesel vehicle miles traveled and thereby reducing tailpipe GHG emissions.",
     "policy_instruments": [
@@ -84,8 +80,6 @@
     "classification_notes": "- Some may argue Resource Efficiency because EVs are more energy-efficient, but the policy mechanism is infrastructure enabling fuel switching, not efficiency optimization.\n- Net GHG benefits depend on grid carbon intensity and charging behavior; still generally categorized as mitigation.\n- Being a pilot limits scope but not the category."
   },
   {
-    "role": "individual",
-    "parent_statement": "",
     "policy_commitment": "Develop and implement a dense network of shared mobility hubs co-located with major transit facilities to enable on-demand travel and advance electric car share and ride hail with fast charging at or near hub locations.",
     "source_quote": "Seattle's Shared Mobility Hub program will aggregate transportation connections, travel information, and other mobility amenities into a seamless, understandable, and on-demand travel experience. The Seattle Transportation Department is developing a dense network of shared mobility hubs throughout the city, co-located with major transit facilities and in places where frequent transit services intersect.",
     "has_measurable_target": "No",
@@ -97,7 +91,7 @@
     "validation_reasoning": "The policy specifies a concrete intervention (develop and implement a network of shared mobility hubs) with clear spatial scope (co-located with major transit facilities and throughout Seattle). It also indicates a technological/infrastructure shift by advancing electric car share and ride-hail with fast charging at/near hubs. While it lacks quantifiable targets, timelines, and an explicit binding mechanism, the spatial specificity and infrastructure/technology deployment make it actionable enough to be considered VALID per criteria.",
     "weak_language_detected": "seamless, understandable, on-demand (experience framing), will aggregate, developing (ongoing process), advance (non-quantified), dense network (vague magnitude), program (may imply planning)",
     "strong_language_detected": "co-located with major transit facilities, throughout the city (Seattle), shared mobility hubs, fast charging at or near hub locations, electric car share and ride hail, develop and implement, Seattle Transportation Department (identified implementer)",
-    "primary_category": "Mitigation",
+    "climate_strategy_type": "Mitigation",
     "additional_strategy_types": [
       "Resource Efficiency"
     ],
@@ -117,8 +111,6 @@
     "classification_notes": "- If ride-hail use increases VMT without sufficient mode shift, net emissions benefits depend on EV share and grid mix.\n- Could be seen as Resource Efficiency-first, but explicit electrification and transit integration make Mitigation primary."
   },
   {
-    "role": "individual",
-    "parent_statement": "",
     "policy_commitment": "Reduce municipal fleet emissions by 50 percent by 2025 through electrification, cleaner fuels when electrification is not feasible, increased efficiency, and procurement standards.",
     "source_quote": "The Green Fleet Action Plan guides the City's efforts to meet the goal to reduce municipal fleet emissions by 50 percent by 2025 by increasingly electrifying the fleet, using cleaner fuels when electrification is not feasible, increasing efficiency in how vehicles are used, and setting standards for vehicle procurement. The City's fleet includes over 200 electric vehicles and over 300 hybrid vehicles.",
     "has_measurable_target": "Yes \u2014 50 percent by 2025",
@@ -130,7 +122,7 @@
     "validation_reasoning": "The policy is actionable and measurable: it sets a quantifiable target (50% emissions reduction) with a clear deadline (by 2025) and a defined scope (Seattle municipal fleet). It also specifies concrete levers/technological shifts (fleet electrification, cleaner fuels where electrification isn\u2019t feasible, efficiency improvements, and procurement standards). While the language in the verbatim text (\u201cguides,\u201d \u201cgoal,\u201d \u201cplan,\u201d \u201cwhen \u2026 not feasible\u201d) suggests limited legal enforceability and some flexibility, the presence of a numeric target, timeline, spatial specificity, and defined implementation pathways meets multiple validation criteria for a sound policy.",
     "weak_language_detected": "guides; goal; plan; when not feasible",
     "strong_language_detected": "50 percent by 2025; electrification of fleet; cleaner fuels; increased efficiency; procurement standards; municipal fleet scope",
-    "primary_category": "Mitigation",
+    "climate_strategy_type": "Mitigation",
     "additional_strategy_types": [
       "Resource Efficiency"
     ],
@@ -160,8 +152,6 @@
     "classification_notes": "- \u201cCleaner fuels\u201d climate benefit can vary by lifecycle; still generally considered mitigation when replacing conventional fossil fuels.\n- Efficiency improvements could be classified as Resource Efficiency alone, but here they serve the primary mitigation target."
   },
   {
-    "role": "individual",
-    "parent_statement": "",
     "policy_commitment": "Mandatory energy benchmarking for Seattle buildings (\u226520,000 sq ft) to track and report energy performance to the City, with public data disclosure to raise awareness and support market transformation.",
     "source_quote": "Adopted in 2010, Seattle's Energy Benchmarking Program (SMC 22.920) requires owners of nonresidential and multi-family buildings (20,000 square feet or larger) to track energy performance and annually report to the City. The policy was updated in 2016 to make reported data publicly available to further increase awareness of building energy use and support real estate market transformation.",
     "has_measurable_target": "Yes \u2014 2.7 percent decrease in energy use since 2014",
@@ -173,7 +163,7 @@
     "validation_reasoning": "The policy is codified (SMC 22.920) and mandates owners to track and annually report energy performance, with public disclosure\u2014this is a clear binding mechanism. It is spatially specific (Seattle) and defines a precise scope (nonresidential and multifamily buildings \u226520,000 sq ft). It includes a timeline (adopted 2010; updated 2016) and an ongoing annual reporting cadence. While the cited \u201c2.7 percent decrease since 2014\u201d is an outcome rather than an explicit target in the policy, the measure remains actionable due to its enforceable reporting requirements and defined scope. Weakness: it emphasizes benchmarking/awareness rather than setting performance or emissions-reduction targets, but binding and spatial criteria are strongly met, making it VALID.",
     "weak_language_detected": "awareness, market transformation, benchmarking, track and report, no explicit reduction target",
     "strong_language_detected": "mandatory, requires, annually report, SMC 22.920, 20,000 square feet, public data disclosure, Seattle, adopted 2010, updated 2016",
-    "primary_category": "Resource Efficiency",
+    "climate_strategy_type": "Resource Efficiency",
     "additional_strategy_types": [
       "Mitigation"
     ],
@@ -194,8 +184,6 @@
     "classification_notes": "This is an enabling/transparency policy that does not directly mandate efficiency upgrades; some frameworks might classify it primarily as Mitigation due to emissions outcomes. Here it is classified as Resource Efficiency because the immediate lever is improving energy use intensity."
   },
   {
-    "role": "individual",
-    "parent_statement": "",
     "policy_commitment": "Building Tune-Ups Ordinance mandates large commercial buildings to identify and implement low- or no-cost energy and water efficiency improvements, with phased compliance deadlines and a requirement for a Qualified Tune-Ups Specialist.",
     "source_quote": "Adopted in 2016, the Building Tune-Ups Ordinance (SMC 22.930) requires commercial buildings 50,000 square feet or larger to identifying low- or no-cost building operations and maintenance improvements to improve energy and water efficiency. Compliance deadlines will be phased in by building size, beginning in early 2019.  A Qualified Tune-Ups Specialist is required to complete the assessment, report to the City, and monitor implementation of operational and maintenance improvements.",
     "has_measurable_target": "Yes \u2014 individual buildings energy reduction 10-15%; sector-wide energy reduction 5-8%; GHG emissions reduction 6-9%.",
@@ -207,7 +195,7 @@
     "validation_reasoning": "The ordinance is a binding regulatory mechanism (SMC 22.930) that mandates action, not just planning. It has:\n- Quantifiable targets (10\u201315% individual-building energy reduction; 5\u20138% sector-wide energy reduction; 6\u20139% GHG reduction).\n- Specific timelines (phased compliance deadlines beginning in early 2019).\n- Spatial and sectoral specificity (commercial buildings \u226550,000 sq ft).\n- Defined compliance process (assessment by a Qualified Tune-Ups Specialist, reporting to the City, and implementation/monitoring of O&M improvements).\nThese elements make the policy actionable and measurable, outweighing any process-oriented phrasing.",
     "weak_language_detected": "identify; assessment; report; monitor; low- or no-cost",
     "strong_language_detected": "mandates; requires; ordinance; SMC 22.930; compliance deadlines; beginning in early 2019; 50,000 square feet; Qualified Tune-Ups Specialist; implement improvements; report to the City; quantifiable energy and GHG reduction targets",
-    "primary_category": "Resource Efficiency",
+    "climate_strategy_type": "Resource Efficiency",
     "additional_strategy_types": [
       "Mitigation"
     ],
@@ -233,8 +221,6 @@
     "classification_notes": "Potential confusion with building codes or retrofit mandates; however, the ordinance targets low/no-cost O&M tune-ups rather than capital-intensive retrofits. Inclusion of water efficiency does not imply Adaptation; focus remains on efficiency. Not a Nature-Based Solution."
   },
   {
-    "role": "individual",
-    "parent_statement": "",
     "policy_commitment": "City provides incentives for early compliance with the Tune-Ups Ordinance through the Building Tune-Up Accelerator Program, funded by a Department of Energy grant.",
     "source_quote": "With funding from a Department of Energy grant, the City is implementing the Building Tune-Up Accelerator Program providing incentives for early compliance with the Tune-Ups Ordinance. The Accelerator is a voluntary program for owners of mid-size buildings, those 50,000-100,000 square feet, to conduct a tune-up that meets the Seattle Building Tune-Up requirements in advance of when their building is required to comply (2020 & 2021).",
     "has_measurable_target": "No",
@@ -246,7 +232,7 @@
     "validation_reasoning": "- Spatial specificity: Clearly scoped to Seattle mid-size buildings (50,000\u2013100,000 sq ft), satisfying the location/scope criterion.\n- Timeline: Explicit years (2020 & 2021) for early compliance provide a concrete deadline window.\n- Binding context: While the Accelerator is voluntary, it is explicitly tied to compliance with the Seattle Building Tune-Up Ordinance (a binding standard), making the action measurable (complete a tune-up that meets defined requirements).\n- Quantifiable target: No explicit emissions/performance target is stated in this excerpt; building-size thresholds and dates are quantifiable but are scope/timeline, not outcome targets.\n- Despite being voluntary and incentive-based, the policy is actionable and measurable through the defined compliance action, timeframe, and scoped building cohort.",
     "weak_language_detected": "voluntary; incentives; program; accelerator",
     "strong_language_detected": "ordinance; compliance; meets Seattle Building Tune-Up requirements; 2020 & 2021; Seattle; 50,000\u2013100,000 square feet; DOE grant funding",
-    "primary_category": "Resource Efficiency",
+    "climate_strategy_type": "Resource Efficiency",
     "additional_strategy_types": [
       "Mitigation"
     ],
@@ -268,8 +254,6 @@
     "classification_notes": "- \"Tune-up\" is not explicitly defined here, but in the Seattle context it is an energy-focused operational efficiency requirement; classification relies on that typical definition.\n- Though the program focuses on timing (early compliance), the underlying measures remain efficiency improvements; therefore Resource Efficiency is prioritized over Mitigation."
   },
   {
-    "role": "individual",
-    "parent_statement": "",
     "policy_commitment": "Provides incentives to replace oil heating with electric heat pumps and targets converting 200 homes per year.",
     "source_quote": "The Oil Heated Home Conversion program provides incentives for homeowners to replace oil heating systems with clean, efficient, electric heat pumps. By partnering with a heat pump distributor, who provides matching incentives, the program is converting 200 homes per year, while also influencing the home heating market so that electric heat pumps become a preferred heating system.",
     "has_measurable_target": "Yes \u2014 target to convert 200 homes per year.",
@@ -281,7 +265,7 @@
     "validation_reasoning": "The policy is actionable and measurable: it specifies a quantifiable target (converting 200 homes per year) and a concrete technological shift (replacing oil heating with electric heat pumps). It also provides a timeline cadence (annual target; launched July 2017), enabling tracking over time. While it lacks a binding legal mechanism and spatial specificity, the presence of clear numerical targets and a defined technology transition meets the VALID criteria. Partnership and matching incentives indicate implementation rather than mere aspiration.",
     "weak_language_detected": "\"influencing the market\", \"preferred heating system\", \"incentives\" (voluntary, non-binding)",
     "strong_language_detected": "\"convert 200 homes per year\", \"replace oil heating with electric heat pumps\", \"launched July 2017\", \"annual target\", \"partnering with a distributor\", \"matching incentives\"",
-    "primary_category": "Mitigation",
+    "climate_strategy_type": "Mitigation",
     "additional_strategy_types": [
       "Resource Efficiency"
     ],
@@ -311,8 +295,6 @@
     "classification_notes": "Mitigation magnitude depends on grid carbon intensity; benefits increase as the grid decarbonizes. Improper sizing/installation or continued use of oil backup could reduce gains. Heat pumps also provide cooling, but that adaptation co-benefit is not the primary intent."
   },
   {
-    "role": "individual",
-    "parent_statement": "",
     "policy_commitment": "The 2015 Seattle Energy Code introduces emissions criteria requiring non-fossil fuel-based heating or more efficient windows, supported by an annual City Light grant to develop and implement Seattle's advanced energy code.",
     "source_quote": "The 2015 SEC includes criteria that address emissions, by requiring either non-fossil fuel-based heating or more efficient windows. Seattle City Light provides an annual grant to Seattle Department of Construction and Inspections to help make possible the work to develop and implement Seattle's advanced code.",
     "has_measurable_target": "No",
@@ -324,7 +306,7 @@
     "validation_reasoning": "The policy is embedded in the 2015 Seattle Energy Code, a binding regulatory mechanism that requires compliance during permitting/inspection. It is spatially specific to Seattle and mandates a technological shift (non-fossil fuel heating or higher-efficiency windows), making it actionable even without explicit numeric targets. The annual grant provides an ongoing implementation timeline/support, though not a reduction deadline. Despite some non-quantified language (\u201cmore efficient windows\u201d), the regulatory requirement and clear scope make it sound.",
     "weak_language_detected": "grant, develop, implement, advanced, more efficient windows (without numeric spec)",
     "strong_language_detected": "requires, Energy Code, regulatory requirement, non-fossil fuel-based heating, spatial specificity (Seattle), annual funding support",
-    "primary_category": "Mitigation",
+    "climate_strategy_type": "Mitigation",
     "additional_strategy_types": [
       "Resource Efficiency"
     ],
@@ -347,8 +329,6 @@
     "classification_notes": "- The \u201ceither/or\u201d structure could allow continued fossil heating if only windows are upgraded; still, reduced energy use lowers emissions.\n- Actual emissions impact depends on grid carbon intensity for non-fossil heating (likely low in Seattle due to hydropower), but classification remains Mitigation.\n- No explicit adaptation or nature-based components."
   },
   {
-    "role": "individual",
-    "parent_statement": "",
     "policy_commitment": "Offer additional height, floor area, or density in certain zones to developers who meet the City's Green Building Standard.",
     "source_quote": "Currently, developers can access additional height, floor area, or density In certain zones by meeting the City's Green Building Standard. Director's Rule 20-2017 identifies the requirements, which include adhering to one of the building industry's green building certification programs and demonstrating that the project is 15 percent more energy efficient than code.",
     "has_measurable_target": "Yes \u2014 15 percent more energy efficient than code",
@@ -360,7 +340,7 @@
     "validation_reasoning": "The policy ties a zoning incentive (extra height/FAR/density) to clear, measurable performance: projects must meet a Green Building Standard and demonstrate 15% greater energy efficiency than code. It references a binding mechanism (Director\u2019s Rule 20-2017) that sets enforceable requirements, and it has spatial specificity (\u201cin certain zones\u201d). While there is no timeline and \u201ccertain zones\u201d is somewhat general, the presence of a quantifiable target, regulatory backing, and a concrete compliance pathway (recognized certifications + demonstrated performance) make it actionable and measurable.",
     "weak_language_detected": "\"certain zones\"; \"one of the ... certification programs\"; no explicit timeline; incentive/optional framing (\"offer\")",
     "strong_language_detected": "\"15 percent more energy efficient than code\"; \"Director's Rule 20-2017\"; \"Green Building Standard\"; measurable verification (\"demonstrating\"); defined incentive linkage to height/FAR/density",
-    "primary_category": "Resource Efficiency",
+    "climate_strategy_type": "Resource Efficiency",
     "additional_strategy_types": [
       "Mitigation"
     ],
@@ -382,8 +362,6 @@
     "classification_notes": "- If the electric grid is already low-carbon, the mitigation impact per kWh saved is smaller, but Resource Efficiency classification remains.\n- Some certifications may include water/stormwater or green roofs (possible adaptation/NBS), but these are not specified and appear ancillary.\n- Increased allowable density could increase total floor area and absolute energy use; the policy\u2019s impact depends on per-area efficiency and overall urban form effects."
   },
   {
-    "role": "individual",
-    "parent_statement": "",
     "policy_commitment": "Establish a Living Building Pilot Program that provides additional height and floor area for up to 20 projects meeting more extensive green building criteria, including Living Building Petal Certification and energy efficiency improvements.",
     "source_quote": "The Living Building Pilot Program provides additional height and floor area for up to 20 projects that meet more extensive green building criteria, which includes achieving Living Building Petal Certification (with no on-site combustion of fossil-fuels), plus energy efficiency 25 percent better than code, and greywater and/or rainwater used for all non-potable water needs (e.g. toilet flushing, irrigation).",
     "has_measurable_target": "Yes \u2014 25 percent energy efficiency better than code; up to 20 projects",
@@ -395,7 +373,7 @@
     "validation_reasoning": "- Quantifiable targets: 25% better than code; cap of up to 20 projects; \u201call non-potable water needs\u201d supplied by greywater/rainwater. Clear, measurable thresholds.\n- Binding mechanism: Participation tied to a formal Pilot Program that grants additional height/FAR only upon meeting specified criteria\u2014an enforceable regulatory incentive structure.\n- Technological shift: Explicit prohibition of on-site fossil fuel combustion; requirement for greywater/rainwater systems; third-party Living Building Petal Certification.\n- While no timeline or spatial specificity are provided, the policy is actionable and measurable through multiple strong dimensions.",
     "weak_language_detected": "pilot program; up to; improvements; no timeline",
     "strong_language_detected": "25 percent better than code; up to 20 projects; Living Building Petal Certification; no on-site combustion of fossil-fuels; greywater/rainwater for all non-potable uses; additional height and floor area incentive",
-    "primary_category": "Mitigation",
+    "climate_strategy_type": "Mitigation",
     "additional_strategy_types": [
       "Resource Efficiency"
     ],
