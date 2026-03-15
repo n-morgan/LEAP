@@ -593,7 +593,7 @@ if __name__ == "__main__":
         model_name="gpt-5.2",
         sub_model_name="gpt-5-mini",
         expert_knowledge_path="./RLM_proc_instr.pdf",
-        output_path="./output/chicago_policies.json",
+        output_path="./output/seattle_policies.json",
     )
     # import argparse
 
