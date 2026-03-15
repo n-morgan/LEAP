@@ -289,9 +289,10 @@ def parse_document(file_path: str, use_cache: bool = True) -> str:
 class ClimatePolicyExtractionSignature(dspy.Signature):
     """You are tasked with extracting climate policies from a long policy document.
 
-
 YOUR TASK:
 Extract every climate policy from the document. For each policy produce a JSON object with these fields:
+- "role": "individual" if this is a standalone policy, "sub" if it is a specific action nested under a broader initiative
+- "parent_statement": the name or summary of the parent initiative if role is "sub", otherwise ""
 - "policy_statement": concise commitment summary
 - "verbatim_text": 2-3 sentence verbatim quote from the document
 - "has_quantifiable_target": "Yes — <detail>" or "No"
@@ -300,8 +301,16 @@ Extract every climate policy from the document. For each policy produce a JSON o
 - "has_spatial_specificity": "Yes — <detail>" or "No"
 - "extraction_rationale": why this qualifies as a policy
 
+IDENTIFYING HIERARCHY:
+Many climate plans group specific actions under named initiatives or programs.
+If a policy is a specific action under a broader initiative (e.g. "Seattle Green New Deal"),
+set role to "sub" and parent_statement to that initiative's name or summary.
+If a policy stands alone with no parent, set role to "individual" and parent_statement to "".
+
 WHAT IS A POLICY:
-A stated commitment by a governing body to achieve a defined outcome through deliberate action, resource allocation, or regulatory change. It must have at least one of: quantifiable target, binding mechanism, specific intervention, or resource allocation.
+A stated commitment by a governing body to achieve a defined outcome through deliberate action,
+resource allocation, or regulatory change. It must have at least one of: quantifiable target,
+binding mechanism, specific intervention, or resource allocation.
 
 DO NOT EXTRACT: background information, current conditions, vague aspirations with no anchor, process statements.
 
@@ -321,7 +330,6 @@ Your final answer MUST be a valid JSON list of policy objects as described above
     policies: str = dspy.OutputField(
         desc="Valid JSON list of extracted climate policy objects"
     )
-
 
 # ---------------------------------------------------------------------------
 # Core pipeline
@@ -459,10 +467,16 @@ def validate_and_classify(
         def _split(text: str) -> list[str]:
             return [s.strip() for s in text.split(",") if s.strip() and s.strip().lower() != "none"]
 
+        raw_role = policy_data.get("role", "individual")
+        parent_stmt = policy_data.get("parent_statement", "")
+        # Normalize: if a parent_statement exists, role must be "sub"
+        if parent_stmt and raw_role == "individual":
+            raw_role = "sub"
+
         climate_policy = ClimatePolicy(
             # STRUCTURAL
-            role=policy_data.get("role", "individual"),
-            parent_statement=policy_data.get("parent_statement", ""),
+            role=raw_role,
+            parent_statement=parent_stmt,
             # Extraction
             policy_commitment=policy_data.get("policy_statement", ""),
             source_quote=policy_data.get("verbatim_text", ""),
