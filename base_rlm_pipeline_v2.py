@@ -176,16 +176,9 @@ HIERARCHY RULES:
 - If a policy stands alone with no sub-items beneath it, it is "individual".
 - When in doubt between "parent" and "individual", prefer "individual" unless there are clear sub-items.
 
-STRATEGY:
-1. Process the document section by section using the section headers as anchors.
-2. For each section, extract all qualifying policies and assign their primary_category.
-3. Collect all extracted policies into a single Python list of dicts.
-4. Deduplicate where the same commitment appears multiple times.
-5. Store the final list as `all_policies` and call FINAL_VAR(all_policies).
 
 OUTPUT FORMAT:
-Your final answer MUST be a valid JSON list of policy objects as described above.
-Use FINAL_VAR on a variable containing this JSON string.
+Your final answer MUST be a valid JSON list of policy objects.
 """
 
 
@@ -288,13 +281,22 @@ def parse_document(file_path: str, use_cache: bool = True) -> str:
 # ---------------------------------------------------------------------------
 
 
-def _parse_rlm_output(raw: str) -> list[dict]:
+def _parse_rlm_output(raw) -> list[dict]:
     """
     Best-effort parse of the RLM's final JSON output into a list of dicts.
     Handles direct JSON, markdown code fences, Python literals, and
     individual object fragments as a last resort.
     """
     import ast
+
+    # RLM may resolve FINAL_VAR to the actual Python object
+    if isinstance(raw, list):
+        return raw
+    if isinstance(raw, dict):
+        for v in raw.values():
+            if isinstance(v, list):
+                return v
+        return [raw]
 
     stripped = re.sub(r"```(?:json)?\s*", "", raw).strip()
 
@@ -635,17 +637,31 @@ def process_document(
 
 if __name__ == "__main__":
 
+    # policies = process_document(
+    #     pdf_path="./../GENIUS/docs/cities/LV.md",
+    #     country="United States",
+    #     state_or_province="Nevada",
+    #     city="Las Vegas",
+    #     expert_knowledge_path="./RLM_proc_instr.pdf",
+    #     output_path="./output/LasVegas",
+    #     output_format="csv",   # "json" | "csv" | "both"
+    #     model_name="gpt-5.4",
+    #     sub_model_name="gpt-5.4",
+    #     max_iterations=50,
+    # )
+
     policies = process_document(
-        pdf_path="./../GENIUS/docs/cities/LV.md",
+        pdf_path="./../GENIUS/docs/cities/seattle_markdown.md",
         country="United States",
-        state_or_province="Nevada",
-        city="Las Vegas",
+        state_or_province="Washington",
+        city="Seattle",
         expert_knowledge_path="./RLM_proc_instr.pdf",
-        output_path="./output/LasVegas",
-        output_format="json",   # "json" | "csv" | "both"
-        model_name="gpt-5",
-        sub_model_name="gpt-5-nano",
+        output_path="./output/Seattle",
+        output_format="csv",   # "json" | "csv" | "both"
+        model_name="gpt-5.4",
+        sub_model_name="gpt-5.4",
         max_iterations=50,
     )
 
     print(f"Done. {len(policies)} validated policies.")
+

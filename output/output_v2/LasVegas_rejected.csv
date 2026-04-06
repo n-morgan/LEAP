@@ -1,0 +1,63 @@
+role,parent_statement,policy_statement,source_quote,section_header,extraction_rationale,primary_category,is_actionable,validation_confidence,validation_reasoning,rejection_reason,validation_result
+sub,Strengthen food system resilience through healthy food access and urban agriculture actions.,Provide accessibility to community gardens and increase allowable small agricultural uses.,"Given  the  lack  of  regional  agriculture,  it  is  necessary to ensure supply chain security and redundancy. To supplement these efforts, the City must ensure:
+
+- No food deserts and reduce food swamps by increasing healthy food access
+- Provide accessibility to community gardens and increase allowable small agricultural uses",## FOOD AND URBAN AGRICULTURE,This listed sub-action qualifies because it specifies concrete interventions: community garden access and expanded allowable agricultural uses. It is climate-relevant as a resilience and urban agriculture measure.,Nature-Based Solutions,False,0.78,"- The source bullet explicitly states: ""Provide accessibility to community gardens and increase allowable small agricultural uses.""
+- There are no quantifiable targets (no numbers, coverage, timelines, or metrics such as number of gardens, acres, or percentage of residents served).
+- No binding mechanism is specified (no mention of passing an ordinance, amending the zoning code, or other regulatory action).
+- No committed resources are described (no funding, staffing, or capital allocations).
+- While it names areas of focus (community gardens, small agricultural uses), the verbs ""provide"" and ""increase"" are aspirational and not tied to a clear, measurable deliverable (e.g., specific code amendments or defined expansions).","- The source bullet explicitly states: ""Provide accessibility to community gardens and increase allowable small agricultural uses.""
+- There are no quantifiable targets (no numbers, coverage, timelines, or metrics such as number of gardens, acres, or percentage of residents served).
+- No binding mechanism is specified (no mention of passing an ordinance, amending the zoning code, or other regulatory action).
+- No committed resources are described (no funding, staffing, or capital allocations).
+- While it names areas of focus (community gardens, small agricultural uses), the verbs ""provide"" and ""increase"" are aspirational and not tied to a clear, measurable deliverable (e.g., specific code amendments or defined expansions).",NON-SOUND
+sub,Prioritize environmental justice by reducing environmental exposure and risk in low-income and minority communities.,Improve stormwater pollution prevention efforts.,"Reducing  exposure  and  risk  to  low-income  and  minority communities must be prioritized, especially for new transportation and infrastructure projects. The City must:
+
+- Ensure an air quality index of 100 or better
+- Eliminate brownfields within the City by redevelopment
+- Improve stormwater pollution prevention efforts
+- Engage residents of all races, ethnicities, abilities and means  in  the  planning  and  transportation  decisionmaking process",## ENVIRONMENTAL JUSTICE,"This listed sub-action qualifies because it specifies a concrete intervention in stormwater management, though it lacks a metric or implementation detail.",Adaptation,False,0.86,"- The source quote lists: ""Improve stormwater pollution prevention efforts.""
+- There is no quantifiable target (no numbers, units, or deadlines) tied to this item.
+- No binding mechanism is specified (no law, ordinance, or enforceable regulation mentioned).
+- The intervention is vague: ""improve ... efforts"" does not name a specific deliverable or action (e.g., installing green infrastructure, upgrading X miles of drains).
+- No committed resources or measurable outcomes are stated.
+- In contrast, other bullets in the same list include quantifiable or clearer outcomes (e.g., ""Ensure an air quality index of 100 or better""), underscoring that this item lacks similar specificity.","- The source quote lists: ""Improve stormwater pollution prevention efforts.""
+- There is no quantifiable target (no numbers, units, or deadlines) tied to this item.
+- No binding mechanism is specified (no law, ordinance, or enforceable regulation mentioned).
+- The intervention is vague: ""improve ... efforts"" does not name a specific deliverable or action (e.g., installing green infrastructure, upgrading X miles of drains).
+- No committed resources or measurable outcomes are stated.
+- In contrast, other bullets in the same list include quantifiable or clearer outcomes (e.g., ""Ensure an air quality index of 100 or better""), underscoring that this item lacks similar specificity.",NON-SOUND
+individual,,Implement a new layered Complete Street network to improve modal split and jobs-housing balance.,"A  comprehensive  transportation  analysis  links  a  wide range of improvements to move people and freight.  The plan recommends a new layered Complete Street network to improve the City's overall modal split and jobs-housing balance.  In  addition  to  complete  streets  and  bicycle  and trail  improvements  identified  in  the  Mobility  Master  Plan, this plan also recommends coordination and completion of major projects with state and regional partners, including:
+
+- the Downtown Access Project and future I-15 improvements
+- Sheep Mountain Pkwy and I-11
+- Summerlin Parkway improvements
+- System-to-System interchanges",## COMPLETE STREETS,This is a standalone policy because it commits to a named transportation intervention. The surrounding highway project bullets are not separately extracted because they are not clearly climate policies by themselves.,Resource Efficiency,False,0.74,"- The source states, ""The plan recommends a new layered Complete Street network to improve the City's overall modal split and jobs-housing balance."" This uses non-binding language (""recommends"") rather than a commitment or enforceable mechanism.
+- There are no quantifiable targets (no miles of streets, percentage modal split goals, deadlines, or milestones).
+- No resource allocation is specified.
+- While ""a new layered Complete Street network"" is a named intervention, the deliverable is not defined with actionable specificity (no mapped corridors, mileage, phases, or implementation details). The outcome goals (""improve modal split and jobs-housing balance"") are aspirational without measurable anchors.","- The source states, ""The plan recommends a new layered Complete Street network to improve the City's overall modal split and jobs-housing balance."" This uses non-binding language (""recommends"") rather than a commitment or enforceable mechanism.
+- There are no quantifiable targets (no miles of streets, percentage modal split goals, deadlines, or milestones).
+- No resource allocation is specified.
+- While ""a new layered Complete Street network"" is a named intervention, the deliverable is not defined with actionable specificity (no mapped corridors, mileage, phases, or implementation details). The outcome goals (""improve modal split and jobs-housing balance"") are aspirational without measurable anchors.",NON-SOUND
+individual,,Increase renewable energy share in municipal operations and the community in line with the state's renewable portfolio standard while reducing energy consumption.,The City has been known for its efforts in renewable energy and energy efficiency. This plan will enable both municipal operations and the community to increase its overall share of  renewable  energy  in  line  with  the  state's  renewable portfolio standard while reducing energy consumption.,## ENERGY,"This qualifies as policy because it commits to renewable energy expansion and energy reduction tied to a named standard, though no local numeric target is given.",Mitigation,False,0.74,"- The source says the plan will ""enable both municipal operations and the community to increase its overall share of renewable energy in line with the state's renewable portfolio standard while reducing energy consumption.""
+- There are no quantifiable targets: no percentages, baseline, or deadlines are provided for either increasing renewables or reducing consumption.
+- The phrase ""in line with the state's renewable portfolio standard"" references an external standard but does not commit the city to a specific numeric target or timeline; ""in line with"" is ambiguous and not binding.
+- No binding mechanism (law/ordinance), no specific named interventions with clear deliverables, and no committed resources are mentioned.
+- Verbs like ""enable"" and ""increase"" indicate intent without measurable outcomes.","- The source says the plan will ""enable both municipal operations and the community to increase its overall share of renewable energy in line with the state's renewable portfolio standard while reducing energy consumption.""
+- There are no quantifiable targets: no percentages, baseline, or deadlines are provided for either increasing renewables or reducing consumption.
+- The phrase ""in line with the state's renewable portfolio standard"" references an external standard but does not commit the city to a specific numeric target or timeline; ""in line with"" is ambiguous and not binding.
+- No binding mechanism (law/ordinance), no specific named interventions with clear deliverables, and no committed resources are mentioned.
+- Verbs like ""enable"" and ""increase"" indicate intent without measurable outcomes.",NON-SOUND
+individual,,Improve municipal and community recycling rates and reduce municipal solid waste.,"Through close work with the City's franchisee and exploring new waste management opportunities, the City can continue  to  improve  both  its  municipal  and  community recycling rates and reduce municipal solid waste.",## WASTE,"This qualifies as policy because it commits to specific waste-management outcomes through identified operational efforts, though it lacks quantified targets.",Resource Efficiency,False,0.88,"- The source quote uses aspirational, non-binding language: “the City can continue to improve” and “exploring new waste management opportunities,” which signals intent without enforceability.
+- There is no quantifiable target (no numbers, percentages, or deadlines) attached to “improve… recycling rates” or “reduce municipal solid waste.”
+- No binding mechanism (law, ordinance, regulation) is mentioned; “can continue” indicates discretion rather than mandate.
+- The actions cited are process-oriented and vague (“close work with the City’s franchisee,” “exploring new… opportunities”) rather than specific interventions with clear deliverables.
+- No resource commitments are specified.
+
+Given the lack of quantifiable targets, binding mechanisms, specific deliverables, or resource allocations—and the presence of vague verbs (“exploring”)—the statement is non-sound per the provided criteria.","- The source quote uses aspirational, non-binding language: “the City can continue to improve” and “exploring new waste management opportunities,” which signals intent without enforceability.
+- There is no quantifiable target (no numbers, percentages, or deadlines) attached to “improve… recycling rates” or “reduce municipal solid waste.”
+- No binding mechanism (law, ordinance, regulation) is mentioned; “can continue” indicates discretion rather than mandate.
+- The actions cited are process-oriented and vague (“close work with the City’s franchisee,” “exploring new… opportunities”) rather than specific interventions with clear deliverables.
+- No resource commitments are specified.
+
+Given the lack of quantifiable targets, binding mechanisms, specific deliverables, or resource allocations—and the presence of vague verbs (“exploring”)—the statement is non-sound per the provided criteria.",NON-SOUND

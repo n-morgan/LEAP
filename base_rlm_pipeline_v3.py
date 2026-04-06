@@ -752,9 +752,10 @@ if __name__ == "__main__":
         expert_knowledge_path="./RLM_proc_instr.pdf",
         output_path="./output/LasVegas",
         output_format="json",   # "json" | "csv" | "both"
-        model_name="gpt-5",
-        sub_model_name="gpt-5-nano",
+        model_name="gpt-5.4",
+        sub_model_name="gpt-5.4",
         max_iterations=50,
     )
 
     print(f"Done. {len(policies)} validated policies.")
+
