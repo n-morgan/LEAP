@@ -66,6 +66,7 @@ from dotenv import load_dotenv
 from openai import OpenAI
 
 from evaluator import CATEGORIES, EvaluationOutput, LEAPEvaluator
+from rlm_pipeline import CLIMATE_RLM_SYSTEM_PROMPT, run_rlm_for_optimizer
 
 load_dotenv()
 
@@ -440,23 +441,30 @@ if __name__ == "__main__":
     import csv
     import pathlib
 
-    OUTPUTS_DIR = pathlib.Path(__file__).parent / "organized_outputs"
+    _HERE = pathlib.Path(__file__).resolve().parent       # LEAP/optimization/
+    _LEAP_ROOT = _HERE.parent                              # LEAP/
+    _GENIUS_DOCS = _LEAP_ROOT.parent / "GENIUS" / "docs" / "cities"
+
+    OUTPUTS_DIR = _HERE / "organized_outputs"
+    SEATTLE_DOC = str(_GENIUS_DOCS / "seattle_markdown.md")
 
     def load_policies(path: pathlib.Path) -> list[dict]:
         with open(path, newline="", encoding="utf-8") as fh:
             reader = csv.DictReader(fh)
             return [row for row in reader if row.get("policy_statement", "").strip()]
 
-    rlm_policies = load_policies(OUTPUTS_DIR / "rlm_seattle_policies.csv")
     ground_truth_policies = load_policies(OUTPUTS_DIR / "structured_policies.csv")
+    print(f"Loaded {len(ground_truth_policies)} ground-truth policies.")
 
-    print(f"Loaded {len(rlm_policies)} RLM-extracted policies and "
-          f"{len(ground_truth_policies)} ground-truth policies.")
-
-    # Static extraction function: returns the pre-loaded RLM policies regardless
-    # of the prompt string. Replace with a live RLM call for real optimization.
+    # Live RLM extraction: the optimizer calls this with the current composed
+    # prompt at each iteration, re-runs the RLM, and scores the new output.
+    # This is what closes the loop — each iteration uses a fresh RLM run under
+    # the candidate prompt rather than a stale cached result.
     def extracted_policies_fn(prompt: str) -> list[dict]:
-        return rlm_policies
+        return run_rlm_for_optimizer(
+            prompt_string=prompt,
+            document_path=SEATTLE_DOC,
+        )
 
     DEFAULT_RUBRIC = (
         "Grade on specificity (quantified targets, deadlines, mechanisms), "
@@ -464,12 +472,9 @@ if __name__ == "__main__":
         "and accuracy relative to the source document."
     )
 
-    initial_prompt = StructuredPrompt(
-        gen=(
-            "Extract climate policies from the document. "
-            "Each policy must include a policy_statement, primary_category, and role."
-        )
-    )
+    # Seed from the full current system prompt so optimization starts from a
+    # working baseline rather than a blank slate.
+    initial_prompt = StructuredPrompt.from_flat(CLIMATE_RLM_SYSTEM_PROMPT)
 
     optimizer = LEAPPromptOptimizer()
     optimized = optimizer.run_loop(
@@ -478,8 +483,7 @@ if __name__ == "__main__":
         ground_truth_policies=ground_truth_policies,
         rubric=DEFAULT_RUBRIC,
         initial_prompt=initial_prompt,
-        source_document_path="./../../GENIUS/docs/cities/seattle_markdown.md",
-        # source_document_path=pathlib.Path("path/to/seattle.md"),
+        source_document_path=SEATTLE_DOC,
         max_iterations=5,
     )
 
