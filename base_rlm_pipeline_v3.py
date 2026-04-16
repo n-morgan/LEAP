@@ -290,7 +290,7 @@ STRATEGY:
 
 OUTPUT FORMAT:
 Your final answer MUST be a valid JSON list of policy objects as described above.
-Use FINAL_VAR on a variable containing this JSON string.
+
 """
 
 
@@ -749,13 +749,27 @@ if __name__ == "__main__":
         country="United States",
         state_or_province="Nevada",
         city="Las Vegas",
-        expert_knowledge_path="./RLM_proc_instr.pdf",
-        output_path="./output/LasVegas",
-        output_format="json",   # "json" | "csv" | "both"
+        expert_knowledge_path="./rlm_proc_instr.pdf",
+        output_path="./output/output_v3/LasVegas",
+        output_format="csv",   # "json" | "csv" | "both"
         model_name="gpt-5.4",
         sub_model_name="gpt-5.4",
         max_iterations=50,
     )
+
+    policies = process_document(
+        pdf_path="./../GENIUS/docs/cities/seattle_markdown.md", 
+        country="United States",
+        state_or_province="Washington",
+        city="Seattle",
+        expert_knowledge_path="./rlm_proc_instr.pdf",
+        output_path="./output/output_v3/Seattle",
+        output_format="csv",   # "json" | "csv" | "both"
+        model_name="gpt-5.4",
+        sub_model_name="gpt-5.4",
+        max_iterations=50,
+    )
+
 
     print(f"Done. {len(policies)} validated policies.")
 

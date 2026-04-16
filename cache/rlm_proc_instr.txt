@@ -1,0 +1,30 @@
+This framework formalizes the workflow into a "Policy Extraction &amp; Validation Protocol.'
+
+## 1. Structural Discovery: The Outline Heuristic
+
+NDCs are not standardized; they vary by country. To find policy-rich sections, you must look for specific keywords that signal the country's commitments.
+
+## Standard Sections
+
+- Mitigation: Actions aimed at reducing greenhouse gas (GHG) emissions (e.g., transitioning to renewables).
+- Adaptation: Actions aimed at adjusting to the current and future effects of climate change (e.g., sea walls, drought-resistant crops).
+- Means of Implementation (MoI): Where finance, technology transfer, and capacitybuilding are discussed.
+
+## Non-Standard Indicators (Where to look if the above are missing)
+
+If the outline is vague, look for these "Proxy Sections" in the Table of Contents:
+
+- Sectoral Planning: Sections titled "Energy," "Transport," "Agriculture," or "Waste Management."
+- Priority Areas: Often listed as "Key Pillars" or "Strategic Directions."
+- Cross-Cutting Issues: Sections on gender, youth, or indigenous peoples often contain localized adaptation policies.
+- Investment Portfolios: Lists of projects seeking international funding.
+
+## 2. Extraction: The Policy Nomenclature
+
+Policies are rarely labeled "Policy #1." Countries use diverse terminology to describe their commitments. A comprehensive extraction tool should scan for:
+
+- Action-Oriented: Action Plan, Action Item, Measure, Initiative, Intervention, Program.
+- Strategic: Roadmap, Strategy, Long-term Vision, Policy Framework, Master Plan.
+- Regulatory: Legislative Act, Decree, Mandate, Building Code, Standard (e.g., MEPS Minimum Energy Performance Standards).
+- Economic: Fiscal Instrument, Subsidy, Carbon Tax, Feed-in Tariff, Incentive Scheme.
+- Project-Based: Pilot Project, Flagship Program, Infrastructure Investment.

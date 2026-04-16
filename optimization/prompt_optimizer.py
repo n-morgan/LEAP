@@ -58,6 +58,7 @@ Usage:
 """
 
 import os
+import pathlib
 from dataclasses import dataclass
 from typing import Any, Callable, Optional
 
@@ -340,7 +341,7 @@ class LEAPPromptOptimizer:
         ground_truth_policies: list[dict[str, Any]],
         rubric: str,
         initial_prompt: StructuredPrompt,
-        source_document: str = "",
+        source_document_path: Optional[pathlib.Path | str] = None,
         max_iterations: int = 10,
         epsilon: float = 0.01,
     ) -> StructuredPrompt:
@@ -359,7 +360,9 @@ class LEAPPromptOptimizer:
             ground_truth_policies:  GENIUS ground-truth policy dicts for this location
             rubric:                 freeform grading guidelines string
             initial_prompt:         starting StructuredPrompt (rho_0)
-            source_document:        markdown source text for richer grading context
+            source_document_path:   path to the markdown source document. When
+                                    provided, grading is done via RLM so the full
+                                    document can be traversed.
             max_iterations:         max optimization iterations T in [5, 10]
             epsilon:                convergence threshold on max per-category delta
 
@@ -387,7 +390,7 @@ class LEAPPromptOptimizer:
                 extracted_policies=extracted,
                 ground_truth_policies=ground_truth_policies,
                 rubric=rubric,
-                source_document=source_document,
+                source_document_path=source_document_path,
             )
 
             # Report scores
@@ -427,3 +430,58 @@ class LEAPPromptOptimizer:
 
         print(f"\n  Reached max iterations ({max_iterations}). Returning current prompt.")
         return current_prompt
+
+
+# ---------------------------------------------------------------------------
+# CLI entry point
+# ---------------------------------------------------------------------------
+
+if __name__ == "__main__":
+    import csv
+    import pathlib
+
+    OUTPUTS_DIR = pathlib.Path(__file__).parent / "organized_outputs"
+
+    def load_policies(path: pathlib.Path) -> list[dict]:
+        with open(path, newline="", encoding="utf-8") as fh:
+            reader = csv.DictReader(fh)
+            return [row for row in reader if row.get("policy_statement", "").strip()]
+
+    rlm_policies = load_policies(OUTPUTS_DIR / "rlm_seattle_policies.csv")
+    ground_truth_policies = load_policies(OUTPUTS_DIR / "structured_policies.csv")
+
+    print(f"Loaded {len(rlm_policies)} RLM-extracted policies and "
+          f"{len(ground_truth_policies)} ground-truth policies.")
+
+    # Static extraction function: returns the pre-loaded RLM policies regardless
+    # of the prompt string. Replace with a live RLM call for real optimization.
+    def extracted_policies_fn(prompt: str) -> list[dict]:
+        return rlm_policies
+
+    DEFAULT_RUBRIC = (
+        "Grade on specificity (quantified targets, deadlines, mechanisms), "
+        "commitment strength (binding vs aspirational language), "
+        "and accuracy relative to the source document."
+    )
+
+    initial_prompt = StructuredPrompt(
+        gen=(
+            "Extract climate policies from the document. "
+            "Each policy must include a policy_statement, primary_category, and role."
+        )
+    )
+
+    optimizer = LEAPPromptOptimizer()
+    optimized = optimizer.run_loop(
+        location="Seattle_US",
+        extracted_policies_fn=extracted_policies_fn,
+        ground_truth_policies=ground_truth_policies,
+        rubric=DEFAULT_RUBRIC,
+        initial_prompt=initial_prompt,
+        source_document_path="./../../GENIUS/docs/cities/seattle_markdown.md",
+        # source_document_path=pathlib.Path("path/to/seattle.md"),
+        max_iterations=5,
+    )
+
+    print("\n=== Optimized Prompt ===")
+    print(optimized.compose())

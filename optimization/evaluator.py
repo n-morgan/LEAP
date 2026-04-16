@@ -30,7 +30,11 @@ Usage:
     print(result.recall)   # {"Mitigation": 0.8, ...}
 """
 
+import json
 import os
+import pathlib
+import re
+import tempfile
 from typing import Any, Literal, Optional
 
 import numpy as np
@@ -131,6 +135,42 @@ EXTRACTED POLICY:
 {extracted}
 """
 
+# RLM grader templates — used when a full source document is provided.
+# The RLM traverses the entire markdown document to locate relevant passages
+# before producing a structured grade.
+_RLM_GRADER_SYSTEM = """\
+You are an expert unbiased evaluator grading an extracted climate policy against a
+ground-truth policy. You have access to the full source document — read through it
+to find the passage(s) that ground your evaluation before deciding on a grade.
+
+SCORING GUIDE:
+  +1  The extracted policy matches the ground-truth in scope, commitment, and
+      specificity. Core commitment, target, and delivery mechanism all correct.
+   0  Directionally correct but vague or imprecise. Intent is right but key
+      details (targets, deadlines, mechanisms) are missing or softened.
+  -1  No meaningful match, hallucinated content, or contradicts document intent.
+
+After reading the document, return ONLY a JSON object with exactly two keys:
+  "grade":     -1, 0, or 1
+  "reasoning": step-by-step justification grounded in the source text
+
+No preamble. No trailing text.
+"""
+
+_RLM_GRADER_USER = """\
+RUBRIC:
+{rubric}
+
+GROUND-TRUTH POLICY:
+{ground_truth}
+
+EXTRACTED POLICY:
+{extracted}
+
+SOURCE DOCUMENT:
+{document}
+"""
+
 
 # ---------------------------------------------------------------------------
 # LEAPEvaluator
@@ -198,6 +238,54 @@ class LEAPEvaluator:
     # Grading
     # ------------------------------------------------------------------
 
+    def _grade_pair_rlm(
+        self,
+        extracted: dict[str, Any],
+        ground_truth: dict[str, Any],
+        rubric: str,
+        document_text: str,
+    ) -> _GraderOutput:
+        """Grade one pair via RLM so the full source document can be traversed."""
+        from rlm import RLM
+        from rlm.logger import RLMLogger
+
+        log_dir = tempfile.mkdtemp(prefix="rlm_grade_")
+        logger = RLMLogger(log_dir=log_dir)
+        rlm = RLM(
+            backend="openai",
+            backend_kwargs={
+                "model_name": self.model,
+                "api_key": os.getenv("OPENAI_API_KEY"),
+            },
+            other_backends=["openai"],
+            other_backend_kwargs=[
+                {"model_name": self.model, "api_key": os.getenv("OPENAI_API_KEY")},
+            ],
+            environment="local",
+            environment_kwargs={},
+            max_depth=1,
+            max_iterations=20,
+            custom_system_prompt=_RLM_GRADER_SYSTEM,
+            logger=logger,
+            verbose=False,
+        )
+        prompt = _RLM_GRADER_USER.format(
+            rubric=rubric,
+            ground_truth=ground_truth.get("policy_statement", str(ground_truth)),
+            extracted=extracted.get("policy_statement", str(extracted)),
+            document=document_text,
+        )
+        result = rlm.completion(
+            prompt=prompt,
+            root_prompt="Grade the extracted policy against the ground truth using the source document.",
+        )
+        raw = result.response.strip()
+        # Parse the JSON grade from the RLM response
+        match = re.search(r'\{[^{}]*"grade"[^{}]*\}', raw, re.DOTALL)
+        data = json.loads(match.group() if match else raw)
+        grade = max(-1, min(1, int(data["grade"])))
+        return _GraderOutput(grade=grade, reasoning=data.get("reasoning", ""))
+
     def _grade_pair(
         self,
         extracted: dict[str, Any],
@@ -205,10 +293,18 @@ class LEAPEvaluator:
         rubric: str,
         source_document: str,
     ) -> _GraderOutput:
-        """Call GraderLLM on one matched (extracted, ground_truth) pair."""
+        """Grade one matched (extracted, ground_truth) pair.
+
+        If source_document text is provided, delegates to _grade_pair_rlm so the
+        full document is traversed by the RLM. Otherwise calls the grader LLM
+        directly (no document context).
+        """
+        if source_document:
+            return self._grade_pair_rlm(extracted, ground_truth, rubric, source_document)
+
         user_msg = _GRADER_USER.format(
             rubric=rubric,
-            source_document=source_document[:3000] if source_document else "Not provided.",
+            source_document="Not provided.",
             ground_truth=ground_truth.get("policy_statement", str(ground_truth)),
             extracted=extracted.get("policy_statement", str(extracted)),
         )
@@ -336,7 +432,7 @@ class LEAPEvaluator:
         extracted_policies: list[dict[str, Any]],
         ground_truth_policies: list[dict[str, Any]],
         rubric: str,
-        source_document: str = "",
+        source_document_path: Optional[pathlib.Path | str] = None,
     ) -> EvaluationOutput:
         """
         Run Algorithm 1 for a single location.
@@ -346,11 +442,21 @@ class LEAPEvaluator:
             extracted_policies:     policy dicts from the RLM run
             ground_truth_policies:  policy dicts from GENIUS (Ziyad model)
             rubric:                 freeform grading guidelines string
-            source_document:        markdown source text for richer grading context
+            source_document_path:   path to the markdown source document. When
+                                    provided, grading is done via RLM so the full
+                                    document can be traversed. When omitted, the
+                                    grader LLM is called directly without document
+                                    context.
 
         Returns:
             EvaluationOutput with per-category scores, recall, FPR, and grades.
         """
+        doc_text = (
+            pathlib.Path(source_document_path).read_text(encoding="utf-8")
+            if source_document_path is not None
+            else ""
+        )
+
         scores: dict[str, float] = {}
         recall: dict[str, float] = {}
         fpr: dict[str, float] = {}
@@ -367,7 +473,7 @@ class LEAPEvaluator:
             ]
 
             s, r, f, cell_grades = self._evaluate_cell(
-                category, ext_cat, gt_cat, rubric, source_document
+                category, ext_cat, gt_cat, rubric, doc_text
             )
             scores[category] = s
             recall[category] = r
@@ -381,3 +487,72 @@ class LEAPEvaluator:
             fpr=fpr,
             grades=all_grades,
         )
+
+
+# ---------------------------------------------------------------------------
+# CLI entry point
+# ---------------------------------------------------------------------------
+
+if __name__ == "__main__":
+    import csv
+    import pathlib
+
+    OUTPUTS_DIR = pathlib.Path(__file__).parent / "organized_outputs"
+
+    # ------------------------------------------------------------------
+    # Load and reconcile both CSVs into the evaluator's expected format:
+    #   list[dict] with at minimum:
+    #     "policy_statement"  — text of the policy
+    #     "primary_category"  — one of the four LEAP categories
+    #     "role"              — "parent" | "sub" | "individual"
+    #
+    # RLM output columns (rlm_seattle_policies.csv):
+    #   role, parent_statement, policy_statement, primary_category, ...extras
+    # Structured output columns (structured_policies.csv):
+    #   policy_id, role, parent_statement, policy_statement, primary_category, ...extras
+    #
+    # Both already use the same column names for the three required fields,
+    # so no renaming is needed — we just strip rows with empty policy_statement.
+    # ------------------------------------------------------------------
+
+    def load_policies(path: pathlib.Path) -> list[dict]:
+        with open(path, newline="", encoding="utf-8") as fh:
+            reader = csv.DictReader(fh)
+            return [row for row in reader if row.get("policy_statement", "").strip()]
+
+    rlm_policies = load_policies(OUTPUTS_DIR / "rlm_seattle_policies.csv")
+    structured_policies = load_policies(OUTPUTS_DIR / "structured_policies.csv")
+
+    print(f"Loaded {len(rlm_policies)} RLM policies and "
+          f"{len(structured_policies)} structured (ground-truth) policies.")
+
+    DEFAULT_RUBRIC = (
+        "Grade on specificity (quantified targets, deadlines, mechanisms), "
+        "commitment strength (binding vs aspirational language), "
+        "and accuracy relative to the source document."
+    )
+
+    evaluator = LEAPEvaluator()
+    result = evaluator.evaluate(
+        location="Seattle_US",
+        extracted_policies=rlm_policies,
+        ground_truth_policies=structured_policies,
+        rubric=DEFAULT_RUBRIC,
+        # source_document_path=pathlib.Path("path/to/seattle.md"),
+    )
+
+    # ------------------------------------------------------------------
+    # Print per-category scores and the overall mean score
+    # ------------------------------------------------------------------
+    print("\n=== RLM vs Structured System — Seattle_US ===")
+    print(f"{'Category':<25} {'Score':>7}  {'Recall':>7}  {'FPR':>7}")
+    print("-" * 52)
+    for cat in CATEGORIES:
+        print(
+            f"{cat:<25} {result.scores.get(cat, 0.0):>7.3f}"
+            f"  {result.recall.get(cat, 0.0):>7.3f}"
+            f"  {result.fpr.get(cat, 0.0):>7.3f}"
+        )
+    overall = sum(result.scores.values()) / len(result.scores) if result.scores else 0.0
+    print("-" * 52)
+    print(f"{'Overall mean score':<25} {overall:>7.3f}")
