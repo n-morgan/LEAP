@@ -1,62 +1,5 @@
-"""
-prompt_optimizer.py — LEAP Prompt Optimizer (Algorithms 2 & 3)
-
-Per-location, per-category prompt update with negative signal guard.
-
-The RLM system prompt is decomposed into five independent prongs:
-
-    rho_t = ( rho_t^gen, rho_t^mit, rho_t^ada, rho_t^eff, rho_t^nbs )
-
-where:
-    rho^gen  — general extraction instructions (policy definition, hierarchy
-               rules, output format, what not to extract)
-    rho^mit  — Mitigation-specific extraction and classification tips
-    rho^ada  — Adaptation-specific tips
-    rho^eff  — Resource Efficiency-specific tips
-    rho^nbs  — Nature-Based Solutions-specific tips
-
-C = { Mitigation, Adaptation, Resource Efficiency, Nature-Based Solutions }
-
-Per-category update rule (Algorithm 2) for location l at iteration t:
-
-    Delta_{l,c} = S_t[l, c] - S_{t-1}[l, c]
-
-    if Delta_{l,c} > 0:  keep rho_t^c,    resample with F_{l,c}
-    else:                 revert rho_{t-1}^c, resample with F_{l,c}
-
-General prong update:
-
-    Delta_l = mean_c( Delta_{l,c} )
-
-    if Delta_l > 0:  keep rho_t^gen,    resample with F_l
-    else:            revert rho_{t-1}^gen, resample with F_l
-
-The revert-on-negative-signal guard prevents a degraded prompt from being used
-as the base for further rewrites. The LLM feedback is always passed regardless
-of direction so each iteration incorporates the latest diagnostic signal.
-
-Optimization loop (Algorithm 3):
-    Repeat evaluate -> update until max(|Delta_{l,c}|) < epsilon or t >= T.
-
-Usage:
-    from prompt_optimizer import LEAPPromptOptimizer, StructuredPrompt
-    from base_rlm_pipeline_v3 import CLIMATE_RLM_SYSTEM_PROMPT
-
-    initial = StructuredPrompt.from_flat(CLIMATE_RLM_SYSTEM_PROMPT)
-    optimizer = LEAPPromptOptimizer()
-
-    optimized = optimizer.run_loop(
-        location="Seattle_US",
-        extracted_policies_fn=lambda prompt: run_rlm(prompt, doc_md),
-        ground_truth_policies=genius_policies,
-        rubric="Grade on specificity, commitment, and mechanism...",
-        initial_prompt=initial,
-        source_document=doc_md,
-    )
-
-    print(optimized.compose())   # full prompt string ready for RLM
-"""
-
+import csv
+import datetime
 import os
 import pathlib
 from dataclasses import dataclass
@@ -208,7 +151,7 @@ class LEAPPromptOptimizer:
     category or for the location overall.
     """
 
-    def __init__(self, model: str = "gpt-5") -> None:
+    def __init__(self, model: str = "gpt-5.4") -> None:
         self.model = model
         self._client: Optional[OpenAI] = None
 
@@ -345,6 +288,7 @@ class LEAPPromptOptimizer:
         source_document_path: Optional[pathlib.Path | str] = None,
         max_iterations: int = 10,
         epsilon: float = 0.01,
+        log_dir: Optional[pathlib.Path | str] = None,
     ) -> StructuredPrompt:
         """
         Algorithm 3: LEAP Prompt Optimization Loop for a single location.
@@ -366,6 +310,13 @@ class LEAPPromptOptimizer:
                                     document can be traversed.
             max_iterations:         max optimization iterations T in [5, 10]
             epsilon:                convergence threshold on max per-category delta
+            log_dir:                optional base directory for run logs. Each run
+                                    creates a timestamped subdirectory containing:
+                                      iteration_log.csv    — one row per iteration with
+                                        per-category scores, deltas, recall, FPR, mean
+                                        score, extracted count, and composed prompt.
+                                      extracted_policies.csv — one row per extracted
+                                        policy with iteration and location prepended.
 
         Returns:
             Optimized StructuredPrompt rho*.
@@ -376,6 +327,39 @@ class LEAPPromptOptimizer:
         previous_prompt = initial_prompt
         previous_scores: dict[str, float] = {c: 0.0 for c in CATEGORIES}
 
+        # CSV logging setup — create a timestamped subdirectory for this run
+        _run_dir = None
+        _iter_file = _iter_writer = None
+        _ext_file = _ext_writer = None
+        if log_dir is not None:
+            ts = datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
+            _run_dir = pathlib.Path(log_dir) / ts
+            _run_dir.mkdir(parents=True, exist_ok=True)
+            print(f"  Logging to: {_run_dir}")
+
+            # iteration_log.csv
+            _cat_cols: list[str] = []
+            for c in CATEGORIES:
+                slug = c.replace(" ", "_").replace("-", "_")
+                _cat_cols += [f"{slug}_score", f"{slug}_delta",
+                              f"{slug}_recall", f"{slug}_fpr"]
+            _iter_file = open(_run_dir / "iteration_log.csv", "w", newline="", encoding="utf-8")
+            _iter_writer = csv.DictWriter(
+                _iter_file,
+                fieldnames=["iteration", "location", "n_extracted", "mean_score",
+                            *_cat_cols, "converged", "composed_prompt"],
+            )
+            _iter_writer.writeheader()
+
+            # extracted_policies.csv — headers derived from first extraction
+            # writer is created lazily on first non-empty extraction
+
+        def _close_logs() -> None:
+            if _iter_file is not None:
+                _iter_file.close()
+            if _ext_file is not None:
+                _ext_file.close()
+
         for t in range(max_iterations):
             print(f"\n{'=' * 60}")
             print(f"Iteration {t + 1}/{max_iterations}  |  Location: {location}")
@@ -384,6 +368,23 @@ class LEAPPromptOptimizer:
             # Run RLM extraction with the current composed prompt
             extracted = extracted_policies_fn(current_prompt.compose())
             print(f"  Extracted {len(extracted)} policies")
+
+            # Write extracted policies to CSV (lazy header init on first batch)
+            if _run_dir is not None and extracted:
+                if _ext_writer is None:
+                    _ext_file = open(
+                        _run_dir / "extracted_policies.csv", "w",
+                        newline="", encoding="utf-8",
+                    )
+                    _ext_writer = csv.DictWriter(
+                        _ext_file,
+                        fieldnames=["iteration", "location", *extracted[0].keys()],
+                        extrasaction="ignore",
+                    )
+                    _ext_writer.writeheader()
+                for policy in extracted:
+                    _ext_writer.writerow({"iteration": t + 1, "location": location, **policy})
+                _ext_file.flush()
 
             # Evaluate against ground truth
             eval_result = evaluator.evaluate(
@@ -405,15 +406,46 @@ class LEAPPromptOptimizer:
                     f"delta={delta:+.3f}  recall={recall:.2f}  fpr={fpr:.2f}"
                 )
 
+            # Write iteration log row
+            if _iter_writer is not None:
+                iter_row: dict[str, Any] = {
+                    "iteration": t + 1,
+                    "location": location,
+                    "n_extracted": len(extracted),
+                    "mean_score": round(
+                        sum(eval_result.scores.values()) / len(eval_result.scores), 4
+                    ) if eval_result.scores else 0.0,
+                    "converged": False,
+                    "composed_prompt": current_prompt.compose(),
+                }
+                for c in CATEGORIES:
+                    slug = c.replace(" ", "_").replace("-", "_")
+                    iter_row[f"{slug}_score"]  = round(eval_result.scores.get(c, 0.0), 4)
+                    iter_row[f"{slug}_delta"]  = round(
+                        eval_result.scores.get(c, 0.0) - previous_scores.get(c, 0.0), 4
+                    )
+                    iter_row[f"{slug}_recall"] = round(eval_result.recall.get(c, 0.0), 4)
+                    iter_row[f"{slug}_fpr"]    = round(eval_result.fpr.get(c, 0.0), 4)
+
             # Convergence check (skip on first iteration — no previous scores yet)
+            converged = False
             if t > 0:
                 max_delta = max(
                     abs(eval_result.scores.get(c, 0.0) - previous_scores.get(c, 0.0))
                     for c in CATEGORIES
                 )
                 if max_delta < epsilon:
+                    converged = True
                     print(f"\n  Converged: max_delta={max_delta:.4f} < epsilon={epsilon}")
-                    return current_prompt
+
+            if _iter_writer is not None:
+                iter_row["converged"] = converged
+                _iter_writer.writerow(iter_row)
+                _iter_file.flush()
+
+            if converged:
+                _close_logs()
+                return current_prompt
 
             # Update prompt prongs
             print(f"\n  Updating prompt prongs:")
@@ -430,6 +462,7 @@ class LEAPPromptOptimizer:
             current_prompt = next_prompt
 
         print(f"\n  Reached max iterations ({max_iterations}). Returning current prompt.")
+        _close_logs()
         return current_prompt
 
 
@@ -484,7 +517,8 @@ if __name__ == "__main__":
         rubric=DEFAULT_RUBRIC,
         initial_prompt=initial_prompt,
         source_document_path=SEATTLE_DOC,
-        max_iterations=5,
+        max_iterations=15,
+        log_dir=_HERE / "logs",
     )
 
     print("\n=== Optimized Prompt ===")

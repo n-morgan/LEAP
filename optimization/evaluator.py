@@ -36,6 +36,7 @@ import pathlib
 import re
 import tempfile
 from typing import Any, Literal, Optional
+import time
 
 import numpy as np
 from dotenv import load_dotenv
@@ -188,7 +189,7 @@ class LEAPEvaluator:
 
     def __init__(
         self,
-        model: str = "gpt-5",
+        model: str = "gpt-5.4",
         embedding_model: str = "text-embedding-3-small",
     ) -> None:
         self.model = model
@@ -283,6 +284,8 @@ class LEAPEvaluator:
         # Parse the JSON grade from the RLM response
         match = re.search(r'\{[^{}]*"grade"[^{}]*\}', raw, re.DOTALL)
         data = json.loads(match.group() if match else raw)
+
+        print(data["reasoning"])
         grade = max(-1, min(1, int(data["grade"])))
         return _GraderOutput(grade=grade, reasoning=data.get("reasoning", ""))
 
@@ -315,7 +318,11 @@ class LEAPEvaluator:
                 {"role": "user", "content": user_msg},
             ],
             response_format=_GraderOutput,
+        
         )
+
+        print(response)
+        time.sleep(5)
         return response.choices[0].message.parsed
 
     # ------------------------------------------------------------------

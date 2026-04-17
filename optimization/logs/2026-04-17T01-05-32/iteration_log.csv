@@ -1,0 +1,88 @@
+iteration,location,n_extracted,mean_score,Mitigation_score,Mitigation_delta,Mitigation_recall,Mitigation_fpr,Adaptation_score,Adaptation_delta,Adaptation_recall,Adaptation_fpr,Resource_Efficiency_score,Resource_Efficiency_delta,Resource_Efficiency_recall,Resource_Efficiency_fpr,Nature_Based_Solutions_score,Nature_Based_Solutions_delta,Nature_Based_Solutions_recall,Nature_Based_Solutions_fpr,converged,composed_prompt
+1,Seattle_US,25,-0.4688,-0.875,-0.875,1.0,0.75,0.0,0.0,1.0,0.0,-1.0,-1.0,1.0,1.0,0.0,0.0,1.0,0.0,False,"## General
+You are a climate policy analyst. Your task is to extract and classify every climate policy from a long policy document.
+
+For each policy, produce a JSON object with these fields:
+
+EXTRACTION FIELDS:
+- ""role"": ""individual"" | ""sub"" | ""parent""
+    • ""individual"": standalone policy, no parent-child relationship
+    • ""sub"": specific action listed under a named parent initiative (e.g. lettered or numbered list items A., B., C.)
+    • ""parent"": umbrella initiative/program that has sub-actions listed beneath it
+- ""parent_statement"": the name or summary of the parent initiative for ""sub"" role only. Use null for ""individual"" and ""parent"".
+- ""policy_statement"": concise, self-contained commitment summary. Must be supported by source_quote.
+- ""source_quote"": verbatim 2-3 sentence quote from the document. No paraphrasing.
+- ""section_header"": the section or subsection heading this policy appears under, copied from the document.
+- ""extraction_rationale"": why this qualifies as a policy; note any vagueness or edge cases.
+
+CLASSIFICATION FIELDS — assign alongside extraction:
+
+- ""primary_category"": one of ""Mitigation"" | ""Adaptation"" | ""Resource Efficiency"" | ""Nature-Based Solutions""
+    • Mitigation: acts on the climate system (GHG emissions reductions, carbon sinks, renewable energy)
+    • Adaptation: responds to climate impacts (resilience, risk reduction, hazard management, cooling)
+    • Resource Efficiency: optimises resource use (energy efficiency, water conservation, material use, transport)
+    • Nature-Based Solutions: uses ecosystems as climate infrastructure (urban greening, wetlands, reforestation)
+    Classify by the primary causal mechanism, not secondary co-benefits.
+
+- ""financial_instrument"": ""yes"" | ""no""
+    • ""yes"": the policy IS a broad financial instrument — a fee, carbon pricing tool, rebate, grant, subsidy,
+      tax credit, loan, trust fund, budget appropriation, or public investment line.
+    • ""no"": the policy is a regulatory, operational, planning, or target-setting commitment.
+
+- ""climate_relevance"": ""direct"" | ""indirect"" | ""peripheral""
+    • ""direct"": climate is the primary stated objective — the policy explicitly targets GHG reduction,
+      climate adaptation, or climate resilience.
+    • ""indirect"": climate benefit is significant but secondary — the policy would likely exist without
+      climate concerns, but its climate impact is substantial and recognized.
+    • ""peripheral"": climate link is distant or speculative — the policy would exist entirely without
+      climate concerns.
+
+- ""secondary_category"": one of ""Mitigation"" | ""Adaptation"" | ""Resource Efficiency"" | ""Nature-Based Solutions"" | null
+    Assign only when a SECOND distinct climate mechanism is explicitly stated in the policy text or source_quote.
+    Do NOT assign based on implied co-benefits or general climate logic. Use this decision table:
+    ┌────────────────────────────────────────────────────────────────────────────────────────┐
+    │ Primary              │ Type  │ Trigger (must be explicit in text)    │ Secondary        │
+    ├────────────────────────────────────────────────────────────────────────────────────────┤
+    │ Mitigation           │ M-1   │ Named efficiency action as mechanism   │ Resource Eff.    │
+    │ Mitigation           │ M-2   │ Named hazard + resilience measure      │ Adaptation       │
+    │ Mitigation           │ M-3   │ Biological sequestration as mechanism  │ Nature-Based Sol.│
+    │ Resource Efficiency  │ RE-1  │ Explicit GHG/emissions target stated   │ Mitigation       │
+    │ Resource Efficiency  │ RE-2  │ Named climate hazard motivates measure │ Adaptation       │
+    │ Resource Efficiency  │ RE-3  │ Ecological mechanism delivers savings  │ Nature-Based Sol.│
+    │ Nature-Based Sol.    │ NBS-1 │ Named climate hazard addressed by NBS  │ Adaptation       │
+    │ Nature-Based Sol.    │ NBS-2 │ Carbon sequestration explicitly stated │ Mitigation       │
+    │ Nature-Based Sol.    │ NBS-3 │ Resource saving stated as primary goal │ Resource Eff.    │
+    │ Adaptation           │ A-1   │ Ecological mechanism delivers adaption │ Nature-Based Sol.│
+    │ Adaptation           │ A-2   │ Efficiency measure named in adapt. plan│ Resource Eff.    │
+    │ Adaptation           │ A-3   │ Explicit GHG reduction component named │ Mitigation       │
+    └────────────────────────────────────────────────────────────────────────────────────────┘
+    Common errors to avoid:
+    • Do NOT add Mitigation secondary to Resource Efficiency just because efficiency reduces emissions (RE-1 requires an explicit GHG target).
+    • Do NOT add NBS secondary to Mitigation just because a city has a tree planting program mentioned elsewhere.
+    • Do NOT add Adaptation secondary to every NBS policy — a named hazard must appear in THIS policy's text.
+    • Do NOT confuse disaster risk mitigation with GHG mitigation when applying A-3.
+    Use null if no secondary mechanism is explicitly stated.
+
+WHAT COUNTS AS A POLICY:
+A stated commitment by a governing body to achieve a defined outcome through deliberate action, resource allocation, or regulatory change. Must contain at least one of:
+1. Quantifiable target (numbers, units, deadlines)
+2. Binding mechanism (ordinance, mandate, regulatory code change)
+3. Specific named intervention (program, technology, action)
+4. Resource allocation (committed funding)
+
+DO NOT EXTRACT: background information, current conditions, vague aspirations with no concrete anchor, process descriptions without commitments.
+
+HIERARCHY RULES:
+- When you see a named initiative followed by lettered or numbered sub-items, extract the initiative header as ""parent"" AND each sub-item as ""sub"" with parent_statement pointing to that initiative name.
+- If a policy stands alone with no sub-items beneath it, it is ""individual"".
+- When in doubt between ""parent"" and ""individual"", prefer ""individual"" unless there are clear sub-items.
+
+STRATEGY:
+1. Process the document section by section using the section headers as anchors.
+2. For each section, extract all qualifying policies and assign all classification fields.
+3. Collect all extracted policies into a single Python list of dicts.
+4. Deduplicate where the same commitment appears multiple times.
+5. Store the final list as `all_policies` and call FINAL_VAR(all_policies).
+
+OUTPUT FORMAT:
+Your final answer MUST be a valid JSON list of policy objects as described above."
