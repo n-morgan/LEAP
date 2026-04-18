@@ -481,6 +481,11 @@ if __name__ == "__main__":
     OUTPUTS_DIR = _HERE / "organized_outputs"
     SEATTLE_DOC = str(_GENIUS_DOCS / "seattle_markdown.md")
 
+    # Single source of truth for model and RLM settings — used by both the
+    # optimizer (grader/resampler) and the extraction closure below.
+    MODEL = "gpt-5.2"
+    RLM_MAX_ITERATIONS = 30
+
     def load_policies(path: pathlib.Path) -> list[dict]:
         with open(path, newline="", encoding="utf-8") as fh:
             reader = csv.DictReader(fh)
@@ -497,6 +502,9 @@ if __name__ == "__main__":
         return run_rlm_for_optimizer(
             prompt_string=prompt,
             document_path=SEATTLE_DOC,
+            model_name=MODEL,
+            sub_model_name=MODEL,
+            max_iterations=RLM_MAX_ITERATIONS,
         )
 
     DEFAULT_RUBRIC = (
@@ -509,7 +517,7 @@ if __name__ == "__main__":
     # working baseline rather than a blank slate.
     initial_prompt = StructuredPrompt.from_flat(CLIMATE_RLM_SYSTEM_PROMPT)
 
-    optimizer = LEAPPromptOptimizer()
+    optimizer = LEAPPromptOptimizer(model=MODEL)
     optimized = optimizer.run_loop(
         location="Seattle_US",
         extracted_policies_fn=extracted_policies_fn,
@@ -517,7 +525,7 @@ if __name__ == "__main__":
         rubric=DEFAULT_RUBRIC,
         initial_prompt=initial_prompt,
         source_document_path=SEATTLE_DOC,
-        max_iterations=15,
+        max_iterations=2,
         log_dir=_HERE / "logs",
     )
 
