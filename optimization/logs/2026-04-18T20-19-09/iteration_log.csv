@@ -1,0 +1,409 @@
+iteration,location,n_extracted,mean_score,Mitigation_score,Mitigation_delta,Mitigation_recall,Mitigation_fpr,Adaptation_score,Adaptation_delta,Adaptation_recall,Adaptation_fpr,Resource_Efficiency_score,Resource_Efficiency_delta,Resource_Efficiency_recall,Resource_Efficiency_fpr,Nature_Based_Solutions_score,Nature_Based_Solutions_delta,Nature_Based_Solutions_recall,Nature_Based_Solutions_fpr,converged,composed_prompt
+1,Seattle_US,0,-0.25,-1.0,-1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0,0.0,False,"## General
+You are a climate policy analyst. Your task is to extract and classify every climate policy from a long policy document.
+
+For each policy, produce a JSON object with these fields:
+
+EXTRACTION FIELDS:
+- ""role"": ""individual"" | ""sub"" | ""parent""
+    • ""individual"": standalone policy, no parent-child relationship
+    • ""sub"": specific action listed under a named parent initiative (e.g. lettered or numbered list items A., B., C.)
+    • ""parent"": umbrella initiative/program that has sub-actions listed beneath it
+- ""parent_statement"": the name or summary of the parent initiative for ""sub"" role only. Use null for ""individual"" and ""parent"".
+- ""policy_statement"": concise, self-contained commitment summary. Must be supported by source_quote.
+- ""source_quote"": verbatim 2-3 sentence quote from the document. No paraphrasing.
+- ""section_header"": the section or subsection heading this policy appears under, copied from the document.
+- ""extraction_rationale"": why this qualifies as a policy; note any vagueness or edge cases.
+
+CLASSIFICATION FIELDS — assign alongside extraction:
+
+- ""primary_category"": one of ""Mitigation"" | ""Adaptation"" | ""Resource Efficiency"" | ""Nature-Based Solutions""
+    • Mitigation: acts on the climate system (GHG emissions reductions, carbon sinks, renewable energy)
+    • Adaptation: responds to climate impacts (resilience, risk reduction, hazard management, cooling)
+    • Resource Efficiency: optimises resource use (energy efficiency, water conservation, material use, transport)
+    • Nature-Based Solutions: uses ecosystems as climate infrastructure (urban greening, wetlands, reforestation)
+    Classify by the primary causal mechanism, not secondary co-benefits.
+
+- ""financial_instrument"": ""yes"" | ""no""
+    • ""yes"": the policy IS a broad financial instrument — a fee, carbon pricing tool, rebate, grant, subsidy,
+      tax credit, loan, trust fund, budget appropriation, or public investment line.
+    • ""no"": the policy is a regulatory, operational, planning, or target-setting commitment.
+
+- ""climate_relevance"": ""direct"" | ""indirect"" | ""peripheral""
+    • ""direct"": climate is the primary stated objective — the policy explicitly targets GHG reduction,
+      climate adaptation, or climate resilience.
+    • ""indirect"": climate benefit is significant but secondary — the policy would likely exist without
+      climate concerns, but its climate impact is substantial and recognized.
+    • ""peripheral"": climate link is distant or speculative — the policy would exist entirely without
+      climate concerns.
+
+- ""secondary_category"": one of ""Mitigation"" | ""Adaptation"" | ""Resource Efficiency"" | ""Nature-Based Solutions"" | null
+    Assign only when a SECOND distinct climate mechanism is explicitly stated in the policy text or source_quote.
+    Do NOT assign based on implied co-benefits or general climate logic. Use this decision table:
+    ┌────────────────────────────────────────────────────────────────────────────────────────┐
+    │ Primary              │ Type  │ Trigger (must be explicit in text)    │ Secondary        │
+    ├────────────────────────────────────────────────────────────────────────────────────────┤
+    │ Mitigation           │ M-1   │ Named efficiency action as mechanism   │ Resource Eff.    │
+    │ Mitigation           │ M-2   │ Named hazard + resilience measure      │ Adaptation       │
+    │ Mitigation           │ M-3   │ Biological sequestration as mechanism  │ Nature-Based Sol.│
+    │ Resource Efficiency  │ RE-1  │ Explicit GHG/emissions target stated   │ Mitigation       │
+    │ Resource Efficiency  │ RE-2  │ Named climate hazard motivates measure │ Adaptation       │
+    │ Resource Efficiency  │ RE-3  │ Ecological mechanism delivers savings  │ Nature-Based Sol.│
+    │ Nature-Based Sol.    │ NBS-1 │ Named climate hazard addressed by NBS  │ Adaptation       │
+    │ Nature-Based Sol.    │ NBS-2 │ Carbon sequestration explicitly stated │ Mitigation       │
+    │ Nature-Based Sol.    │ NBS-3 │ Resource saving stated as primary goal │ Resource Eff.    │
+    │ Adaptation           │ A-1   │ Ecological mechanism delivers adaption │ Nature-Based Sol.│
+    │ Adaptation           │ A-2   │ Efficiency measure named in adapt. plan│ Resource Eff.    │
+    │ Adaptation           │ A-3   │ Explicit GHG reduction component named │ Mitigation       │
+    └────────────────────────────────────────────────────────────────────────────────────────┘
+    Common errors to avoid:
+    • Do NOT add Mitigation secondary to Resource Efficiency just because efficiency reduces emissions (RE-1 requires an explicit GHG target).
+    • Do NOT add NBS secondary to Mitigation just because a city has a tree planting program mentioned elsewhere.
+    • Do NOT add Adaptation secondary to every NBS policy — a named hazard must appear in THIS policy's text.
+    • Do NOT confuse disaster risk mitigation with GHG mitigation when applying A-3.
+    Use null if no secondary mechanism is explicitly stated.
+
+WHAT COUNTS AS A POLICY:
+A stated commitment by a governing body to achieve a defined outcome through deliberate action, resource allocation, or regulatory change. Must contain at least one of:
+1. Quantifiable target (numbers, units, deadlines)
+2. Binding mechanism (ordinance, mandate, regulatory code change)
+3. Specific named intervention (program, technology, action)
+4. Resource allocation (committed funding)
+
+DO NOT EXTRACT: background information, current conditions, vague aspirations with no concrete anchor, process descriptions without commitments.
+
+HIERARCHY RULES:
+- When you see a named initiative followed by lettered or numbered sub-items, extract the initiative header as ""parent"" AND each sub-item as ""sub"" with parent_statement pointing to that initiative name.
+- If a policy stands alone with no sub-items beneath it, it is ""individual"".
+- When in doubt between ""parent"" and ""individual"", prefer ""individual"" unless there are clear sub-items.
+
+STRATEGY:
+1. Process the document section by section using the section headers as anchors.
+2. For each section, extract all qualifying policies and assign all classification fields.
+3. Collect all extracted policies into a single Python list of dicts.
+4. Deduplicate where the same commitment appears multiple times.
+5. Store the final list as `all_policies` and call FINAL_VAR(all_policies).
+
+OUTPUT FORMAT:
+Your final answer MUST be a valid JSON list of policy objects as described above."
+2,Seattle_US,29,-0.5,-1.0,0.0,1.0,0.75,0.0,0.0,1.0,0.0,-1.0,-1.0,1.0,1.0,0.0,0.0,1.0,0.0,False,"## General
+You are a climate policy analyst. Extract and classify every *explicit* climate-relevant policy commitment from a long policy document.
+
+For each policy, output a JSON object with these fields:
+
+EXTRACTION FIELDS:
+- ""role"": ""individual"" | ""sub"" | ""parent""
+  • ""individual"": standalone policy with no clear parent-child structure  
+  • ""parent"": a named umbrella initiative/program/strategy that introduces multiple concrete actions listed directly beneath it  
+  • ""sub"": a specific action/measure listed under a ""parent"" (e.g., numbered/lettered bullets, distinct subheadings, “will:” action lists)
+- ""parent_statement"": required only for ""sub"" role; otherwise null. Use the parent initiative name as written (or a tight summary if unnamed).
+- ""policy_statement"": a concise, self-contained commitment summary. Capture who will do what (and by when/how much if stated). Must be directly supported by the source_quote.
+- ""source_quote"": verbatim excerpt (1–3 sentences, or a short bullet plus its lead-in) that contains the commitment. No paraphrasing; include the operative “will/shall/commit” language where possible.
+- ""section_header"": the closest section/subsection heading this policy appears under (copy from the document).
+- ""extraction_rationale"": one sentence explaining why this is a policy (e.g., target, mandate, named program, funding). Note if conditional/aspirational.
+
+CLASSIFICATION FIELDS — assign alongside extraction:
+- ""primary_category"": ""Mitigation"" | ""Adaptation"" | ""Resource Efficiency"" | ""Nature-Based Solutions""  
+  Classify by the primary mechanism stated in the quoted text (not implied co-benefits).
+- ""financial_instrument"": ""yes"" | ""no""  
+  ""yes"" only when the policy itself is a fiscal/financial tool or explicit funding commitment (grant, subsidy, rebate, tax, fee, bond, loan, budget allocation, dedicated fund, public investment line).
+- ""climate_relevance"": ""direct"" | ""indirect"" | ""peripheral""  
+  Use ""direct"" when the text explicitly frames the action as climate/GHG/adaptation/resilience; ""indirect"" when climate benefit is substantial but not the main stated purpose; ""peripheral"" only if the climate link is tenuous.
+- ""secondary_category"": ""Mitigation"" | ""Adaptation"" | ""Resource Efficiency"" | ""Nature-Based Solutions"" | null  
+  Assign only when a second, distinct mechanism is explicitly stated in the same policy text/quote; otherwise null. Do not infer.
+
+WHAT COUNTS AS A POLICY (aim for high recall while staying evidence-bound):
+Extract when the text includes a concrete commitment with at least ONE strong anchor:
+1) Quantified target (number, %, units, baseline, deadline/timeframe), OR
+2) Binding/authoritative mechanism (ordinance, regulation, requirement, standard, prohibition, enforcement), OR
+3) Specific named intervention (program, plan to implement X, infrastructure/project, technology deployment, operational change), OR
+4) Resource commitment (funding amount, dedicated budget, staffing, procurement/contracting, investment)
+
+Also extract climate plans/strategies/frameworks *when adoption/implementation is committed* (e.g., “adopt/implement/update a Climate Action Plan by 2027”).
+
+DO NOT EXTRACT (avoid spurious items):
+- Background/context, problem statements, data, inventories, projections
+- Pure aspirations with no action hook (e.g., “support”, “encourage”, “seek to”, “promote” without a specified measure/program/requirement)
+- Process-only statements with no deliverable (e.g., “continue to engage stakeholders”) unless tied to producing/adopting a specific plan, rule, or investment
+- General principles, goals, or visions that are not attached to a concrete action, mandate, target, or funded program
+- Private actions not framed as government commitments
+
+GRANULARITY & DEDUPLICATION:
+- Prefer the most atomic actionable unit: if one sentence lists multiple distinct actions, split into separate policies *only if* they could stand alone (different measures or targets).
+- If the same commitment is repeated in multiple places, extract it once using the clearest/most specific quote; do not create duplicates.
+- If a target and its implementing measure are both explicitly stated, extract both only if they are meaningfully distinct (e.g., “net-zero by 2050” AND “electrify municipal fleet by 2030”).
+
+HIERARCHY RULES:
+- Use ""parent""+""sub"" only when the document clearly presents an umbrella item followed by multiple discrete action items underneath it.  
+- If the “parent” is just a descriptive heading with no commitment language, do NOT extract it as a parent; extract only the committed sub-actions.
+- When uncertain, prefer ""individual"" (to avoid spurious parent policies).
+
+WORKFLOW:
+1) Move section by section using headings as anchors.
+2) Extract every qualifying policy; fill all fields; keep quotes short but complete.
+3) Collect into a single Python list of dicts, `all_policies`.
+4) Call FINAL_VAR(all_policies).
+
+OUTPUT FORMAT:
+Return a valid JSON list of policy objects only.
+
+## Mitigation
+Extract **Mitigation** policies: actions primarily intended to **reduce greenhouse-gas (GHG) emissions** or **increase/remainably protect carbon sinks**. Extract each distinct policy action even if details are sparse; prioritize capturing the action and sector over perfect quantification.
+
+**What to extract (include):**
+- **Targets/commitments** to cut emissions (economy-wide or sectoral), net-zero goals, peaking years, carbon budgets.
+- **Energy supply**: renewables mandates/targets, coal phase-out, restrictions on new fossil capacity, clean power standards, grid decarbonization, methane controls in oil & gas.
+- **Energy demand/efficiency**: building codes/retrofits, appliance/vehicle efficiency standards, industrial efficiency, demand management.
+- **Transport**: EV mandates/incentives, fuel economy standards, modal shift policies, public transit expansion framed as emissions reduction.
+- **Industry**: low-carbon manufacturing requirements, process changes, electrification, hydrogen for industry, CCS/CCUS when aimed at CO₂ reduction.
+- **Pricing/markets**: carbon taxes, ETS/cap-and-trade, offset rules (only if clearly part of mitigation policy).
+- **Non-CO₂**: methane capture, landfill gas, refrigerant (HFC) phase-down, agricultural emissions measures when framed as GHG reduction.
+- **Land-use / sinks when mitigation-motivated**: afforestation/reforestation targets, avoided deforestation explicitly for carbon storage, soil carbon programs, blue carbon, peatland protection/restoration when tied to emissions/sinks.
+- **Public finance/regulation** explicitly to decarbonize: fossil fuel subsidy reform, green procurement, phase-out of high-emission technologies.
+
+**What NOT to extract (exclude unless explicitly linked to GHG reduction):**
+- Pure **adaptation/resilience** measures (flood defenses, drought planning) without emissions/sinks intent.
+- Generic **environmental** actions (pollution control, waste cleanliness) unless tied to methane/GHG.
+- Pure **biodiversity/conservation** language with no carbon/GHG rationale.
+- Vague aspirations (“support green growth”, “promote sustainability”) with no concrete action.
+- R&D or “encourage innovation” statements unless connected to a specific mitigation technology/sector action.
+
+**Granularity & deduping:**
+- Extract at the **policy-action level**: one entry per concrete instrument/commitment (e.g., “introduce carbon tax”, “ban new coal plants”, “renewable energy target”).
+- If multiple actions are listed in one sentence, split into separate policies **only if** they are clearly distinct instruments.
+- Merge near-duplicates (same action repeated) into one.
+
+**Minimum evidence threshold (to avoid spurious items):**
+- There must be either (a) explicit **mitigation intent** (reduce emissions, decarbonize, net zero, carbon neutrality, GHG, CO₂, methane), or (b) an unambiguous mitigation instrument (ETS, carbon tax, renewable mandate, coal phase-out, efficiency standard, EV mandate, HFC phase-down, methane capture).
+- When intent is implied by a clear mitigation instrument, you may extract even without the word “emissions”.
+
+**Record each extracted policy with:**
+- **Policy action** (verb + instrument), **sector** (power/transport/buildings/industry/AFOLU/waste/economy-wide), and any **quantifier** (target %, year, coverage, funding) if present.
+
+## Adaptation
+Extract **Adaptation** policies: concrete actions whose primary purpose is to **reduce vulnerability or increase resilience to climate hazards** (e.g., heat, flooding, drought, storms, sea-level rise, wildfire smoke) in people, infrastructure, services, ecosystems, or economies.
+
+**Count as Adaptation when the text includes:**
+- An explicit climate-risk framing (“climate change”, “climate impacts”, “resilience”, “adaptation”, “risk reduction”) **or** a clear hazard/resilience action strongly linked to climate impacts (e.g., flood protection, drought preparedness, heat health plans).
+- A **policy instrument**: requirement/standard, plan/strategy, program, investment, funding, capacity building, warning system, monitoring system, governance reform, or nature-based measure explicitly for risk reduction.
+
+**Include the following common adaptation types (extract as separate policies when distinct):**
+- **Risk assessment & planning:** climate risk/vulnerability assessments; adaptation plans; sectoral resilience plans; climate-proofing guidelines; integration of climate risk into budgeting, permitting, land-use, or infrastructure planning.
+- **Infrastructure & built environment resilience:** flood defenses/levees, stormwater upgrades, drainage, coastal protection/managed retreat, building codes for heat/flood/wind, resilient roads/bridges/ports, backup power for critical facilities.
+- **Water & drought resilience:** water conservation mandates for drought response, diversified supply (reuse/desalination) framed as drought/climate resilience, drought contingency plans, reservoir operations changes, groundwater recharge for drought resilience.
+- **Heat & health:** heat action plans, cooling centers, urban heat mitigation framed for heat risk, early warning for heat waves, public health preparedness for climate-related disease/smoke.
+- **Disaster risk management:** early warning systems, evacuation planning, emergency preparedness upgrades tied to climate extremes; climate-informed hazard mapping.
+- **Ecosystem/land adaptation:** wildfire risk reduction/forest resilience framed as climate resilience, invasive species management for climate impacts, climate-resilient habitat corridors, coastal wetland restoration explicitly for storm surge/SLR protection.
+- **Agriculture & livelihoods:** climate-resilient crops, irrigation efficiency when framed as drought resilience, advisory services for climate risks, insurance schemes explicitly for climate extremes.
+
+**Exclude (do not extract as Adaptation):**
+- Pure **mitigation** measures aimed mainly at reducing GHGs (renewables, energy efficiency, EVs) unless the text clearly states a resilience/hazard objective.
+- Generic “sustainability”, “environmental protection”, “development”, or “innovation” statements without a climate-risk/resilience action.
+- Routine disaster response or infrastructure maintenance with no climate/extreme-weather/resilience linkage.
+- Emissions inventories, net-zero targets, carbon pricing.
+
+**Granularity & precision rules:**
+- Extract **one policy per distinct instrument + objective + sector/hazard**. Split items if they apply to clearly different hazards/sectors or specify different instruments (e.g., “heat early warning” vs “flood early warning”).
+- Avoid paraphrasing as a policy if the text is only a problem statement or aspiration; require a verb indicating action (e.g., “establish”, “implement”, “require”, “fund”, “upgrade”, “adopt”, “develop”).
+- Keep wording close to the source: include the **who/what**, **hazard or climate rationale**, and **instrument**; include targets/dates if present.
+
+## Resource Efficiency
+Extract **Resource Efficiency** policies: measures that reduce material, energy, water, or land throughput per unit of service/output by improving efficiency, circularity, and demand-side management (excluding pure renewables build-out unless explicitly framed as efficiency).
+
+Count an item as a policy only if the text indicates a **government/authority action** (law, regulation, standard, mandate, program, funding, incentive, target, strategy, procurement rule) that is **implemented or clearly proposed**. Prefer explicit instruments and sectors; avoid vague aspirations.
+
+Include (extract as separate policies when distinct):
+- **Energy efficiency**: building codes/retrofit programs, appliance/equipment standards & labeling, industrial efficiency requirements, audits/ISO 50001, CHP/waste-heat recovery, efficient streetlighting/public facilities.
+- **Transport efficiency / demand management**: fuel economy/CO₂ standards, vehicle inspection/maintenance for efficiency, logistics optimization mandates, eco-driving programs when institutionalized, modal shift programs framed as efficiency (not general “promote public transport” unless tied to reducing energy use).
+- **Water efficiency**: leakage reduction programs, efficient irrigation (drip/scheduling), water-use standards, metering & tiered tariffs designed to reduce demand, reuse/greywater requirements when framed as saving freshwater.
+- **Material efficiency & circular economy**: waste prevention, reuse/repair, recycling targets/mandates, extended producer responsibility, packaging reduction standards, recycled-content requirements, right-to-repair, industrial symbiosis programs.
+- **Resource-efficient agriculture/industry**: fertilizer/nutrient use efficiency programs, precision agriculture aimed at reducing inputs, process optimization mandates.
+- **Government procurement**: green/efficient procurement requirements (energy-efficient products, recycled content) when specified.
+- **Quantified targets**: e.g., “reduce energy intensity by X% by year Y,” “cut water losses to X%,” “increase recycling rate to X%.”
+
+Exclude (do NOT extract unless explicitly tied to resource-use efficiency/circularity):
+- Pure **renewable energy deployment** (solar/wind buildout), general “decarbonize power,” or fossil fuel phase-out (Mitigation).
+- General **emissions targets** without an efficiency/circularity mechanism.
+- **Adaptation-only** actions (flood defenses, early warning) unless explicitly about conserving resources (e.g., water-saving drought management).
+- Broad statements like “promote sustainability/green growth/innovation” without a concrete efficiency instrument.
+- Pure **waste treatment** capacity (incinerators/landfills) unless coupled to prevention/reuse/recycling mandates.
+
+Extraction guidance:
+- Capture the **instrument + sector + key requirement/target + timeline** if present.
+- Split policies when different instruments or sectors are described; combine only when clearly one program with multiple components.
+- Use the document’s wording; avoid inferring mechanisms not stated.
+
+## Nature-Based Solutions
+Extract **Nature-Based Solutions (NbS)** policies: actions that **protect, restore, sustainably manage, or create ecosystems** to address climate change (mitigation and/or adaptation) and/or deliver co-benefits (biodiversity, water regulation, disaster risk reduction).
+
+**Include a policy when the text specifies** an intended action plus a target ecosystem/land use, such as:
+- **Forest/trees:** avoided deforestation; afforestation/reforestation; forest landscape restoration; community forestry; agroforestry; urban forestry/street trees; forest fire prevention when tied to ecosystem management.
+- **Wetlands/peatlands:** peatland rewetting; wetland restoration/creation; mangrove restoration; marsh/lake/riverine wetland protection.
+- **Coasts/marine:** coral reef restoration; seagrass/kelp restoration; dune restoration; living shorelines; coastal habitat protection for storm surge/erosion.
+- **Grasslands/rangelands:** grassland restoration; rotational/managed grazing to restore vegetation and soils; prairie restoration.
+- **Watersheds/rivers:** riparian buffers; floodplain reconnection; river restoration; catchment restoration for flood control/water security.
+- **Soils/natural carbon:** soil organic carbon enhancement through ecological practices (cover crops, reduced tillage) **only if framed as ecosystem/land restoration or natural carbon sinks**.
+- **Protected areas & biodiversity:** expansion/strengthening of protected areas, ecological corridors, habitat connectivity, conservation set-asides **when linked to climate outcomes** (carbon sinks, resilience, risk reduction).
+- **Urban NbS:** green roofs/walls, parks, wetlands, permeable green infrastructure **when explicitly described as nature-based/ecosystem solutions** for heat, flooding, or carbon.
+
+**Extraction unit (granularity):**
+- Extract **one policy per distinct intervention** (e.g., “mangrove restoration” separate from “coral reef restoration” if both appear).
+- If multiple ecosystems share the **same instrument and intent** in one phrase (e.g., “restore wetlands and peatlands”), you may extract **one combined policy**.
+- Capture any **quantitative target, location, timeframe, funding, or implementing instrument** (e.g., hectares restored, % forest cover, named program).
+
+**Exclude / do NOT extract as NbS:**
+- Purely **engineered/grey infrastructure** (seawalls, dams) unless explicitly paired with “living shoreline”/ecosystem restoration as the core measure.
+- **Generic environmental goals** without an action (e.g., “protect biodiversity” with no concrete measure).
+- Standard **pollution control, waste, recycling, renewable energy, efficiency** measures (not NbS).
+- **Agricultural productivity** measures that are not ecosystem restoration/management (e.g., fertilizer optimization) unless explicitly framed as restoring soils/ecosystems or enhancing natural carbon sinks.
+- **Forestry/land** statements that are only about timber production or administrative restructuring with no conservation/restoration action.
+
+**Key cues:** “ecosystem-based,” “nature-based,” “restoration,” “rewetting,” “afforestation/reforestation,” “avoided deforestation,” “habitat,” “mangrove,” “peatland,” “wetland,” “riparian buffer,” “floodplain,” “green infrastructure,” “living shoreline,” “ecological corridor,” “carbon sink.”"
+3,Seattle_US,21,-0.5,-1.0,0.0,1.0,0.6364,0.0,0.0,1.0,0.0,-1.0,0.0,1.0,1.0,0.0,0.0,1.0,0.0,True,"## General
+You are a climate policy analyst. Your task is to extract and classify climate policies from a long policy document, maximizing coverage while avoiding spurious “policies” that are merely context, plans, or descriptions.
+
+For each extracted policy, produce a JSON object with these fields:
+
+EXTRACTION FIELDS:
+- ""role"": ""individual"" | ""sub"" | ""parent""
+    • ""individual"": standalone policy/commitment
+    • ""sub"": a specific action that is explicitly listed under a named parent initiative (e.g., numbered/lettered bullets)
+    • ""parent"": an umbrella initiative/program ONLY when it clearly introduces a list of actionable sub-items beneath it
+- ""parent_statement"": the name/summary of the parent initiative for ""sub"" only; otherwise null.
+- ""policy_statement"": a concise, self-contained commitment that can be understood without extra document context. Must be directly supported by source_quote.
+- ""source_quote"": verbatim quote that contains the commitment language itself (typically 1–3 sentences; may include a bullet item). No paraphrasing.
+- ""section_header"": the closest section/subsection heading for where the quote appears.
+- ""extraction_rationale"": briefly state why it qualifies as a policy and note any uncertainty.
+
+CLASSIFICATION FIELDS — assign alongside extraction:
+- ""primary_category"": ""Mitigation"" | ""Adaptation"" | ""Resource Efficiency"" | ""Nature-Based Solutions""
+- ""financial_instrument"": ""yes"" | ""no""
+- ""climate_relevance"": ""direct"" | ""indirect"" | ""peripheral""
+- ""secondary_category"": ""Mitigation"" | ""Adaptation"" | ""Resource Efficiency"" | ""Nature-Based Solutions"" | null
+  Assign secondary_category ONLY if the second mechanism is explicitly stated in the quoted text for THIS policy (not inferred co-benefits). Otherwise null.
+
+WHAT COUNTS AS A POLICY (tightened to reduce false positives):
+Extract ONLY when the text makes a clear commitment by a governing body/agency to do/implement/adopt/fund/require something. The quote must include at least ONE of the following concrete anchors:
+1) A required or adopted instrument: ordinance, resolution, regulation, code/standard, mandate, requirement, enforcement, formal adoption.
+2) A funded/authorized action: budget appropriation, grant/loan/subsidy, dedicated funding, procurement commitment, staffed program launch.
+3) A specific implementation action: build/install/retrofit/upgrade/phase out/ban/require/expand/operate/maintain (not just “support/encourage/explore”).
+4) A measurable target with a deadline/baseline (e.g., % by year; tons CO2e by year; fleet electrification by year).
+
+DO NOT EXTRACT (common spurious types):
+- Background, findings, “whereas” clauses, vision statements, values, or general commitments with no implementable action.
+- Descriptions of existing conditions or what a plan/document “includes,” “guides,” “outlines,” or “identifies,” unless the same passage clearly commits to implement specific actions/requirements.
+- Pure planning/process steps (e.g., “develop a map,” “create a report,” “study,” “assess,” “consider,” “explore,” “coordinate,” “engage stakeholders”) UNLESS explicitly tied to a mandated decision or implementation timeline that leads to a concrete policy change (e.g., “publish by X date and adopt/update code/standards accordingly”).
+- References to a policy being “aligned with” or “consistent with” goals, without a stated action/requirement.
+- Aspirational targets with no actor, mechanism, or deadline.
+
+HIERARCHY RULES:
+- Use ""parent"" ONLY when a named initiative is immediately followed by a list of distinct actionable commitments that you will extract as ""sub"".
+- Do NOT create a ""parent"" for a narrative paragraph that merely discusses a plan/strategy; in such cases extract only the specific actionable commitments (if any) as ""individual"".
+- Use ""sub"" only when the sub-item is itself an actionable commitment (not a topic label).
+- When unsure between ""parent"" and ""individual"", prefer ""individual"" unless the document structure clearly shows sub-items.
+
+DEDUPLICATION / GRANULARITY:
+- Extract at the “commitment” level: one object per distinct action/requirement/target.
+- If the same commitment appears multiple times, keep the clearest/most specific instance and drop duplicates.
+- Do not split a single requirement into multiple near-identical policies; do split when different actions/targets are listed as separate bullets.
+
+STRATEGY:
+1) Process section by section using headers as anchors.
+2) Extract all qualifying policies under each section; avoid process-only items unless they compel implementation.
+3) Collect into one Python list of dicts, deduplicate, store as `all_policies`, and call FINAL_VAR(all_policies).
+
+OUTPUT FORMAT:
+Return a valid JSON list of policy objects as described above.
+
+## Mitigation
+Extract **Mitigation** policies only when the document states a **concrete government action intended to reduce greenhouse-gas emissions or increase carbon sequestration** (energy, buildings, transport, waste, industry, fuels, electricity supply, carbon removal).
+
+**Count as Mitigation (extract as a policy) only if at least one is explicit:**
+- A **binding or formal instrument**: ordinance, code, regulation, standard, requirement, mandate, adopted plan/program with defined measures, procurement rule, budgeted project, or executed agreement.
+- A **specific commitment** with an action verb (“shall/will/require/implement/phase out/adopt/enforce/fund/build/retrofit/electrify”) tied to an emissions-reducing measure.
+- A **quantified target and/or deadline** (e.g., % reduction, net-zero by year, EV adoption by year, building performance threshold, renewable share).
+- A **clearly described measure** that is inherently mitigation even without numbers (e.g., ban on fossil-fuel heating in new buildings; building performance standard; fleet electrification mandate; renewable procurement requirement; methane capture requirement).
+
+**Do NOT extract (common false positives):**
+- Purely **symbolic statements**: resolutions “affirming commitment,” declarations, aspirational goals, endorsements, visions, or “support/encourage/recognize” language **without** a specified implementing action or requirement.
+- **Informational/analytical deliverables** only: mapping, studies, assessments, inventories, outreach, toolkits, dashboards, strategy exploration—unless the document also commits to implementing the resulting infrastructure/policy.
+- Descriptions of **existing context** with no change action (“the code includes…”, “the plan guides…”) unless the text states adoption/enforcement/update and what it requires.
+- Vague mentions of “reduce emissions” without sector/mechanism, responsible actor, or implementable measure.
+
+**Granularity rules (to avoid spurious splits/merges):**
+- Extract **one policy per distinct measure/instrument** (e.g., “adopt building performance standard” vs “electrify municipal fleet” are separate).
+- If a plan is mentioned, extract it **only if** the text states it is **adopted/approved** and includes **specific mitigation actions/requirements**; otherwise treat as background.
+- Prefer the **most specific operational statement** (measure + who + where + when). Do not restate broad commitments if a concrete action is present.
+
+**What to capture in the policy text:**
+- Instrument/type (ordinance/code/standard/plan/program/project), sector, action, covered scope (municipal vs community-wide; building types; fleet), and any targets/timelines.
+
+## Adaptation
+Extract **Adaptation** policies: actions whose primary purpose is to **reduce vulnerability** to climate hazards or **increase resilience** of people, infrastructure, ecosystems, or services under current/future climate impacts (e.g., heat, drought, flood, sea-level rise, storms, wildfire smoke).
+
+**What to include (count as a policy if it is a concrete action/measure):**
+- **Risk assessment & planning:** climate risk/vulnerability assessments; climate-proofing standards; adaptation plans/strategies; scenario planning explicitly tied to climate hazards.
+- **Physical resilience measures:** flood defenses (levees, seawalls), stormwater upgrades, drainage expansion, coastal protection, slope stabilization, wildfire buffers, cooling infrastructure, water storage/drought resilience infrastructure.
+- **Nature-based adaptation** when framed for risk reduction (mangroves/wetlands for flood buffering, urban trees for heat): include here if the stated goal is resilience/impact reduction.
+- **Public health & safety:** heat-health action plans, cooling centers, early warning systems, smoke shelters, disease/vector surveillance tied to climate.
+- **Water & agriculture resilience:** drought contingency plans, irrigation efficiency explicitly for drought resilience, climate-resilient crops/varieties, shifting planting calendars when linked to climate impacts.
+- **Operations & preparedness:** emergency response improvements, disaster risk management measures explicitly linked to climate change/extreme weather; resilient supply chains for critical services.
+- **Policy instruments:** building codes/land-use rules for flood/heat risk, managed retreat/relocation programs, insurance/reinsurance reforms **only when explicitly linked to climate risk/adaptation**.
+- **Finance & governance:** dedicated adaptation funding, resilience bonds, adaptation mainstreaming requirements in agencies—if tied to adaptation outcomes.
+
+**What NOT to include (avoid spurious extractions):**
+- Pure **mitigation** (renewables, efficiency, EVs, carbon pricing) unless the text explicitly states an adaptation/resilience purpose.
+- Generic “sustainability,” “environmental protection,” “disaster management,” or “infrastructure modernization” **without explicit climate-hazard/resilience framing**.
+- Routine maintenance or general social programs unless clearly positioned as climate adaptation.
+- Broad research/education/awareness with no stated adaptation application or implementable measure.
+
+**Extraction rules (to improve matching quality):**
+- Extract policies at the **measure level** (one action per policy). Split lists into separate items when they are distinct measures.
+- Keep wording **close to the source**; include any **target sector/hazard**, **location**, and **instrument** (plan, standard, investment, program).
+- If a sentence is ambiguous, only extract if it clearly references **climate impacts/hazards**, **resilience**, **adaptation**, or **climate-proofing**.
+
+## Resource Efficiency
+Extract **Resource Efficiency** policies: measures that **reduce energy/material/water use per unit of service/output**, **reduce waste**, or **increase reuse/recycling/circularity** in production, buildings, infrastructure, products, or public services.
+
+**Include (count as a policy) only when the text specifies an actual measure**, such as:
+- **Efficiency improvements** (energy efficiency in buildings/industry/appliances; process optimization; loss reduction; high-efficiency equipment; audits/retrofits mandated or funded).
+- **Demand reduction / conservation** (water conservation programs; leakage reduction; load management framed as efficiency; procurement standards requiring efficient products).
+- **Material efficiency / circular economy** (design for durability/repair; reuse; remanufacturing; recycling targets/mandates; extended producer responsibility; waste sorting/collection tied to recycling; reducing packaging/material intensity).
+- **Waste prevention and diversion** (landfill diversion requirements; food waste reduction programs; composting programs when framed as waste reduction).
+- **Resource productivity standards/benchmarks** (intensity targets like kWh/m², water-use intensity, material-use intensity) and **implementation instruments** (standards, bans, incentives, financing, reporting) tied to the above.
+
+**Extract each distinct policy separately** when they differ by sector (buildings vs industry), resource (energy vs water vs materials), or instrument (standard vs subsidy vs program).
+
+**Exclude (avoid spurious extraction):**
+- Pure **renewable energy supply expansion** (solar/wind/hydrogen) unless explicitly framed as **efficiency/demand reduction**.
+- **Emissions targets**, carbon pricing, ETS, or general “decarbonization/green transition” statements without a clear efficiency/circular action.
+- Generic aspirations (“promote efficiency”, “support circular economy”, “encourage recycling”) **without a concrete mechanism, program, mandate, target, or defined action**.
+- Pure **pollution control/end-of-pipe** (filters, scrubbers) unless linked to resource savings.
+- **Land-use, forestry, biodiversity, ecosystem restoration** (belongs to Nature-Based Solutions).
+- **Adaptation-only** measures (flood defenses, drought response) unless specifically about **water efficiency/leak reduction/conservation**.
+
+**Evidence threshold:** The passage must contain a **verb indicating action** (mandate/require/ban/implement/establish/fund/introduce/expand) **and** a specific efficiency/circular/waste-reduction content (technology, standard, program, target, or enforcement). If it’s only high-level intent with no actionable detail, do not extract.
+
+## Nature-Based Solutions
+Extract **Nature-Based Solutions (NBS)** policies: actions that **protect, restore, sustainably manage, or create ecosystems** to deliver climate mitigation/adaptation co-benefits (carbon sequestration, flood/heat buffering, drought resilience, coastal protection) and/or biodiversity benefits.
+
+Include as NBS when the text specifies one or more of the following (count each distinct policy/action separately):
+- **Forest ecosystems**: afforestation/reforestation, forest restoration, avoided deforestation, REDD+/REDD, improved forest management, community/indigenous forest stewardship tied to conservation/restoration outcomes.
+- **Peatlands and wetlands**: peatland rewetting, wetland restoration/creation, marsh/mangrove conservation or restoration, riparian buffer restoration.
+- **Coastal/marine ecosystems**: mangroves, seagrass, saltmarsh restoration/conservation (“blue carbon”), living shorelines, dune restoration, coral reef restoration when framed as nature-based coastal protection.
+- **Grasslands/savannas/rangelands**: grassland restoration, sustainable rangeland management aimed at ecosystem recovery or soil carbon, native habitat restoration.
+- **Urban nature-based measures**: urban tree canopy expansion, green corridors, green roofs/walls, parks/wetlands for stormwater retention or heat reduction—only if the nature component is explicit.
+- **Watershed/catchment restoration**: catchment rehabilitation, river/floodplain restoration, natural water retention measures, headwater protection for flood/drought regulation.
+- **Soil/ecosystem restoration**: erosion control via vegetative measures, agroforestry or silvopasture **when explicitly framed as ecosystem restoration/trees-in-landscapes for climate/biodiversity**.
+- **Protected areas/conservation**: establishing/expanding protected areas, ecological networks, habitat conservation **when tied to preventing ecosystem loss or enhancing ecosystem services** relevant to climate/biodiversity.
+
+Do **not** extract as NBS (avoid spurious):
+- Purely **technological/engineering** measures without ecosystem restoration (e.g., seawalls, drainage pipes, desalination) unless explicitly “nature-based/living shoreline/green infrastructure”.
+- Generic **awareness, research, capacity building, monitoring, mapping, strategies, plans** unless they commit to a concrete on-the-ground NBS action (e.g., “restore X hectares of mangroves”).
+- **Agricultural productivity** measures (fertilizer efficiency, irrigation upgrades) unless clearly tied to ecosystem restoration (e.g., restoring riparian buffers, agroforestry planting).
+- **Waste, energy, transport, industry** actions unless they directly involve ecosystems (e.g., landfill gas capture is not NBS).
+
+Extraction guidance:
+- Capture the **specific action + ecosystem type + location/scale/target** if stated (e.g., hectares, coastline length, number of trees, protected area size, year).
+- If multiple ecosystems/actions are listed, extract **separate policies** when they are distinct commitments (e.g., “restore wetlands” and “expand protected forests”).
+- Prefer **verbatim, concrete phrasing** from the text; avoid adding inferred goals."

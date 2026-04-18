@@ -647,6 +647,7 @@ def validate_policies(
 def run_rlm_for_optimizer(
     prompt_string: str,
     document_path: str,
+    trace_output_path: str | None = None,
     expert_knowledge_path: str | None = None,
     backend: str = "openai",
     model_name: str = "gpt-5",
@@ -701,6 +702,7 @@ def run_rlm_for_optimizer(
     return extract_and_classify_rlm(
         document_markdown=document_md,
         expert_knowledge=expert_knowledge,
+        trace_output_path=trace_output_path,
         system_prompt=prompt_string,
         backend=backend,
         model_name=model_name,

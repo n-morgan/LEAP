@@ -115,19 +115,40 @@ system prompt. The section you receive is either the general extraction prong or
 a category-specific prong (Mitigation, Adaptation, Resource Efficiency, or
 Nature-Based Solutions).
 
-You will receive:
-    SECTION   — the current text of the prong to rewrite
-    FEEDBACK  — per-policy grade reasoning from an evaluation run on this location
+SCORING OBJECTIVE:
+Each extracted policy is matched 1-to-1 against ground-truth policies via
+embedding similarity (Hungarian algorithm). Matched pairs are graded +1 / 0 / -1.
+Unmatched ground-truth policies (missed extractions) each score -1.
+Unmatched extracted policies (spurious extractions) each score -1.
+The final score is the mean over all these values — so the prompt must balance
+recall (extract everything real) against precision (avoid spurious policies).
+Recall and FPR are provided alongside the score so you can diagnose the direction
+of failure:
+  - High FPR, low score  → too many spurious extractions; tighten criteria.
+  - Low recall, low score → missing real policies; loosen criteria or add cues.
+  - Low score, ok recall  → extractions are imprecise; improve quality guidance.
 
-Your task: rewrite SECTION to fix patterns of failure (grade -1) while preserving
-what already works (grade +1). Be specific. Do not add content unrelated to the
-failures identified in FEEDBACK.
+You will receive:
+    CATEGORY  — the prong being rewritten
+    METRICS   — current score, recall, and FPR for this category
+    SECTION   — the current text of the prong to rewrite
+    FEEDBACK  — per-policy grade reasoning from the evaluation run
+
+Your task: rewrite SECTION to improve the score for this category. Fix the
+dominant failure mode shown by METRICS and FEEDBACK. Preserve what works.
+Do not add rules so strict that extraction is suppressed — a score of -1 from
+zero extractions is no better than a score of -1 from bad ones.
 
 Return ONLY the rewritten prong text. Do not include the section header.
 No preamble, no explanation.
 """
 
 _RESAMPLE_USER = """\
+CATEGORY: {category}
+
+METRICS:
+  score={score:+.3f}  recall={recall:.3f}  fpr={fpr:.3f}
+
 SECTION:
 {section}
 
@@ -168,16 +189,28 @@ class LEAPPromptOptimizer:
     # Resample
     # ------------------------------------------------------------------
 
-    def _resample(self, section: str, feedback: str) -> str:
+    def _resample(
+        self,
+        section: str,
+        feedback: str,
+        category: str = "General",
+        score: float = 0.0,
+        recall: float = 0.0,
+        fpr: float = 0.0,
+    ) -> str:
         """
-        Rewrite one prompt prong conditioned on grade reasoning feedback.
-        Returns the rewritten prong text (no section header).
+        Rewrite one prompt prong conditioned on grade reasoning feedback and
+        current performance metrics. Returns the rewritten prong text (no header).
         """
         response = self._get_client().chat.completions.create(
             model=self.model,
             messages=[
                 {"role": "system", "content": _RESAMPLE_SYSTEM},
                 {"role": "user", "content": _RESAMPLE_USER.format(
+                    category=category,
+                    score=score,
+                    recall=recall,
+                    fpr=fpr,
                     section=section or "(empty — write from scratch based on feedback)",
                     feedback=feedback or "No specific feedback available.",
                 )},
@@ -258,7 +291,13 @@ class LEAPPromptOptimizer:
             # Negative signal: revert to previous prong as the rewrite base
             base = getattr(current_prompt, key) if delta > 0 else getattr(previous_prompt, key)
             feedback = self._format_feedback(current_eval, category=category)
-            setattr(next_prompt, key, self._resample(base, feedback))
+            setattr(next_prompt, key, self._resample(
+                base, feedback,
+                category=category,
+                score=s_t,
+                recall=current_eval.recall.get(category, 0.0),
+                fpr=current_eval.fpr.get(category, 0.0),
+            ))
 
             direction = "keep" if delta > 0 else "revert"
             print(f"  [{location}] {category:<30s}  delta={delta:+.3f}  ({direction})")
@@ -267,7 +306,15 @@ class LEAPPromptOptimizer:
         delta_l = sum(deltas.values()) / len(deltas) if deltas else 0.0
         gen_base = current_prompt.gen if delta_l > 0 else previous_prompt.gen
         full_feedback = self._format_feedback(current_eval)
-        next_prompt.gen = self._resample(gen_base, full_feedback)
+        mean_recall = sum(current_eval.recall.values()) / len(current_eval.recall) if current_eval.recall else 0.0
+        mean_fpr = sum(current_eval.fpr.values()) / len(current_eval.fpr) if current_eval.fpr else 0.0
+        next_prompt.gen = self._resample(
+            gen_base, full_feedback,
+            category="General",
+            score=delta_l,
+            recall=mean_recall,
+            fpr=mean_fpr,
+        )
 
         gen_direction = "keep" if delta_l > 0 else "revert"
         print(f"  [{location}] {'General':<30s}  delta={delta_l:+.3f}  ({gen_direction})")
@@ -281,7 +328,7 @@ class LEAPPromptOptimizer:
     def run_loop(
         self,
         location: str,
-        extracted_policies_fn: Callable[[str], list[dict[str, Any]]],
+        extracted_policies_fn: Callable[[str, Optional[pathlib.Path]], list[dict[str, Any]]],
         ground_truth_policies: list[dict[str, Any]],
         rubric: str,
         initial_prompt: StructuredPrompt,
@@ -366,7 +413,11 @@ class LEAPPromptOptimizer:
             print(f"{'=' * 60}")
 
             # Run RLM extraction with the current composed prompt
-            extracted = extracted_policies_fn(current_prompt.compose())
+            trace_path = (
+                _run_dir / f"iteration_{t + 1}_extraction_trace.json"
+                if _run_dir is not None else None
+            )
+            extracted = extracted_policies_fn(current_prompt.compose(), trace_path)
             print(f"  Extracted {len(extracted)} policies")
 
             # Write extracted policies to CSV (lazy header init on first batch)
@@ -498,10 +549,11 @@ if __name__ == "__main__":
     # prompt at each iteration, re-runs the RLM, and scores the new output.
     # This is what closes the loop — each iteration uses a fresh RLM run under
     # the candidate prompt rather than a stale cached result.
-    def extracted_policies_fn(prompt: str) -> list[dict]:
+    def extracted_policies_fn(prompt: str, trace_path: pathlib.Path | None = None) -> list[dict]:
         return run_rlm_for_optimizer(
             prompt_string=prompt,
             document_path=SEATTLE_DOC,
+            trace_output_path=str(trace_path) if trace_path is not None else None,
             model_name=MODEL,
             sub_model_name=MODEL,
             max_iterations=RLM_MAX_ITERATIONS,
@@ -525,7 +577,7 @@ if __name__ == "__main__":
         rubric=DEFAULT_RUBRIC,
         initial_prompt=initial_prompt,
         source_document_path=SEATTLE_DOC,
-        max_iterations=2,
+        max_iterations=3,
         log_dir=_HERE / "logs",
     )
 
