@@ -414,7 +414,7 @@ class LEAPPromptOptimizer:
 
             # Run RLM extraction with the current composed prompt
             trace_path = (
-                _run_dir / f"iteration_{t + 1}_extraction_trace.json"
+                str(_run_dir / f"iteration_{t + 1}_trace")
                 if _run_dir is not None else None
             )
             extracted = extracted_policies_fn(current_prompt.compose(), trace_path)
@@ -549,11 +549,11 @@ if __name__ == "__main__":
     # prompt at each iteration, re-runs the RLM, and scores the new output.
     # This is what closes the loop — each iteration uses a fresh RLM run under
     # the candidate prompt rather than a stale cached result.
-    def extracted_policies_fn(prompt: str, trace_path: pathlib.Path | None = None) -> list[dict]:
+    def extracted_policies_fn(prompt: str, trace_dir: str | None = None) -> list[dict]:
         return run_rlm_for_optimizer(
             prompt_string=prompt,
             document_path=SEATTLE_DOC,
-            trace_output_path=str(trace_path) if trace_path is not None else None,
+            trace_dir=trace_dir,
             model_name=MODEL,
             sub_model_name=MODEL,
             max_iterations=RLM_MAX_ITERATIONS,

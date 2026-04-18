@@ -494,7 +494,7 @@ def _collect_trace(log_dir: str) -> dict:
 def extract_and_classify_rlm(
     document_markdown: str,
     expert_knowledge: str | None = None,
-    trace_output_path: str | None = None,
+    trace_dir: str | None = None,
     system_prompt: str | None = None,
     backend: str = "openai",
     model_name: str = "gpt-5",
@@ -527,8 +527,7 @@ def extract_and_classify_rlm(
     else:
         context = document_markdown
 
-    # Use a dedicated temp dir for this run's logs so we can collect them cleanly
-    log_dir = tempfile.mkdtemp(prefix="rlm_trace_")
+    log_dir = trace_dir if trace_dir else tempfile.mkdtemp(prefix="rlm_trace_")
     logger = RLMLogger(log_dir=log_dir)
 
     rlm = RLM(
@@ -554,15 +553,6 @@ def extract_and_classify_rlm(
         prompt=context,
         root_prompt="Extract and classify all climate policies from the document as a JSON list.",
     )
-
-    # Collect and save trace alongside output
-    if trace_output_path:
-        trace = _collect_trace(log_dir)
-        trace["_rlm_response"] = result.response
-        os.makedirs(os.path.dirname(trace_output_path) or ".", exist_ok=True)
-        with open(trace_output_path, "w") as f:
-            json.dump(trace, f, indent=2)
-        print(f"  Trace saved: {trace_output_path}")
 
     return _parse_rlm_output(result.response)
 
@@ -647,7 +637,7 @@ def validate_policies(
 def run_rlm_for_optimizer(
     prompt_string: str,
     document_path: str,
-    trace_output_path: str | None = None,
+    trace_dir: str | None = None,
     expert_knowledge_path: str | None = None,
     backend: str = "openai",
     model_name: str = "gpt-5",
@@ -702,7 +692,7 @@ def run_rlm_for_optimizer(
     return extract_and_classify_rlm(
         document_markdown=document_md,
         expert_knowledge=expert_knowledge,
-        trace_output_path=trace_output_path,
+        trace_dir=trace_dir,
         system_prompt=prompt_string,
         backend=backend,
         model_name=model_name,
