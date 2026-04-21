@@ -305,6 +305,158 @@ class LEAPPromptOptimizer:
         )
 
     # ------------------------------------------------------------------
+    # Candidate generation, evaluation, and acceptance (Task 3)
+    # ------------------------------------------------------------------
+
+    def propose_candidate(
+        self,
+        scope: Literal["extraction", "hierarchy", "classification"],
+        current_prompt: StructuredPrompt,
+        previous_prompt: StructuredPrompt,
+        current_eval: EvaluationOutput,
+        previous_eval: EvaluationOutput,
+    ) -> StructuredPrompt:
+        """
+        Rewrite only the specified prong and return a new StructuredPrompt.
+        The other two prongs are copied from current_prompt unchanged.
+
+        Signal per prong:
+          extraction    — mean recall (drop → revert to previous prong as base)
+          hierarchy     — hierarchy_accuracy (drop → revert)
+          classification — mean score (drop → revert)
+
+        Negative signal guard: if the signal worsened since the previous
+        iteration, use the previous prong as the rewrite base before resampling.
+        """
+        mean_score = (
+            sum(current_eval.scores.values()) / len(current_eval.scores)
+            if current_eval.scores else 0.0
+        )
+        mean_recall = (
+            sum(current_eval.recall.values()) / len(current_eval.recall)
+            if current_eval.recall else 0.0
+        )
+        mean_fpr = (
+            sum(current_eval.fpr.values()) / len(current_eval.fpr)
+            if current_eval.fpr else 0.0
+        )
+        feedback = self._format_feedback(current_eval)
+
+        if scope == "extraction":
+            prev_recall = (
+                sum(previous_eval.recall.values()) / len(previous_eval.recall)
+                if previous_eval.recall else 0.0
+            )
+            base = (
+                previous_prompt.extraction if mean_recall < prev_recall
+                else current_prompt.extraction
+            )
+            resampled = self._resample(
+                base, feedback, category="extraction",
+                score=mean_score, recall=mean_recall, fpr=mean_fpr,
+            )
+            return StructuredPrompt(
+                extraction=resampled,
+                hierarchy=current_prompt.hierarchy,
+                classification=current_prompt.classification,
+            )
+
+        if scope == "hierarchy":
+            base = (
+                previous_prompt.hierarchy
+                if current_eval.hierarchy_accuracy < previous_eval.hierarchy_accuracy
+                else current_prompt.hierarchy
+            )
+            resampled = self._resample(
+                base, feedback, category="hierarchy",
+                score=mean_score, recall=mean_recall, fpr=mean_fpr,
+            )
+            return StructuredPrompt(
+                extraction=current_prompt.extraction,
+                hierarchy=resampled,
+                classification=current_prompt.classification,
+            )
+
+        # scope == "classification"
+        prev_score = (
+            sum(previous_eval.scores.values()) / len(previous_eval.scores)
+            if previous_eval.scores else 0.0
+        )
+        base = (
+            previous_prompt.classification if mean_score < prev_score
+            else current_prompt.classification
+        )
+        resampled = self._resample(
+            base, feedback, category="classification",
+            score=mean_score, recall=mean_recall, fpr=mean_fpr,
+        )
+        return StructuredPrompt(
+            extraction=current_prompt.extraction,
+            hierarchy=current_prompt.hierarchy,
+            classification=resampled,
+        )
+
+    def evaluate_candidate(
+        self,
+        candidate_prompt: StructuredPrompt,
+        location: str,
+        extracted_policies_fn: Callable[[str, Optional[pathlib.Path]], list[dict[str, Any]]],
+        ground_truth_policies: list[dict[str, Any]],
+        rubric: str,
+        evaluator: "LEAPEvaluator",
+        source_document_path: Optional[pathlib.Path | str] = None,
+        trace_path: Optional[str] = None,
+    ) -> tuple[list[dict[str, Any]], EvaluationOutput]:
+        """
+        Run a full extraction and evaluation pass using the candidate prompt.
+        Returns (extracted_policies, evaluation_output).
+        """
+        extracted = extracted_policies_fn(candidate_prompt.compose(), trace_path)
+        eval_result = evaluator.evaluate(
+            location=location,
+            extracted_policies=extracted,
+            ground_truth_policies=ground_truth_policies,
+            rubric=rubric,
+            source_document_path=source_document_path,
+        )
+        return extracted, eval_result
+
+    def accept_candidate(
+        self,
+        candidate_eval: EvaluationOutput,
+        current_eval: EvaluationOutput,
+        score_floor: float = 0.15,
+    ) -> tuple[bool, str]:
+        """
+        Apply guardrail thresholds to decide whether to accept the candidate.
+
+        Rejects if any per-category score drops by more than score_floor
+        compared to the current accepted evaluation.
+
+        Returns (accepted, reason_string).
+        """
+        for cat in CATEGORIES:
+            curr_score = current_eval.scores.get(cat, 0.0)
+            cand_score = candidate_eval.scores.get(cat, 0.0)
+            drop = curr_score - cand_score
+            if drop >= score_floor:
+                return (
+                    False,
+                    f"rejected: {cat} score dropped by {drop:.3f} "
+                    f"(threshold {score_floor})",
+                )
+
+        mean_curr = (
+            sum(current_eval.scores.values()) / len(current_eval.scores)
+            if current_eval.scores else 0.0
+        )
+        mean_cand = (
+            sum(candidate_eval.scores.values()) / len(candidate_eval.scores)
+            if candidate_eval.scores else 0.0
+        )
+        return True, f"accepted: mean score {mean_curr:+.3f} → {mean_cand:+.3f}"
+
+    # ------------------------------------------------------------------
     # Algorithm 3 — optimization loop
     # ------------------------------------------------------------------
 
