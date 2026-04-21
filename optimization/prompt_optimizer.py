@@ -802,6 +802,125 @@ def migrate_flat_to_task_prongs(flat_prompt: str) -> StructuredPrompt:
 
 
 # ---------------------------------------------------------------------------
+# Full LLM-based migration utility (Task 5)
+# ---------------------------------------------------------------------------
+
+_MIGRATION_SYSTEM = """\
+You are an expert prompt engineer. Your task is to redistribute a flat climate
+policy extraction system prompt into three task-based prongs:
+
+  extraction    — instructions for identifying policies, populating extraction
+                  fields (role, parent_statement, policy_statement, source_quote,
+                  section_header, extraction_rationale), deciding what counts as
+                  a policy, and the overall extraction strategy and output format.
+  hierarchy     — instructions for assigning parent/sub/individual roles and
+                  parent_statement, including hierarchy detection rules and
+                  edge cases for role assignment.
+  classification — instructions for assigning primary_category, financial_instrument,
+                   climate_relevance, and secondary_category, including the full
+                   decision table, triggers, and common errors to avoid.
+
+Rules:
+1. Every instruction in the flat prompt must appear in exactly one prong.
+2. Do NOT duplicate instructions across prongs.
+3. Instructions that are genuinely ambiguous (could fit two prongs equally well)
+   must be placed in one chosen prong with an inline note formatted as:
+   <!-- NOTE: also relevant to <other_prong> because ... -->
+4. Cross-cutting preamble (e.g. "You are a climate policy analyst...") goes in
+   extraction.
+5. Return a JSON object with these keys:
+     "extraction"    — string, full text of the extraction prong
+     "hierarchy"     — string, full text of the hierarchy prong
+     "classification" — string, full text of the classification prong
+     "mapping_notes" — list of strings, one per legacy section describing
+                       which prong it went to and why
+     "warnings"      — list of strings, one per ambiguous instruction with the
+                       placement decision and the reason
+
+Return ONLY the JSON object. No preamble. No trailing text.
+"""
+
+_MIGRATION_USER = """\
+FLAT PROMPT:
+{flat_prompt}
+"""
+
+
+def migrate_to_task_prongs_with_notes(
+    flat_prompt: str,
+    model: str = "gpt-5.4",
+    output_path: Optional[pathlib.Path | str] = None,
+) -> tuple[StructuredPrompt, list[str], list[str]]:
+    """
+    LLM-based redistribution of the legacy flat prompt into three task-based
+    prongs, with per-section mapping notes and a warning list for ambiguous
+    instructions.
+
+    Args:
+        flat_prompt:  the flat system prompt to migrate (e.g. CLIMATE_RLM_SYSTEM_PROMPT)
+        model:        OpenAI model to use for redistribution
+        output_path:  if provided, saves the result as a JSON file at this path;
+                      the file can be loaded later with load_migrated_baseline()
+
+    Returns:
+        (StructuredPrompt, mapping_notes, warnings)
+    """
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    response = client.chat.completions.create(
+        model=model,
+        messages=[
+            {"role": "system", "content": _MIGRATION_SYSTEM},
+            {"role": "user", "content": _MIGRATION_USER.format(flat_prompt=flat_prompt)},
+        ],
+        response_format={"type": "json_object"},
+    )
+    data = _json.loads(response.choices[0].message.content)
+
+    prompt = StructuredPrompt(
+        extraction=data.get("extraction", ""),
+        hierarchy=data.get("hierarchy", ""),
+        classification=data.get("classification", ""),
+    )
+    mapping_notes: list[str] = data.get("mapping_notes", [])
+    warnings: list[str] = data.get("warnings", [])
+
+    if output_path is not None:
+        output_path = pathlib.Path(output_path)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(output_path, "w", encoding="utf-8") as fh:
+            _json.dump(
+                {
+                    "extraction": prompt.extraction,
+                    "hierarchy": prompt.hierarchy,
+                    "classification": prompt.classification,
+                    "mapping_notes": mapping_notes,
+                    "warnings": warnings,
+                },
+                fh,
+                indent=2,
+                ensure_ascii=False,
+            )
+        print(f"Migrated baseline saved to: {output_path}")
+        if warnings:
+            print(f"  {len(warnings)} ambiguous instruction(s):")
+            for w in warnings:
+                print(f"    - {w}")
+
+    return prompt, mapping_notes, warnings
+
+
+def load_migrated_baseline(path: pathlib.Path | str) -> StructuredPrompt:
+    """Load a StructuredPrompt previously saved by migrate_to_task_prongs_with_notes."""
+    with open(path, encoding="utf-8") as fh:
+        data = _json.load(fh)
+    return StructuredPrompt(
+        extraction=data["extraction"],
+        hierarchy=data["hierarchy"],
+        classification=data["classification"],
+    )
+
+
+# ---------------------------------------------------------------------------
 # CLI entry point
 # ---------------------------------------------------------------------------
 
@@ -849,9 +968,24 @@ if __name__ == "__main__":
         "and accuracy relative to the source document."
     )
 
-    # Redistribute the flat system prompt into the three task-based prongs so
-    # optimization starts from a structured baseline rather than a blank slate.
-    initial_prompt = migrate_flat_to_task_prongs(CLIMATE_RLM_SYSTEM_PROMPT)
+    # Load or generate the three-prong baseline.
+    # If a previously migrated baseline exists on disk, load it so the LLM
+    # redistribution is not repeated on every run. Otherwise generate it once
+    # and save it for future runs.
+    _BASELINE_PATH = _HERE / "migrated_baseline.json"
+    if _BASELINE_PATH.exists():
+        print(f"Loading migrated baseline from {_BASELINE_PATH}")
+        initial_prompt = load_migrated_baseline(_BASELINE_PATH)
+    else:
+        print("Generating migrated baseline (one-time LLM redistribution)...")
+        initial_prompt, mapping_notes, warnings = migrate_to_task_prongs_with_notes(
+            CLIMATE_RLM_SYSTEM_PROMPT,
+            model=MODEL,
+            output_path=_BASELINE_PATH,
+        )
+        print(f"  Mapping notes ({len(mapping_notes)}):")
+        for note in mapping_notes:
+            print(f"    {note}")
 
     optimizer = LEAPPromptOptimizer(model=MODEL)
     optimized = optimizer.run_loop(
