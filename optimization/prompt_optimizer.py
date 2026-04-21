@@ -473,32 +473,33 @@ class LEAPPromptOptimizer:
         log_dir: Optional[pathlib.Path | str] = None,
     ) -> StructuredPrompt:
         """
-        Algorithm 3: LEAP Prompt Optimization Loop for a single location.
+        LEAP optimization loop — new per-prong candidate contract.
 
-        Repeat:
-            S_t, R_t, F_t, G_t  <- Evaluator(rho_t, D_l)
-            rho_{t+1}            <- PromptOptimizer(rho_t, rho_{t-1}, S_t, S_{t-1}, ...)
-        Until max(|S_t - S_{t-1}|) < epsilon or t >= T.
+        Each iteration:
+          1. Evaluate the current accepted prompt.
+          2. Compute three task signals from EvaluationOutput.
+          3. For each prong whose signal worsened (or on iteration 1, all prongs),
+             propose one candidate by rewriting only that prong.
+          4. Reevaluate each candidate independently.
+          5. Apply guardrails; accept at most the single best passing candidate.
+          6. If no candidate passes, keep the current prompt unchanged.
+          7. Write iteration and candidate rows to the log.
+
+        Logs (under a timestamped subdirectory of log_dir):
+          iteration_log.csv  — one row per main evaluation
+          candidate_log.csv  — one row per candidate with scope/accepted/reason
+          extracted_policies.csv — one row per extracted policy
 
         Args:
             location:               location key (e.g. "Seattle_US")
-            extracted_policies_fn:  callable that accepts a prompt string and returns
-                                    extracted policy dicts (wraps the RLM run)
+            extracted_policies_fn:  callable(prompt_string, trace_path) → list[dict]
             ground_truth_policies:  GENIUS ground-truth policy dicts for this location
             rubric:                 freeform grading guidelines string
             initial_prompt:         starting StructuredPrompt (rho_0)
-            source_document_path:   path to the markdown source document. When
-                                    provided, grading is done via RLM so the full
-                                    document can be traversed.
-            max_iterations:         max optimization iterations T in [5, 10]
+            source_document_path:   path to the markdown source document
+            max_iterations:         maximum optimization iterations
             epsilon:                convergence threshold on max per-category delta
-            log_dir:                optional base directory for run logs. Each run
-                                    creates a timestamped subdirectory containing:
-                                      iteration_log.csv    — one row per iteration with
-                                        per-category scores, deltas, recall, FPR, mean
-                                        score, extracted count, and composed prompt.
-                                      extracted_policies.csv — one row per extracted
-                                        policy with iteration and location prepended.
+            log_dir:                base directory for run logs
 
         Returns:
             Optimized StructuredPrompt rho*.
@@ -507,47 +508,59 @@ class LEAPPromptOptimizer:
 
         current_prompt = initial_prompt
         previous_prompt = initial_prompt
-        previous_scores: dict[str, float] = {c: 0.0 for c in CATEGORIES}
+        previous_eval: Optional[EvaluationOutput] = None
 
-        # CSV logging setup — create a timestamped subdirectory for this run
+        # ------------------------------------------------------------------
+        # CSV logging setup
+        # ------------------------------------------------------------------
         _run_dir = None
         _iter_file = _iter_writer = None
+        _cand_file = _cand_writer = None
         _ext_file = _ext_writer = None
+
         if log_dir is not None:
             ts = datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
             _run_dir = pathlib.Path(log_dir) / ts
             _run_dir.mkdir(parents=True, exist_ok=True)
             print(f"  Logging to: {_run_dir}")
 
-            # iteration_log.csv
             _cat_cols: list[str] = []
             for c in CATEGORIES:
                 slug = c.replace(" ", "_").replace("-", "_")
                 _cat_cols += [f"{slug}_score", f"{slug}_delta",
                               f"{slug}_recall", f"{slug}_fpr"]
+
             _iter_file = open(_run_dir / "iteration_log.csv", "w", newline="", encoding="utf-8")
             _iter_writer = csv.DictWriter(
                 _iter_file,
                 fieldnames=["iteration", "location", "n_extracted", "mean_score",
-                            *_cat_cols, "converged", "composed_prompt"],
+                            "hierarchy_accuracy", *_cat_cols, "converged",
+                            "composed_prompt"],
             )
             _iter_writer.writeheader()
 
-            # extracted_policies.csv — headers derived from first extraction
-            # writer is created lazily on first non-empty extraction
+            _cand_file = open(_run_dir / "candidate_log.csv", "w", newline="", encoding="utf-8")
+            _cand_writer = csv.DictWriter(
+                _cand_file,
+                fieldnames=["iteration", "location", "scope", "accepted", "reason",
+                            "mean_score", "hierarchy_accuracy"],
+            )
+            _cand_writer.writeheader()
 
         def _close_logs() -> None:
-            if _iter_file is not None:
-                _iter_file.close()
-            if _ext_file is not None:
-                _ext_file.close()
+            for f in (_iter_file, _cand_file, _ext_file):
+                if f is not None:
+                    f.close()
 
+        # ------------------------------------------------------------------
+        # Iteration loop
+        # ------------------------------------------------------------------
         for t in range(max_iterations):
             print(f"\n{'=' * 60}")
             print(f"Iteration {t + 1}/{max_iterations}  |  Location: {location}")
             print(f"{'=' * 60}")
 
-            # Run RLM extraction with the current composed prompt
+            # Step 1: Extract with current prompt
             trace_path = (
                 str(_run_dir / f"iteration_{t + 1}_trace")
                 if _run_dir is not None else None
@@ -555,7 +568,6 @@ class LEAPPromptOptimizer:
             extracted = extracted_policies_fn(current_prompt.compose(), trace_path)
             print(f"  Extracted {len(extracted)} policies")
 
-            # Write extracted policies to CSV (lazy header init on first batch)
             if _run_dir is not None and extracted:
                 if _ext_writer is None:
                     _ext_file = open(
@@ -572,7 +584,7 @@ class LEAPPromptOptimizer:
                     _ext_writer.writerow({"iteration": t + 1, "location": location, **policy})
                 _ext_file.flush()
 
-            # Evaluate against ground truth
+            # Step 2: Evaluate current prompt
             eval_result = evaluator.evaluate(
                 location=location,
                 extracted_policies=extracted,
@@ -581,16 +593,26 @@ class LEAPPromptOptimizer:
                 source_document_path=source_document_path,
             )
 
-            # Report scores
-            print(f"\n  Scores (S_t[l, c]):")
+            mean_score = (
+                sum(eval_result.scores.values()) / len(eval_result.scores)
+                if eval_result.scores else 0.0
+            )
+            mean_recall = (
+                sum(eval_result.recall.values()) / len(eval_result.recall)
+                if eval_result.recall else 0.0
+            )
+            hier_acc = eval_result.hierarchy_accuracy
+
+            print(f"\n  Scores:")
+            prev_scores = previous_eval.scores if previous_eval else {c: 0.0 for c in CATEGORIES}
             for cat, score in eval_result.scores.items():
-                delta = score - previous_scores.get(cat, 0.0)
-                recall = eval_result.recall.get(cat, 0.0)
-                fpr = eval_result.fpr.get(cat, 0.0)
+                delta = score - prev_scores.get(cat, 0.0)
                 print(
-                    f"    {cat:<30s}  score={score:+.3f}  "
-                    f"delta={delta:+.3f}  recall={recall:.2f}  fpr={fpr:.2f}"
+                    f"    {cat:<30s}  score={score:+.3f}  delta={delta:+.3f}"
+                    f"  recall={eval_result.recall.get(cat, 0.0):.2f}"
+                    f"  fpr={eval_result.fpr.get(cat, 0.0):.2f}"
                 )
+            print(f"    hierarchy_accuracy={hier_acc:.3f}")
 
             # Write iteration log row
             if _iter_writer is not None:
@@ -598,9 +620,8 @@ class LEAPPromptOptimizer:
                     "iteration": t + 1,
                     "location": location,
                     "n_extracted": len(extracted),
-                    "mean_score": round(
-                        sum(eval_result.scores.values()) / len(eval_result.scores), 4
-                    ) if eval_result.scores else 0.0,
+                    "mean_score": round(mean_score, 4),
+                    "hierarchy_accuracy": round(hier_acc, 4),
                     "converged": False,
                     "composed_prompt": current_prompt.compose(),
                 }
@@ -608,16 +629,16 @@ class LEAPPromptOptimizer:
                     slug = c.replace(" ", "_").replace("-", "_")
                     iter_row[f"{slug}_score"]  = round(eval_result.scores.get(c, 0.0), 4)
                     iter_row[f"{slug}_delta"]  = round(
-                        eval_result.scores.get(c, 0.0) - previous_scores.get(c, 0.0), 4
+                        eval_result.scores.get(c, 0.0) - prev_scores.get(c, 0.0), 4
                     )
                     iter_row[f"{slug}_recall"] = round(eval_result.recall.get(c, 0.0), 4)
                     iter_row[f"{slug}_fpr"]    = round(eval_result.fpr.get(c, 0.0), 4)
 
-            # Convergence check (skip on first iteration — no previous scores yet)
+            # Convergence check (skip iteration 1 — no previous eval yet)
             converged = False
-            if t > 0:
+            if previous_eval is not None:
                 max_delta = max(
-                    abs(eval_result.scores.get(c, 0.0) - previous_scores.get(c, 0.0))
+                    abs(eval_result.scores.get(c, 0.0) - previous_eval.scores.get(c, 0.0))
                     for c in CATEGORIES
                 )
                 if max_delta < epsilon:
@@ -633,19 +654,91 @@ class LEAPPromptOptimizer:
                 _close_logs()
                 return current_prompt
 
-            # Update prompt prongs
-            print(f"\n  Updating prompt prongs:")
-            next_prompt = self.update(
-                location=location,
-                current_prompt=current_prompt,
-                previous_prompt=previous_prompt,
-                current_eval=eval_result,
-                previous_scores=previous_scores,
-            )
+            # Step 3: Determine triggered prongs
+            if previous_eval is None:
+                # First iteration — bootstrap all prongs
+                triggered: set[str] = {"extraction", "hierarchy", "classification"}
+            else:
+                prev_recall = (
+                    sum(previous_eval.recall.values()) / len(previous_eval.recall)
+                    if previous_eval.recall else 0.0
+                )
+                prev_mean_score = (
+                    sum(previous_eval.scores.values()) / len(previous_eval.scores)
+                    if previous_eval.scores else 0.0
+                )
+                triggered = set()
+                if mean_recall < prev_recall:
+                    triggered.add("extraction")
+                if hier_acc < previous_eval.hierarchy_accuracy:
+                    triggered.add("hierarchy")
+                if mean_score < prev_mean_score:
+                    triggered.add("classification")
 
-            previous_scores = dict(eval_result.scores)
-            previous_prompt = current_prompt
-            current_prompt = next_prompt
+            # Step 4: Generate and evaluate one candidate per triggered prong
+            passing: list[tuple[str, StructuredPrompt, EvaluationOutput]] = []
+            print(f"\n  Triggered prongs: {triggered or 'none'}")
+
+            for scope in ("extraction", "hierarchy", "classification"):
+                if scope not in triggered:
+                    continue
+
+                print(f"\n  Proposing candidate for prong: {scope}")
+                candidate_prompt = self.propose_candidate(
+                    scope=scope,
+                    current_prompt=current_prompt,
+                    previous_prompt=previous_prompt,
+                    current_eval=eval_result,
+                    previous_eval=previous_eval or eval_result,
+                )
+
+                cand_trace = (
+                    str(_run_dir / f"iteration_{t + 1}_candidate_{scope}_trace")
+                    if _run_dir is not None else None
+                )
+                _, cand_eval = self.evaluate_candidate(
+                    candidate_prompt, location, extracted_policies_fn,
+                    ground_truth_policies, rubric, evaluator,
+                    source_document_path, cand_trace,
+                )
+
+                accepted, reason = self.accept_candidate(cand_eval, eval_result)
+                cand_mean = (
+                    sum(cand_eval.scores.values()) / len(cand_eval.scores)
+                    if cand_eval.scores else 0.0
+                )
+                print(f"    {reason}")
+
+                if _cand_writer is not None:
+                    _cand_writer.writerow({
+                        "iteration": t + 1,
+                        "location": location,
+                        "scope": scope,
+                        "accepted": accepted,
+                        "reason": reason,
+                        "mean_score": round(cand_mean, 4),
+                        "hierarchy_accuracy": round(cand_eval.hierarchy_accuracy, 4),
+                    })
+                    _cand_file.flush()
+
+                if accepted:
+                    passing.append((scope, candidate_prompt, cand_eval))
+
+            # Step 5: Accept the single best passing candidate (highest mean score)
+            if passing:
+                best_scope, best_prompt, best_eval = max(
+                    passing,
+                    key=lambda x: sum(x[2].scores.values()) / len(x[2].scores),
+                )
+                print(f"\n  Accepted candidate: {best_scope}")
+                previous_prompt = current_prompt
+                current_prompt = best_prompt
+                eval_result = best_eval
+            else:
+                print(f"\n  No candidates accepted — keeping current prompt")
+                previous_prompt = current_prompt
+
+            previous_eval = eval_result
 
         print(f"\n  Reached max iterations ({max_iterations}). Returning current prompt.")
         _close_logs()
