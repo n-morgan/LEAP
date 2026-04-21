@@ -100,6 +100,14 @@ class EvaluationOutput(BaseModel):
     grades: dict[str, PolicyGrade] = Field(
         description="Key format: '{category}::{policy_id}'. One entry per matched pair."
     )
+    hierarchy_accuracy: float = Field(
+        default=1.0,
+        description=(
+            "Fraction of matched pairs where extracted role equals ground-truth role. "
+            "E.g. 7 correct out of 10 matched pairs gives 0.7. "
+            "Defaults to 1.0 when no matched pairs exist."
+        ),
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -336,7 +344,7 @@ class LEAPEvaluator:
         ground_truth: list[dict[str, Any]],
         rubric: str,
         source_document: str,
-    ) -> tuple[float, float, float, dict[str, PolicyGrade]]:
+    ) -> tuple[float, float, float, dict[str, PolicyGrade], int, int]:
         """
         Evaluate one (location, category) cell.
 
@@ -345,16 +353,20 @@ class LEAPEvaluator:
         runs Hungarian matching within each role group independently.
 
         Returns:
-            score   — mean grade across all scores including -1 penalties
-            recall  — matched GT / total GT
-            fpr     — unmatched extracted / total extracted
-            grades  — dict of PolicyGrade keyed by '{category}::{policy_id}'
+            score         — mean grade across all scores including -1 penalties
+            recall        — matched GT / total GT
+            fpr           — unmatched extracted / total extracted
+            grades        — dict of PolicyGrade keyed by '{category}::{policy_id}'
+            role_correct  — matched pairs where extracted role == ground-truth role
+            total_matched — total matched pairs
         """
         grades: dict[str, PolicyGrade] = {}
         all_scores: list[int] = []
+        role_correct = 0
+        total_matched = 0
 
         if not extracted and not ground_truth:
-            return 0.0, 1.0, 0.0, grades
+            return 0.0, 1.0, 0.0, grades, 0, 0
 
         # Group by role for hierarchy-aware matching
         def by_role(policies: list[dict]) -> dict[str, list[dict]]:
@@ -413,6 +425,13 @@ class LEAPEvaluator:
                 )
                 all_scores.append(graded.grade)
 
+                # Role accuracy: compare extracted role to ground-truth role
+                ext_role = ext_group[local_ei].get("role", "individual")
+                gt_role = gt_group[local_gi].get("role", "individual")
+                if ext_role == gt_role:
+                    role_correct += 1
+                total_matched += 1
+
         # Unmatched GT: RLM missed them — penalize recall
         for gi in range(len(gt_flat)):
             if gi not in matched_gt:
@@ -427,7 +446,7 @@ class LEAPEvaluator:
         recall = len(matched_gt) / len(gt_flat) if gt_flat else 1.0
         fpr = (len(ext_flat) - len(matched_ext)) / len(ext_flat) if ext_flat else 0.0
 
-        return score, recall, fpr, grades
+        return score, recall, fpr, grades, role_correct, total_matched
 
     # ------------------------------------------------------------------
     # Public API
@@ -468,6 +487,8 @@ class LEAPEvaluator:
         recall: dict[str, float] = {}
         fpr: dict[str, float] = {}
         all_grades: dict[str, PolicyGrade] = {}
+        total_role_correct = 0
+        total_matched_pairs = 0
 
         for category in CATEGORIES:
             ext_cat = [
@@ -479,13 +500,20 @@ class LEAPEvaluator:
                 if p.get("primary_category") == category
             ]
 
-            s, r, f, cell_grades = self._evaluate_cell(
+            s, r, f, cell_grades, rc, tm = self._evaluate_cell(
                 category, ext_cat, gt_cat, rubric, doc_text
             )
             scores[category] = s
             recall[category] = r
             fpr[category] = f
             all_grades.update(cell_grades)
+            total_role_correct += rc
+            total_matched_pairs += tm
+
+        hierarchy_accuracy = (
+            total_role_correct / total_matched_pairs
+            if total_matched_pairs > 0 else 1.0
+        )
 
         return EvaluationOutput(
             location=location,
@@ -493,6 +521,7 @@ class LEAPEvaluator:
             recall=recall,
             fpr=fpr,
             grades=all_grades,
+            hierarchy_accuracy=hierarchy_accuracy,
         )
 
 
