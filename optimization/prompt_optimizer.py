@@ -1,9 +1,10 @@
 import csv
 import datetime
+import json as _json
 import os
 import pathlib
 from dataclasses import dataclass
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Literal, Optional
 
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -13,21 +14,11 @@ from rlm_pipeline import CLIMATE_RLM_SYSTEM_PROMPT, run_rlm_for_optimizer
 
 load_dotenv()
 
-# Maps primary_category string to StructuredPrompt field name
-_CATEGORY_TO_KEY: dict[str, str] = {
-    "Mitigation":             "mit",
-    "Adaptation":             "ada",
-    "Resource Efficiency":    "eff",
-    "Nature-Based Solutions": "nbs",
-}
-
 # Section headers used to compose/decompose the structured prompt string
 _SECTION_HEADERS: dict[str, str] = {
-    "gen": "## General",
-    "mit": "## Mitigation",
-    "ada": "## Adaptation",
-    "eff": "## Resource Efficiency",
-    "nbs": "## Nature-Based Solutions",
+    "extraction":     "## Extraction",
+    "hierarchy":      "## Hierarchy",
+    "classification": "## Classification",
 }
 
 
@@ -39,30 +30,22 @@ _SECTION_HEADERS: dict[str, str] = {
 @dataclass
 class StructuredPrompt:
     """
-    Five-prong decomposition of the RLM system prompt.
+    Three-prong task-based decomposition of the RLM system prompt.
 
-    Each prong is a plain string containing the instructions relevant to that
-    scope. Prongs are updated independently by the optimizer.
+    Each prong targets one failure mode the evaluator can detect:
+      extraction    — policy detection, field population, source quoting
+      hierarchy     — parent/sub/individual role assignment
+      classification — primary_category and related field assignment
 
-    Fields:
-        gen  — general extraction tips applicable across all categories
-        mit  — Mitigation-specific classification and extraction guidance
-        ada  — Adaptation-specific guidance
-        eff  — Resource Efficiency-specific guidance
-        nbs  — Nature-Based Solutions-specific guidance
+    Internal template per prong: Role, Include, Exclude, Decision Rules, Edge Cases.
     """
 
-    gen: str = ""
-    mit: str = ""
-    ada: str = ""
-    eff: str = ""
-    nbs: str = ""
+    extraction: str = ""
+    hierarchy: str = ""
+    classification: str = ""
 
     def compose(self) -> str:
-        """
-        Assemble all five prongs into a single prompt string using section headers.
-        Empty prongs are omitted.
-        """
+        """Assemble all three prongs into a single prompt string. Empty prongs are omitted."""
         parts: list[str] = []
         for key, header in _SECTION_HEADERS.items():
             content = getattr(self, key).strip()
@@ -73,9 +56,9 @@ class StructuredPrompt:
     @classmethod
     def decompose(cls, prompt: str) -> "StructuredPrompt":
         """
-        Parse a composed prompt string back into five prongs by locating
-        section headers. Falls back to placing the full text in gen if no
-        headers are found (e.g. legacy flat prompts).
+        Parse a composed prompt string back into three prongs by locating section
+        headers. Falls back to placing the full text in extraction if no headers
+        are found (e.g. legacy flat prompts).
         """
         positions: list[tuple[int, str]] = []
         for key, header in _SECTION_HEADERS.items():
@@ -85,7 +68,7 @@ class StructuredPrompt:
         positions.sort()
 
         if not positions:
-            return cls(gen=prompt.strip())
+            return cls(extraction=prompt.strip())
 
         sections: dict[str, str] = {k: "" for k in _SECTION_HEADERS}
         for i, (pos, key) in enumerate(positions):
@@ -98,11 +81,10 @@ class StructuredPrompt:
     @classmethod
     def from_flat(cls, prompt: str) -> "StructuredPrompt":
         """
-        Bootstrap from a flat (non-decomposed) prompt string.
-        Places the full content in gen and leaves category prongs empty.
-        Use this when migrating from a legacy single-string system prompt.
+        Bootstrap from a flat prompt string. Places full content in extraction.
+        Use migrate_flat_to_task_prongs() for a proper instruction redistribution.
         """
-        return cls(gen=prompt.strip())
+        return cls(extraction=prompt.strip())
 
 
 # ---------------------------------------------------------------------------
@@ -111,9 +93,17 @@ class StructuredPrompt:
 
 _RESAMPLE_SYSTEM = """\
 You are a prompt optimizer rewriting one section of a climate policy extraction
-system prompt. The section you receive is either the general extraction prong or
-a category-specific prong (Mitigation, Adaptation, Resource Efficiency, or
-Nature-Based Solutions).
+system prompt. The section you receive is one of three task-based prongs:
+
+  extraction    — instructions for identifying policies, populating extraction
+                  fields (role, parent_statement, policy_statement, source_quote,
+                  section_header, extraction_rationale), deciding what counts as
+                  a policy, and the overall extraction strategy.
+  hierarchy     — instructions for assigning parent/sub/individual roles and
+                  parent_statement, including hierarchy detection rules.
+  classification — instructions for assigning primary_category, financial_instrument,
+                   climate_relevance, and secondary_category, including the
+                   decision table and edge cases.
 
 SCORING OBJECTIVE:
 Each extracted policy is matched 1-to-1 against ground-truth policies via
@@ -129,13 +119,13 @@ of failure:
   - Low score, ok recall  → extractions are imprecise; improve quality guidance.
 
 You will receive:
-    CATEGORY  — the prong being rewritten
-    METRICS   — current score, recall, and FPR for this category
+    CATEGORY  — the prong being rewritten (extraction / hierarchy / classification)
+    METRICS   — current score, recall, and FPR
     SECTION   — the current text of the prong to rewrite
     FEEDBACK  — per-policy grade reasoning from the evaluation run
 
-Your task: rewrite SECTION to improve the score for this category. Fix the
-dominant failure mode shown by METRICS and FEEDBACK. Preserve what works.
+Your task: rewrite SECTION to improve the score. Fix the dominant failure mode
+shown by METRICS and FEEDBACK. Preserve what works.
 Do not add rules so strict that extraction is suppressed — a score of -1 from
 zero extractions is no better than a score of -1 from bad ones.
 
@@ -164,12 +154,11 @@ FEEDBACK:
 
 class LEAPPromptOptimizer:
     """
-    Implements Algorithm 2: LEAP Prompt Optimizer (per-location, per-category).
+    LEAP Prompt Optimizer — task-based prong update loop.
 
-    Decomposes the RLM system prompt into five prongs and updates each
-    independently based on per-location performance signals. Reverts a prong
-    to the previous version when a negative signal is detected for that
-    category or for the location overall.
+    Decomposes the RLM system prompt into three task-based prongs
+    (extraction, hierarchy, classification) and updates each independently
+    based on per-task signals derived from EvaluationOutput.
     """
 
     def __init__(self, model: str = "gpt-5.4") -> None:
@@ -255,71 +244,65 @@ class LEAPPromptOptimizer:
         previous_scores: dict[str, float],
     ) -> StructuredPrompt:
         """
-        Algorithm 2: update each prompt prong independently for one location.
+        Simplified task-prong update using aggregate signals.
 
-        For each category c:
-            Delta_{l,c} = S_t[l,c] - S_{t-1}[l,c]
-            if Delta_{l,c} > 0  -> keep current prong,   resample with F_{l,c}
-            else                -> revert previous prong, resample with F_{l,c}
+        Signals:
+          extraction    — mean recall (drop below 0.5 → revert)
+          hierarchy     — mean score delta (negative → revert)
+          classification — mean score delta (negative → revert)
 
-        For the general prong:
-            Delta_l = mean_c( Delta_{l,c} )
-            if Delta_l > 0  -> keep current gen prong,   resample with full F_l
-            else            -> revert previous gen prong, resample with full F_l
-
-        Args:
-            location:         location key (must match current_eval.location)
-            current_prompt:   five-prong prompt used to produce current_eval
-            previous_prompt:  five-prong prompt from the prior iteration
-            current_eval:     EvaluationOutput from LEAPEvaluator for this location
-            previous_scores:  S_{t-1}[l, :] — dict[category, float]
-
-        Returns:
-            Updated StructuredPrompt rho_{t+1}.
+        Replaced by the full candidate-based loop in Task 4.
         """
-        next_prompt = StructuredPrompt()
-        deltas: dict[str, float] = {}
+        mean_score = (
+            sum(current_eval.scores.values()) / len(current_eval.scores)
+            if current_eval.scores else 0.0
+        )
+        mean_score_prev = (
+            sum(previous_scores.values()) / len(previous_scores)
+            if previous_scores else 0.0
+        )
+        mean_delta = mean_score - mean_score_prev
+        mean_recall = (
+            sum(current_eval.recall.values()) / len(current_eval.recall)
+            if current_eval.recall else 0.0
+        )
+        mean_fpr = (
+            sum(current_eval.fpr.values()) / len(current_eval.fpr)
+            if current_eval.fpr else 0.0
+        )
+        feedback = self._format_feedback(current_eval)
 
-        # Per-category prong update
-        for category in CATEGORIES:
-            key = _CATEGORY_TO_KEY[category]
-            s_t = current_eval.scores.get(category, 0.0)
-            s_prev = previous_scores.get(category, 0.0)
-            delta = s_t - s_prev
-            deltas[category] = delta
-
-            # Negative signal: revert to previous prong as the rewrite base
-            base = getattr(current_prompt, key) if delta > 0 else getattr(previous_prompt, key)
-            feedback = self._format_feedback(current_eval, category=category)
-            setattr(next_prompt, key, self._resample(
-                base, feedback,
-                category=category,
-                score=s_t,
-                recall=current_eval.recall.get(category, 0.0),
-                fpr=current_eval.fpr.get(category, 0.0),
-            ))
-
-            direction = "keep" if delta > 0 else "revert"
-            print(f"  [{location}] {category:<30s}  delta={delta:+.3f}  ({direction})")
-
-        # General prong update — use mean delta across categories for this location
-        delta_l = sum(deltas.values()) / len(deltas) if deltas else 0.0
-        gen_base = current_prompt.gen if delta_l > 0 else previous_prompt.gen
-        full_feedback = self._format_feedback(current_eval)
-        mean_recall = sum(current_eval.recall.values()) / len(current_eval.recall) if current_eval.recall else 0.0
-        mean_fpr = sum(current_eval.fpr.values()) / len(current_eval.fpr) if current_eval.fpr else 0.0
-        next_prompt.gen = self._resample(
-            gen_base, full_feedback,
-            category="General",
-            score=delta_l,
-            recall=mean_recall,
-            fpr=mean_fpr,
+        ext_base = (
+            current_prompt.extraction if mean_recall >= 0.5 else previous_prompt.extraction
+        )
+        hier_base = (
+            current_prompt.hierarchy if mean_delta >= 0 else previous_prompt.hierarchy
+        )
+        cls_base = (
+            current_prompt.classification if mean_delta >= 0 else previous_prompt.classification
         )
 
-        gen_direction = "keep" if delta_l > 0 else "revert"
-        print(f"  [{location}] {'General':<30s}  delta={delta_l:+.3f}  ({gen_direction})")
+        print(f"  [{location}] extraction      recall={mean_recall:.3f}   "
+              f"({'keep' if mean_recall >= 0.5 else 'revert'})")
+        print(f"  [{location}] hierarchy       delta={mean_delta:+.3f}    "
+              f"({'keep' if mean_delta >= 0 else 'revert'})")
+        print(f"  [{location}] classification  delta={mean_delta:+.3f}    "
+              f"({'keep' if mean_delta >= 0 else 'revert'})")
 
-        return next_prompt
+        return StructuredPrompt(
+            extraction=self._resample(
+                ext_base, feedback, category="extraction",
+                score=mean_score, recall=mean_recall, fpr=mean_fpr,
+            ),
+            hierarchy=self._resample(
+                hier_base, feedback, category="hierarchy",
+                score=mean_score, recall=mean_recall, fpr=mean_fpr,
+            ),
+            classification=self._resample(
+                cls_base, feedback, category="classification",
+                score=mean_score, recall=mean_recall, fpr=mean_fpr,
+            ),
+        )
 
     # ------------------------------------------------------------------
     # Algorithm 3 — optimization loop
@@ -518,6 +501,62 @@ class LEAPPromptOptimizer:
 
 
 # ---------------------------------------------------------------------------
+# Legacy prompt migration utility
+# ---------------------------------------------------------------------------
+
+# Ordered list of section markers in CLIMATE_RLM_SYSTEM_PROMPT → target prong.
+# Preamble (before first marker) is routed to extraction.
+_FLAT_SECTION_TO_PRONG: list[tuple[str, str]] = [
+    ("EXTRACTION FIELDS:", "extraction"),
+    ("CLASSIFICATION FIELDS", "classification"),
+    ("WHAT COUNTS AS A POLICY:", "extraction"),
+    ("HIERARCHY RULES:", "hierarchy"),
+    ("STRATEGY:", "extraction"),
+    ("OUTPUT FORMAT:", "extraction"),
+]
+
+
+def migrate_flat_to_task_prongs(flat_prompt: str) -> StructuredPrompt:
+    """
+    Rule-based redistribution of the legacy flat CLIMATE_RLM_SYSTEM_PROMPT
+    into three task-based prongs.
+
+    Mapping:
+      extraction    — preamble + EXTRACTION FIELDS + WHAT COUNTS AS A POLICY
+                      + STRATEGY + OUTPUT FORMAT
+      hierarchy     — HIERARCHY RULES
+      classification — CLASSIFICATION FIELDS
+    """
+    found: list[tuple[int, str, str]] = []
+    for marker, prong in _FLAT_SECTION_TO_PRONG:
+        idx = flat_prompt.find(marker)
+        if idx != -1:
+            found.append((idx, marker, prong))
+    found.sort()
+
+    if not found:
+        return StructuredPrompt(extraction=flat_prompt.strip())
+
+    chunks: dict[str, list[str]] = {
+        "extraction": [], "hierarchy": [], "classification": []
+    }
+
+    preamble = flat_prompt[: found[0][0]].strip()
+    if preamble:
+        chunks["extraction"].append(preamble)
+
+    for i, (pos, _marker, prong) in enumerate(found):
+        end = found[i + 1][0] if i + 1 < len(found) else len(flat_prompt)
+        chunks[prong].append(flat_prompt[pos:end].strip())
+
+    return StructuredPrompt(
+        extraction="\n\n".join(chunks["extraction"]),
+        hierarchy="\n\n".join(chunks["hierarchy"]),
+        classification="\n\n".join(chunks["classification"]),
+    )
+
+
+# ---------------------------------------------------------------------------
 # CLI entry point
 # ---------------------------------------------------------------------------
 
@@ -565,9 +604,9 @@ if __name__ == "__main__":
         "and accuracy relative to the source document."
     )
 
-    # Seed from the full current system prompt so optimization starts from a
-    # working baseline rather than a blank slate.
-    initial_prompt = StructuredPrompt.from_flat(CLIMATE_RLM_SYSTEM_PROMPT)
+    # Redistribute the flat system prompt into the three task-based prongs so
+    # optimization starts from a structured baseline rather than a blank slate.
+    initial_prompt = migrate_flat_to_task_prongs(CLIMATE_RLM_SYSTEM_PROMPT)
 
     optimizer = LEAPPromptOptimizer(model=MODEL)
     optimized = optimizer.run_loop(
