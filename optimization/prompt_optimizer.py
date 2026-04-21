@@ -115,6 +115,14 @@ system prompt. The section you receive is either the general extraction prong or
 a category-specific prong (Mitigation, Adaptation, Resource Efficiency, or
 Nature-Based Solutions).
 
+FIXED GROUNDING CRITERIA:
+The RLM always receives a fixed expert extraction criteria document alongside the
+source policy document. This grounding criteria is provided to you under
+GROUNDING CRITERIA below. You cannot change it and must not duplicate it.
+Your rewrite should complement the grounding criteria — add specificity where it
+is silent, resolve ambiguities it leaves open, and avoid restating rules it
+already covers clearly.
+
 SCORING OBJECTIVE:
 Each extracted policy is matched 1-to-1 against ground-truth policies via
 embedding similarity (Hungarian algorithm). Matched pairs are graded +1 / 0 / -1.
@@ -124,20 +132,22 @@ The final score is the mean over all these values — so the prompt must balance
 recall (extract everything real) against precision (avoid spurious policies).
 Recall and FPR are provided alongside the score so you can diagnose the direction
 of failure:
-  - High FPR, low score  → too many spurious extractions; tighten criteria.
-  - Low recall, low score → missing real policies; loosen criteria or add cues.
-  - Low score, ok recall  → extractions are imprecise; improve quality guidance.
+  - High FPR, low score  -> too many spurious extractions; tighten criteria.
+  - Low recall, low score -> missing real policies; loosen criteria or add cues.
+  - Low score, ok recall  -> extractions are imprecise; improve quality guidance.
 
 You will receive:
-    CATEGORY  — the prong being rewritten
-    METRICS   — current score, recall, and FPR for this category
-    SECTION   — the current text of the prong to rewrite
-    FEEDBACK  — per-policy grade reasoning from the evaluation run
+    CATEGORY           -- the prong being rewritten
+    METRICS            -- current score, recall, and FPR for this category
+    GROUNDING CRITERIA -- fixed expert criteria passed to the RLM every run (read-only)
+    SECTION            -- the current text of the prong to rewrite
+    FEEDBACK           -- per-policy grade reasoning from the evaluation run
 
 Your task: rewrite SECTION to improve the score for this category. Fix the
 dominant failure mode shown by METRICS and FEEDBACK. Preserve what works.
 Do not add rules so strict that extraction is suppressed — a score of -1 from
 zero extractions is no better than a score of -1 from bad ones.
+Do not restate anything already covered by GROUNDING CRITERIA.
 
 Return ONLY the rewritten prong text. Do not include the section header.
 No preamble, no explanation.
@@ -148,6 +158,9 @@ CATEGORY: {category}
 
 METRICS:
   score={score:+.3f}  recall={recall:.3f}  fpr={fpr:.3f}
+
+GROUNDING CRITERIA (fixed, read-only — do not restate or contradict):
+{grounding_criteria}
 
 SECTION:
 {section}
@@ -197,10 +210,15 @@ class LEAPPromptOptimizer:
         score: float = 0.0,
         recall: float = 0.0,
         fpr: float = 0.0,
+        grounding_criteria: str = "",
     ) -> str:
         """
-        Rewrite one prompt prong conditioned on grade reasoning feedback and
-        current performance metrics. Returns the rewritten prong text (no header).
+        Rewrite one prompt prong conditioned on grade reasoning feedback,
+        current performance metrics, and the fixed grounding criteria document.
+        Returns the rewritten prong text (no header).
+
+        grounding_criteria is shown to the resampler as a read-only fixed input
+        so it does not duplicate or contradict rules already covered by that doc.
         """
         response = self._get_client().chat.completions.create(
             model=self.model,
@@ -211,6 +229,7 @@ class LEAPPromptOptimizer:
                     score=score,
                     recall=recall,
                     fpr=fpr,
+                    grounding_criteria=grounding_criteria or "(none provided)",
                     section=section or "(empty — write from scratch based on feedback)",
                     feedback=feedback or "No specific feedback available.",
                 )},
@@ -253,6 +272,7 @@ class LEAPPromptOptimizer:
         previous_prompt: StructuredPrompt,
         current_eval: EvaluationOutput,
         previous_scores: dict[str, float],
+        grounding_criteria: str = "",
     ) -> StructuredPrompt:
         """
         Algorithm 2: update each prompt prong independently for one location.
@@ -297,6 +317,7 @@ class LEAPPromptOptimizer:
                 score=s_t,
                 recall=current_eval.recall.get(category, 0.0),
                 fpr=current_eval.fpr.get(category, 0.0),
+                grounding_criteria=grounding_criteria,
             ))
 
             direction = "keep" if delta > 0 else "revert"
@@ -314,6 +335,7 @@ class LEAPPromptOptimizer:
             score=delta_l,
             recall=mean_recall,
             fpr=mean_fpr,
+            grounding_criteria=grounding_criteria,
         )
 
         gen_direction = "keep" if delta_l > 0 else "revert"
@@ -333,6 +355,7 @@ class LEAPPromptOptimizer:
         rubric: str,
         initial_prompt: StructuredPrompt,
         source_document_path: Optional[pathlib.Path | str] = None,
+        grounding_criteria_path: Optional[pathlib.Path | str] = None,
         max_iterations: int = 10,
         epsilon: float = 0.01,
         log_dir: Optional[pathlib.Path | str] = None,
@@ -369,6 +392,17 @@ class LEAPPromptOptimizer:
             Optimized StructuredPrompt rho*.
         """
         evaluator = LEAPEvaluator(model=self.model)
+
+        # Load grounding criteria once — shown to the resampler every iteration
+        # as a read-only fixed input it must complement but cannot change.
+        grounding_criteria: str = ""
+        if grounding_criteria_path is not None:
+            gc_path = pathlib.Path(grounding_criteria_path)
+            if gc_path.exists():
+                grounding_criteria = gc_path.read_text(encoding="utf-8")
+                print(f"  Grounding criteria loaded: {gc_path} ({len(grounding_criteria):,} chars)")
+            else:
+                print(f"  [WARN] grounding_criteria_path not found: {gc_path} — proceeding without it")
 
         current_prompt = initial_prompt
         previous_prompt = initial_prompt
@@ -506,6 +540,7 @@ class LEAPPromptOptimizer:
                 previous_prompt=previous_prompt,
                 current_eval=eval_result,
                 previous_scores=previous_scores,
+                grounding_criteria=grounding_criteria,
             )
 
             previous_scores = dict(eval_result.scores)
@@ -545,6 +580,11 @@ if __name__ == "__main__":
     ground_truth_policies = load_policies(OUTPUTS_DIR / "structured_policies.csv")
     print(f"Loaded {len(ground_truth_policies)} ground-truth policies.")
 
+    # Grounding criteria: fixed expert extraction document passed to every RLM
+    # run. The optimizer is made aware of it so the resampler does not duplicate
+    # or contradict it. It is never modified by the optimizer.
+    GROUNDING_CRITERIA_PATH = _DEFAULT_EXPERT_KNOWLEDGE_PATH
+
     # Live RLM extraction: the optimizer calls this with the current composed
     # prompt at each iteration, re-runs the RLM, and scores the new output.
     # This is what closes the loop — each iteration uses a fresh RLM run under
@@ -553,6 +593,7 @@ if __name__ == "__main__":
         return run_rlm_for_optimizer(
             prompt_string=prompt,
             document_path=SEATTLE_DOC,
+            expert_knowledge_path=GROUNDING_CRITERIA_PATH,
             trace_dir=trace_dir,
             model_name=MODEL,
             sub_model_name=MODEL,
@@ -577,6 +618,7 @@ if __name__ == "__main__":
         rubric=DEFAULT_RUBRIC,
         initial_prompt=initial_prompt,
         source_document_path=SEATTLE_DOC,
+        grounding_criteria_path=GROUNDING_CRITERIA_PATH,
         max_iterations=3,
         log_dir=_HERE / "logs",
     )
