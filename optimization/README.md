@@ -6,12 +6,115 @@ Prompt optimization loop for the climate-policy RLM pipeline.
 
 | File | Description |
 |---|---|
-| `evaluator.py` | LEAP Evaluator (Algorithm 1) — grades RLM output against GENIUS ground truth per location |
-| `prompt_optimizer.py` | LEAP Prompt Optimizer (Algorithms 2 & 3) — per-category prompt update with negative signal guard |
+| `evaluator.py` | LEAP Evaluator — legacy bucketed path **plus** the redesigned global-matching path (gated by `use_new_evaluator`) |
+| `llm_evaluator.py` | `LLMEvaluator` — same global matching + `EvaluationBundle` as the new path, but grades with a **single structured LLM call** per pair (no RLM); recommended for fast structured-vs-structured scoring |
+| `metrics.py` | Pure-function metric bundles (extraction / hierarchy / classification / quality) and composite-score utilities |
+| `dev_test_split.py` | `LocationConfig` / `LocationSet` + `locations.yaml` loader (dev set used for acceptance, test set held out) |
+| `prompt_optimizer.py` | LEAP Prompt Optimizer — legacy `run_loop` and the redesigned `run_loop_v2` (sequential within-iteration acceptance, multi-location, multi-criterion) |
+| `compare_legacy_vs_new.py` | Go/no-go harness: runs both loops on the same dev set and writes `comparison_report.md` |
+| `tests/` | Pytest suite covering metric round-tripping, global matching, bundle math, per-prong triggers, evaluator smoke, end-to-end loop, and grader JSON parsing |
+
+## Redesigned evaluator (new path)
+
+Set `use_new_evaluator=True` on `LEAPEvaluator` to opt in. The evaluator returns
+an `EvaluationBundle` carrying four orthogonal sub-bundles plus a composite
+score.
+
+**Faster grader (no RLM in evaluation):** use
+[`llm_evaluator.LLMEvaluator`](llm_evaluator.py) instead. It returns the same
+`EvaluationBundle` and composite metrics, but each pair is graded with one
+`chat.completions.parse` call. By default the grader does not use the source
+document (structured vs. structured); pass `include_source_document=True` to
+inline the full markdown into the grader user prompt. `LEAPEvaluator` is
+unchanged for A/B tests and for workflows that need the RLM when a document path
+is provided.
+
+Example (`LEAPEvaluator` — if `source_document_path` is set, grading uses the RLM
+path and is slow):
+
+```python
+from evaluator import LEAPEvaluator
+
+ev = LEAPEvaluator(use_new_evaluator=True, similarity_threshold=0.55)
+bundle = ev.evaluate(
+    location="Seattle_US",
+    extracted_policies=rlm_output,
+    ground_truth_policies=genius_output,
+    rubric="...",
+    source_document_path=...,
+)
+print(bundle.extraction.f1)
+print(bundle.hierarchy.role_agreement)
+print(bundle.classification.primary_category_agreement)
+print(bundle.quality.plus_one_coverage)
+print(bundle.composite_score)
+```
+
+Faster, same return type: `from llm_evaluator import LLMEvaluator` and the same
+`evaluate(...)` call; omit `include_source_document` (default) for
+structured-only grading, or set `include_source_document=True` to inline the doc
+with one non-RLM grader call per pair.
+
+Matching is category-agnostic Hungarian on the full N×M cosine similarity
+matrix with a similarity threshold τ — pairs below τ are dropped to
+`unmatched_extracted` / `unmatched_gt` rather than force-assigned. This
+decouples extraction from classification so each prong's signal is
+approximately independent of the others' edits.
+
+Grading is concurrent (`asyncio.gather` with a `Semaphore(8)`) and the grader
+emits per-field verdicts (`statement_match`, `role_match`, `category_match`)
+that flow into the per-prong feedback assembly.
+
+## Redesigned optimizer loop (`run_loop_v2`)
+
+`run_loop_v2` walks triggered prongs in priority order
+(`extraction → hierarchy → classification`) and threads the running prompt /
+bundle through within a single iteration so multiple prong rewrites can
+compound. Acceptance is multi-criterion (composite delta + per-metric floors)
+and aggregated across the dev `LocationSet` over `seeds` runs each.
+
+```python
+from prompt_optimizer import LEAPPromptOptimizer, PrognTarget, AcceptanceConfig
+from dev_test_split import load_locations_from_yaml
+
+location_set = load_locations_from_yaml("locations.yaml")
+optimizer = LEAPPromptOptimizer()
+optimized = optimizer.run_loop_v2(
+    location_set=location_set,
+    extracted_policies_fn=my_extract_fn,
+    rubric="...",
+    initial_prompt=initial_prompt,
+    max_iterations=10,
+    seeds=2,
+    targets=PrognTarget(),
+    acceptance=AcceptanceConfig(),
+    log_dir="logs/",
+)
+```
+
+Logs (under a timestamped `v2_*` subdirectory of `log_dir`):
+
+| File | Description |
+|---|---|
+| `iteration_log.csv` | one row per main evaluation, with composite, std, all bundle headlines, triggered prongs, and the composed prompt |
+| `candidate_log.csv` | one row per candidate (accepted or rejected) with scope, reason, composite delta, and per-bundle headlines |
+| `metrics_bundle_iter_*.json` | full structured bundle dump per iteration (for offline analysis) |
+| `test_results.json` | single test-set evaluation at loop end + dev→test gap |
+
+Run the comparison harness against legacy:
+
+```bash
+python3 compare_legacy_vs_new.py --iterations 3 --locations locations.yaml
+```
+
+It writes `logs/comparison/comparison_report.md` with composite trajectories,
+per-bundle metrics, accepted-candidate counts per iteration, and dev→test gap.
+
+## Legacy evaluator (default, kept until cutover)
 
 ---
 
-## evaluator.py
+## evaluator.py (legacy bucketed path)
 
 Implements **Algorithm 1: LEAP Evaluator**. Groups extracted and ground-truth policies by category and role, runs optimal 1:1 Hungarian matching on embedding similarity, grades each matched pair via a grader LLM (+1 / 0 / -1), and penalizes unmatched policies on both sides.
 

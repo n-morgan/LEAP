@@ -1,5 +1,0 @@
-iteration,location,scope,accepted,reason,mean_score,hierarchy_accuracy
-1,Seattle_US,extraction,True,accepted: mean score -0.487 → -0.432,-0.4318,1.0
-1,Seattle_US,hierarchy,True,accepted: mean score -0.487 → -0.500,-0.5,1.0
-1,Seattle_US,classification,True,accepted: mean score -0.487 → -0.447,-0.4474,1.0
-2,Seattle_US,classification,True,accepted: mean score -0.500 → -0.386,-0.3864,1.0

@@ -1,0 +1,42 @@
+# LEAP optimizer location split.
+#
+# Each entry is a city the loop will run extraction + evaluation against.
+# Paths are resolved relative to this file's directory (optimization/).
+#
+# - `location_column` is the column in the GT CSV whose value equals `name`
+#   verbatim. The current CSV identifies rows by `city`.
+# - `ground_truth_csv` points at the shared multi-city CSV; each entry filters
+#   it down to rows where city == name.
+# - `source_document_md` is the markdown the RLM reads to extract policies for
+#   this city. Must exist for the entry to be runnable.
+# - `split`: "dev" entries drive acceptance each iteration; "test" entries are
+#   evaluated once at loop end for the overfit estimate.
+
+location_column: city
+
+locations:
+  - name: Utah_United_States
+    ground_truth_csv: ../all_cities_kept_classified_policies_final.csv
+    source_document_md: organized_markdowns/Utah.md
+    split: dev
+  - name: Austin_Texas_United_States
+    ground_truth_csv: ../all_cities_kept_classified_policies_final.csv
+    source_document_md: organized_markdowns/Austin.md
+    split: dev
+  - name: Seattle_WA_US
+    ground_truth_csv: ../all_cities_kept_classified_policies_final.csv
+    source_document_md: organized_markdowns/Seattle.md
+    split: dev
+
+  - name: Kuwait
+    ground_truth_csv: ../all_cities_kept_classified_policies_final.csv
+    source_document_md: organized_markdowns/Kuwait.md
+    split: test
+  - name: Memphis_Tenesse_United_States
+    ground_truth_csv: ../all_cities_kept_classified_policies_final.csv
+    source_document_md: organized_markdowns/Memphis.md
+    split: test
+  - name: Miami_Dade_Florida_United_States
+    ground_truth_csv: ../all_cities_kept_classified_policies_final.csv
+    source_document_md: organized_markdowns/Miami-Dade.md
+    split: test

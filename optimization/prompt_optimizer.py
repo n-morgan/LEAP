@@ -3,13 +3,34 @@ import datetime
 import json as _json
 import os
 import pathlib
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Callable, Literal, Optional
 
 from dotenv import load_dotenv
 from openai import OpenAI
 
-from evaluator import CATEGORIES, EvaluationOutput, LEAPEvaluator
+from evaluator import (
+    CATEGORIES,
+    DEFAULT_MODEL,
+    EvaluationOutput,
+    LEAPEvaluator,
+)
+from metrics import (
+    DEFAULT_COMPOSITE_WEIGHTS,
+    EvaluationBundle,
+    aggregate_bundles,
+    compute_composite_score,
+    compute_extraction_bundle,
+    compute_classification_bundle,
+    compute_hierarchy_bundle,
+    compute_quality_bundle,
+    ExtractionBundle,
+    HierarchyBundle,
+    ClassificationBundle,
+    QualityBundle,
+    MatchingResult,
+)
+from dev_test_split import LocationConfig, LocationSet, load_locations_from_yaml
 from rlm_pipeline import CLIMATE_RLM_SYSTEM_PROMPT, run_rlm_for_optimizer
 
 load_dotenv()
@@ -148,6 +169,289 @@ FEEDBACK:
 
 
 # ---------------------------------------------------------------------------
+# Per-prong resampler templates (new evaluator path)
+# ---------------------------------------------------------------------------
+
+def _build_resample_user_v2(
+    scope: str,
+    headline_name: str,
+    headline_value: float,
+    target: float,
+    delta: float,
+    supporting: str,
+    section: str,
+    failure_examples: str,
+) -> str:
+    """Build the v2 resampler user message without ``str.format`` on a template.
+
+    Prompt prongs and failure-example blocks can contain ``{...}`` (JSON, TeX, etc.).
+    A single ``.format()`` on a string that includes those as *values* is safe, but
+    a mistaken ``{n}`` or similar in the *template* or double-formatting bugs cause
+    ``KeyError``. F-string interpolation only evaluates the given expressions.
+    """
+    section_display = section or (
+        "(empty — write from scratch based on feedback)"
+    )
+    return (
+        f"PRONG: {scope}\n\n"
+        f"HEADLINE METRIC ({headline_name}): {headline_value:.3f}\n"
+        f"TARGET: {target:.3f}\n"
+        f"DELTA SINCE LAST ITERATION: {delta:+.3f}\n\n"
+        f"SUPPORTING METRICS:\n{supporting}\n\n"
+        f"CURRENT SECTION:\n{section_display}\n\n"
+        f"FAILURE EXAMPLES (worst cases for this prong):\n{failure_examples}\n"
+    )
+
+
+# ---------------------------------------------------------------------------
+# Per-prong targets and trigger logic
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class PrognTarget:
+    """Target headline values per prong. A prong is triggered when its current
+    headline is below target OR has worsened since the last iteration."""
+
+    extraction_f1: float = 0.70
+    hierarchy_role_agreement: float = 0.85
+    hierarchy_parent_attribution: float = 0.85
+    classification_primary_agreement: float = 0.85
+
+
+@dataclass
+class AcceptanceConfig:
+    """Multi-criterion acceptance configuration for the new evaluator path.
+
+    A candidate is accepted if EITHER:
+      (i)  composite_score improves by at least ``min_delta`` AND no metric in
+           ``per_metric_floor`` drops by more than its floor, OR
+      (ii) the **targeted prong**'s headline metric improves by at least
+           ``prong_min_delta`` AND composite does not regress by more than
+           ``composite_regression_tolerance``.
+
+    The second clause exists because prong rewrites inside a single RLM pass
+    are entangled: a large win on one prong is commonly paired with a small
+    loss on another. Without (ii) the optimizer rejects real wins whenever the
+    composite is momentarily flat or slightly negative.
+    """
+
+    min_delta: float = 0.005
+    prong_min_delta: float = 0.05
+    composite_regression_tolerance: float = 0.05
+    per_metric_floor: dict[str, float] = field(default_factory=lambda: {
+        "extraction.f1": 0.10,
+        "hierarchy.role_agreement": 0.15,
+        "classification.primary_category_agreement": 0.15,
+        "quality.plus_one_coverage": 0.20,
+    })
+
+
+# Maps scope → dotted metric path for the per-prong acceptance clause.
+_PRONG_HEADLINE: dict[str, str] = {
+    "extraction":     "extraction.f1",
+    "hierarchy":      "hierarchy.role_agreement",
+    "classification": "classification.primary_category_agreement",
+}
+
+
+def _triggered_prongs(
+    current: EvaluationBundle,
+    previous: Optional[EvaluationBundle],
+    targets: PrognTarget,
+) -> set[str]:
+    """Determine which prongs to rewrite this iteration.
+
+    A prong fires when its headline metric worsened vs. the last accepted
+    bundle OR is still below its target.
+
+    On iteration 1 (no previous bundle) all three prongs are bootstrapped.
+    """
+    if previous is None:
+        return {"extraction", "hierarchy", "classification"}
+
+    triggered: set[str] = set()
+    if (
+        current.extraction.f1 < previous.extraction.f1
+        or current.extraction.f1 < targets.extraction_f1
+    ):
+        triggered.add("extraction")
+
+    cur_h = (current.hierarchy.role_agreement + current.hierarchy.parent_attribution_accuracy) / 2
+    prev_h = (previous.hierarchy.role_agreement + previous.hierarchy.parent_attribution_accuracy) / 2
+    h_target = (targets.hierarchy_role_agreement + targets.hierarchy_parent_attribution) / 2
+    if cur_h < prev_h or cur_h < h_target:
+        triggered.add("hierarchy")
+
+    if (
+        current.classification.primary_category_agreement
+        < previous.classification.primary_category_agreement
+        or current.classification.primary_category_agreement
+        < targets.classification_primary_agreement
+    ):
+        triggered.add("classification")
+
+    return triggered
+
+
+def ordered_triggered(scopes: set[str]) -> list[str]:
+    """Canonical priority order: extraction first, then hierarchy, then classification."""
+    return [s for s in ("extraction", "hierarchy", "classification") if s in scopes]
+
+
+def _get_metric(bundle: EvaluationBundle, dotted: str) -> float:
+    """Resolve a dotted metric path on an EvaluationBundle."""
+    obj: Any = bundle
+    for part in dotted.split("."):
+        obj = getattr(obj, part)
+    return float(obj)
+
+
+# ---------------------------------------------------------------------------
+# Per-prong feedback assembly
+# ---------------------------------------------------------------------------
+
+
+def _assemble_prong_feedback(
+    bundle: EvaluationBundle,
+    scope: Literal["extraction", "hierarchy", "classification"],
+    n_examples: int = 6,
+) -> tuple[str, str, float, float, str]:
+    """Return (failure_examples, supporting, headline_value, target_default, headline_name)
+    for the given prong scope.
+
+    The failure examples are filtered so each prong only sees the failures it
+    can actually move:
+      extraction    — worst unmatched GT items (missed extractions),
+                      capped to ``n_examples``.
+      hierarchy     — matched pairs where extracted role != GT role.
+      classification — matched pairs where extracted primary_category !=
+                       GT primary_category.
+    """
+    if scope == "extraction":
+        headline_name = "extraction.f1"
+        headline = bundle.extraction.f1
+        target = 0.70
+
+        per_cat = ", ".join(
+            f"{c}={r:.2f}" for c, r in sorted(bundle.extraction.per_category_recall.items())
+        ) or "(none)"
+        supporting = (
+            f"  precision = {bundle.extraction.precision:.3f}\n"
+            f"  recall    = {bundle.extraction.recall:.3f}\n"
+            f"  per_category_recall: {per_cat}\n"
+            f"  category_distribution_jsd = {bundle.extraction.category_distribution_jsd:.3f}\n"
+            f"  +1 coverage = {bundle.extraction.plus_one_coverage:.3f}"
+        )
+
+        missed = bundle.matching.unmatched_gt[:n_examples]
+        spurious = bundle.matching.unmatched_extracted[:n_examples]
+        examples_lines: list[str] = []
+        if missed:
+            examples_lines.append("MISSED GT POLICIES (extractor failed to surface):")
+            for p in missed:
+                examples_lines.append(
+                    f"  - [{p.get('primary_category', '?')}/{p.get('role', '?')}] "
+                    f"{(p.get('policy_statement') or '')[:160]}"
+                )
+        if spurious:
+            examples_lines.append("\nSPURIOUS EXTRACTIONS (no GT counterpart above threshold):")
+            for p in spurious:
+                examples_lines.append(
+                    f"  - [{p.get('primary_category', '?')}/{p.get('role', '?')}] "
+                    f"{(p.get('policy_statement') or '')[:160]}"
+                )
+        examples = "\n".join(examples_lines) or "(no extraction failures to report)"
+        return examples, supporting, headline, target, headline_name
+
+    if scope == "hierarchy":
+        headline_name = "hierarchy.role_agreement"
+        headline = bundle.hierarchy.role_agreement
+        target = 0.85
+
+        supporting = (
+            f"  role_agreement              = {bundle.hierarchy.role_agreement:.3f}\n"
+            f"  parent_attribution_accuracy = {bundle.hierarchy.parent_attribution_accuracy:.3f}"
+        )
+
+        # (gt_role, ext_role, statement, gt_parent, verbatim_excerpt)
+        confusions: list[tuple[str, str, str, str, str]] = []
+        for pair in bundle.matching.matched:
+            gt_role = pair.ground_truth.get("role", "individual")
+            ext_role = pair.extracted.get("role", "individual")
+            if gt_role != ext_role:
+                confusions.append((
+                    gt_role, ext_role,
+                    (pair.ground_truth.get("policy_statement") or "")[:140],
+                    (pair.ground_truth.get("parent_statement") or "").strip()[:140],
+                    (pair.ground_truth.get("verbatim_text") or "").strip()[:200],
+                ))
+            if len(confusions) >= n_examples:
+                break
+
+        if confusions:
+            lines = ["ROLE CONFUSIONS (gt → ext on matched pairs):"]
+            for gt_r, ext_r, stmt, gt_parent, verbatim in confusions:
+                lines.append(f"  - {gt_r} → {ext_r} | {stmt}")
+                if gt_parent:
+                    lines.append(f"      gt.parent_statement: {gt_parent}")
+                if verbatim:
+                    lines.append(f"      source_excerpt:      {verbatim}")
+            examples = "\n".join(lines)
+        else:
+            examples = "(no role confusions on the matched set)"
+        return examples, supporting, headline, target, headline_name
+
+    # classification
+    headline_name = "classification.primary_category_agreement"
+    headline = bundle.classification.primary_category_agreement
+    target = 0.85
+
+    cm = bundle.classification.confusion_matrix
+    cm_lines = []
+    for gt_cat, row in sorted(cm.items()):
+        for ext_cat, count in sorted(row.items()):
+            if gt_cat != ext_cat and count > 0:
+                cm_lines.append(f"  - {gt_cat} → {ext_cat}: {count}")
+    cm_str = "\n".join(cm_lines) or "(no off-diagonal confusions)"
+
+    supporting = (
+        f"  primary_category_agreement      = {bundle.classification.primary_category_agreement:.3f}\n"
+        f"  financial_instrument_agreement  = {bundle.classification.financial_instrument_agreement:.3f}\n"
+        f"  secondary_category_agreement    = {bundle.classification.secondary_category_agreement:.3f}\n"
+        f"OFF-DIAGONAL CONFUSION (gt → ext: count):\n{cm_str}"
+    )
+
+    # (gt_cat, ext_cat, statement, gt_mechanism, grader_reasoning)
+    confusions: list[tuple[str, str, str, str, str]] = []
+    for pair in bundle.matching.matched:
+        gt_cat = pair.ground_truth.get("primary_category", "Unknown")
+        ext_cat = pair.extracted.get("primary_category", "Unknown")
+        if gt_cat != ext_cat:
+            confusions.append((
+                gt_cat, ext_cat,
+                (pair.ground_truth.get("policy_statement") or "")[:140],
+                (pair.ground_truth.get("canonical_mechanism") or "").strip()[:140],
+                (pair.reasoning or "").strip()[:320],
+            ))
+        if len(confusions) >= n_examples:
+            break
+
+    if confusions:
+        lines = ["CATEGORY CONFUSIONS (gt → ext on matched pairs):"]
+        for gt_c, ext_c, stmt, mech, reasoning in confusions:
+            lines.append(f"  - {gt_c} → {ext_c} | {stmt}")
+            if mech:
+                lines.append(f"      gt.canonical_mechanism: {mech}")
+            if reasoning:
+                lines.append(f"      grader:                 {reasoning}")
+        examples = "\n".join(lines)
+    else:
+        examples = "(no category confusions on the matched set)"
+    return examples, supporting, headline, target, headline_name
+
+
+# ---------------------------------------------------------------------------
 # LEAPPromptOptimizer
 # ---------------------------------------------------------------------------
 
@@ -161,7 +465,7 @@ class LEAPPromptOptimizer:
     based on per-task signals derived from EvaluationOutput.
     """
 
-    def __init__(self, model: str = "gpt-5.4") -> None:
+    def __init__(self, model: str = DEFAULT_MODEL) -> None:
         self.model = model
         self._client: Optional[OpenAI] = None
 
@@ -457,6 +761,121 @@ class LEAPPromptOptimizer:
         return True, f"accepted: mean score {mean_curr:+.3f} → {mean_cand:+.3f}"
 
     # ------------------------------------------------------------------
+    # Per-prong proposer (new evaluator path)
+    # ------------------------------------------------------------------
+
+    def propose_candidate_v2(
+        self,
+        scope: Literal["extraction", "hierarchy", "classification"],
+        current_prompt: StructuredPrompt,
+        current_bundle: EvaluationBundle,
+        previous_bundle: Optional[EvaluationBundle] = None,
+        targets: Optional[PrognTarget] = None,
+    ) -> StructuredPrompt:
+        """Rewrite the named prong on top of the current prompt using bundle-based feedback.
+
+        Other prongs are copied through unchanged so the candidate prompt only
+        differs in one prong.
+        """
+        targets = targets or PrognTarget()
+
+        examples, supporting, headline, target, headline_name = _assemble_prong_feedback(
+            current_bundle, scope
+        )
+        prev_headline = (
+            _get_metric(previous_bundle, headline_name) if previous_bundle is not None else headline
+        )
+        delta = headline - prev_headline
+
+        section = getattr(current_prompt, scope)
+        user_msg = _build_resample_user_v2(
+            scope=scope,
+            headline_name=headline_name,
+            headline_value=headline,
+            target=target,
+            delta=delta,
+            supporting=supporting,
+            section=section,
+            failure_examples=examples,
+        )
+
+        response = self._get_client().chat.completions.create(
+            model=self.model,
+            messages=[
+                {"role": "system", "content": _RESAMPLE_SYSTEM},
+                {"role": "user", "content": user_msg},
+            ],
+        )
+        rewritten = (response.choices[0].message.content or "").strip()
+
+        return StructuredPrompt(
+            extraction=rewritten if scope == "extraction" else current_prompt.extraction,
+            hierarchy=rewritten if scope == "hierarchy" else current_prompt.hierarchy,
+            classification=rewritten if scope == "classification" else current_prompt.classification,
+        )
+
+    def accept_candidate_v2(
+        self,
+        candidate: EvaluationBundle,
+        current: EvaluationBundle,
+        config: Optional[AcceptanceConfig] = None,
+        scope: Optional[str] = None,
+    ) -> tuple[bool, str]:
+        """Multi-criterion acceptance against the running baseline.
+
+        Accept if EITHER composite improves by at least ``min_delta`` (with no
+        per-metric cliff) OR the scope's headline metric improves by at least
+        ``prong_min_delta`` while composite does not regress by more than
+        ``composite_regression_tolerance`` (and still no per-metric cliff).
+        """
+        cfg = config or AcceptanceConfig()
+        composite_delta = candidate.composite_score - current.composite_score
+
+        def _check_cliff() -> Optional[str]:
+            for metric, floor in cfg.per_metric_floor.items():
+                drop = _get_metric(current, metric) - _get_metric(candidate, metric)
+                if drop >= floor:
+                    return f"{metric} cliff: dropped {drop:.3f} (floor {floor:.3f})"
+            return None
+
+        # Clause (i): composite improvement path
+        if composite_delta >= cfg.min_delta:
+            cliff = _check_cliff()
+            if cliff is not None:
+                return False, cliff
+            return (
+                True,
+                f"accepted (composite): {current.composite_score:+.3f} → "
+                f"{candidate.composite_score:+.3f}",
+            )
+
+        # Clause (ii): targeted-prong win path
+        if scope in _PRONG_HEADLINE:
+            headline = _PRONG_HEADLINE[scope]
+            prong_delta = _get_metric(candidate, headline) - _get_metric(current, headline)
+            if (
+                prong_delta >= cfg.prong_min_delta
+                and composite_delta >= -cfg.composite_regression_tolerance
+            ):
+                cliff = _check_cliff()
+                if cliff is not None:
+                    return False, cliff
+                return (
+                    True,
+                    f"accepted ({scope}): {headline} "
+                    f"{_get_metric(current, headline):.3f} → "
+                    f"{_get_metric(candidate, headline):.3f} "
+                    f"(Δ{prong_delta:+.3f}); composite Δ{composite_delta:+.3f}",
+                )
+
+        return (
+            False,
+            f"insufficient improvement: composite {current.composite_score:+.3f} → "
+            f"{candidate.composite_score:+.3f}  (delta {composite_delta:+.3f} "
+            f"< {cfg.min_delta})",
+        )
+
+    # ------------------------------------------------------------------
     # Algorithm 3 — optimization loop
     # ------------------------------------------------------------------
 
@@ -743,6 +1162,439 @@ class LEAPPromptOptimizer:
         print(f"\n  Reached max iterations ({max_iterations}). Returning current prompt.")
         _close_logs()
         return current_prompt
+
+    # ------------------------------------------------------------------
+    # New evaluator path — multi-location, sequential, multi-criterion
+    # ------------------------------------------------------------------
+
+    def evaluate_candidate_on_set(
+        self,
+        candidate_prompt: StructuredPrompt,
+        location_set_dev: list[LocationConfig],
+        extracted_policies_fn: Callable[[str, str, Optional[pathlib.Path | str], Optional[str]], list[dict]],
+        rubric: str,
+        evaluator: LEAPEvaluator,
+        seeds: int = 1,
+        trace_dir: Optional[pathlib.Path] = None,
+        iteration_label: str = "",
+    ) -> tuple[EvaluationBundle, dict[str, float], list[EvaluationBundle]]:
+        """Evaluate one candidate prompt across all dev locations and seeds.
+
+        ``extracted_policies_fn`` is called as ``fn(prompt, location_name,
+        source_doc_path, trace_path)`` for each (location, seed). Each call
+        produces a list of extracted policy dicts which the evaluator scores
+        into an ``EvaluationBundle``.
+
+        Returns:
+            (aggregate_bundle, std_per_metric, per_run_bundles)
+        """
+        per_run: list[EvaluationBundle] = []
+        for loc in location_set_dev:
+            ground_truth = loc.load_ground_truth()
+            for seed in range(seeds):
+                trace_path = (
+                    str(trace_dir / f"{iteration_label}_{loc.name}_seed{seed}_trace")
+                    if trace_dir is not None else None
+                )
+                extracted = extracted_policies_fn(
+                    candidate_prompt.compose(),
+                    loc.name,
+                    loc.source_document_md,
+                    trace_path,
+                )
+                bundle = evaluator.evaluate(
+                    location=loc.name,
+                    extracted_policies=extracted,
+                    ground_truth_policies=ground_truth,
+                    rubric=rubric,
+                    source_document_path=loc.source_document_md,
+                )
+                if not isinstance(bundle, EvaluationBundle):
+                    raise RuntimeError(
+                        "evaluate_candidate_on_set requires use_new_evaluator=True"
+                    )
+                per_run.append(bundle)
+
+        aggregate, stds = aggregate_bundles(per_run, location_label="dev_aggregate")
+        return aggregate, stds, per_run
+
+    def run_loop_v2(
+        self,
+        location_set: LocationSet,
+        extracted_policies_fn: Callable[[str, str, Optional[pathlib.Path | str], Optional[str]], list[dict]],
+        rubric: str,
+        initial_prompt: StructuredPrompt,
+        max_iterations: int = 10,
+        seeds: int = 1,
+        targets: Optional[PrognTarget] = None,
+        acceptance: Optional[AcceptanceConfig] = None,
+        log_dir: Optional[pathlib.Path | str] = None,
+        max_accepted_per_iteration: int = 2,
+        evaluator: Optional[LEAPEvaluator] = None,
+        composite_candidate: bool = True,
+        k_no_accept: int = 2,
+    ) -> StructuredPrompt:
+        """Sequential, multi-location, multi-criterion optimization loop.
+
+        The baseline dev-set evaluation is computed **once** before the loop
+        starts and then carried forward as ``running_eval``; each accepted
+        candidate's bundle becomes the next iteration's baseline for free. This
+        avoids re-running the RLM on a prompt we have already evaluated.
+
+        Each iteration:
+          1. Determine triggered prongs from running vs. previous bundles.
+          2. Propose candidate(s) for the triggered prongs on top of the
+             running prompt. With ``composite_candidate=False`` (default) each
+             triggered prong is proposed and evaluated in its own dev-set
+             pass; prongs that pass ``accept_candidate_v2`` are merged into
+             ``running_prompt`` in priority order, and any rejected prong is
+             discarded. Later prongs are then proposed on top of the updated
+             prompt. The ``max_accepted_per_iteration`` cap still applies. With
+             ``composite_candidate=True`` all triggered prongs are chain-
+             rewritten in a single pass and evaluated once — accept/reject
+             the whole — which trades per-prong cherry-picking for ~N× fewer
+             RLM extractions per iteration.
+          3. Accept/reject using ``accept_candidate_v2`` against the running
+             bundle. Accepted candidates advance the running pair.
+          4. Convergence: no candidate accepted for K consecutive iterations
+             OR all targets met. The plan defaults K=2.
+          5. After the loop ends, evaluate once on the test set (if any).
+
+        Logs (under timestamped subdir of ``log_dir``):
+          iteration_log.csv      — one row per main evaluation
+          candidate_log.csv      — one row per candidate (accepted or rejected)
+          metrics_bundle.json    — full structured bundle per iteration
+          test_results.json      — single test-set evaluation at loop end
+        """
+        targets = targets or PrognTarget()
+        acceptance = acceptance or AcceptanceConfig()
+        evaluator = evaluator or LEAPEvaluator(model=self.model, use_new_evaluator=True)
+
+        if not evaluator.use_new_evaluator:
+            raise ValueError("run_loop_v2 requires evaluator.use_new_evaluator=True")
+        if not location_set.dev:
+            raise ValueError("run_loop_v2 requires at least one dev location")
+
+        # Logging setup
+        run_dir, iter_writer, cand_writer, iter_file, cand_file = _open_v2_logs(log_dir)
+        if run_dir is not None:
+            print(f"  Logging to: {run_dir}")
+
+        # One-shot baseline evaluation of the initial prompt. Every iteration
+        # after this reuses the previously accepted candidate's bundle as its
+        # baseline, so the initial prompt is the only prompt whose dev-set
+        # bundle we compute explicitly.
+        print(f"\n  Evaluating initial prompt on dev set (one-time baseline)...")
+        running_eval, running_stds, _ = self.evaluate_candidate_on_set(
+            initial_prompt, location_set.dev, extracted_policies_fn, rubric,
+            evaluator, seeds=seeds, trace_dir=run_dir,
+            iteration_label="iter0_baseline",
+        )
+        print(f"  Baseline composite={running_eval.composite_score:+.3f}  "
+              f"std={running_stds['composite_score']:.3f}")
+        _print_bundle_headlines(running_eval)
+
+        current_prompt = initial_prompt
+        running_prompt = initial_prompt
+        previous_eval: Optional[EvaluationBundle] = None
+        consecutive_no_accept = 0
+        K_NO_ACCEPT = k_no_accept
+
+        for t in range(max_iterations):
+            print(f"\n{'=' * 60}\nIteration {t + 1}/{max_iterations}\n{'=' * 60}")
+
+            # Baseline for this iteration is the running bundle from either
+            # the one-shot initial evaluation (iter 1) or the last accepted
+            # candidate (iter > 1). No new RLM extraction is needed here.
+            baseline_eval = running_eval
+            baseline_stds = running_stds
+            print(f"  Running composite={baseline_eval.composite_score:+.3f}  "
+                  f"std={baseline_stds['composite_score']:.3f}")
+            _print_bundle_headlines(baseline_eval)
+
+            # Step 1: determine triggered prongs
+            triggered = _triggered_prongs(baseline_eval, previous_eval, targets)
+            ordered = ordered_triggered(triggered)
+            print(f"  Triggered prongs: {ordered or 'none'}")
+
+            # Convergence: all targets met
+            if not triggered:
+                print("  All targets met — converging.")
+                _write_iter_row(
+                    iter_writer, t + 1, baseline_eval, baseline_stds,
+                    triggered, current_prompt, converged=True, run_dir=run_dir,
+                )
+                break
+
+            accepted_this_iter = 0
+
+            if composite_candidate and len(ordered) > 1:
+                # Single combined candidate: chain-rewrite every triggered
+                # prong on top of the running prompt, evaluate once.
+                print(f"\n  Proposing composite candidate: {'|'.join(ordered)}")
+                candidate_prompt = running_prompt
+                for scope in ordered:
+                    candidate_prompt = self.propose_candidate_v2(
+                        scope=scope,
+                        current_prompt=candidate_prompt,
+                        current_bundle=running_eval,
+                        previous_bundle=previous_eval,
+                        targets=targets,
+                    )
+                cand_eval, cand_stds, _ = self.evaluate_candidate_on_set(
+                    candidate_prompt, location_set.dev, extracted_policies_fn, rubric,
+                    evaluator, seeds=seeds, trace_dir=run_dir,
+                    iteration_label=f"iter{t + 1}_cand_composite",
+                )
+                # For composite candidates the targeted prong is the worst-
+                # performing triggered prong (largest gap to target).
+                worst_scope = min(
+                    ordered,
+                    key=lambda s: _get_metric(running_eval, _PRONG_HEADLINE[s]),
+                )
+                ok, reason = self.accept_candidate_v2(
+                    cand_eval, running_eval, acceptance, scope=worst_scope,
+                )
+                print(f"    composite (prong={worst_scope}): {reason}")
+
+                if cand_writer is not None:
+                    cand_writer.writerow({
+                        "iteration": t + 1,
+                        "scope": "|".join(ordered),
+                        "accepted": ok,
+                        "reason": reason,
+                        "composite_score": round(cand_eval.composite_score, 4),
+                        "composite_delta": round(
+                            cand_eval.composite_score - running_eval.composite_score, 4
+                        ),
+                        "extraction_f1": round(cand_eval.extraction.f1, 4),
+                        "hierarchy_role_agreement": round(cand_eval.hierarchy.role_agreement, 4),
+                        "classification_primary_agreement": round(
+                            cand_eval.classification.primary_category_agreement, 4
+                        ),
+                        "plus_one_coverage": round(cand_eval.quality.plus_one_coverage, 4),
+                    })
+                    cand_file.flush()
+
+                if ok:
+                    running_prompt = candidate_prompt
+                    running_eval = cand_eval
+                    running_stds = cand_stds
+                    accepted_this_iter = 1
+
+            else:
+                for scope in ordered:
+                    if accepted_this_iter >= max_accepted_per_iteration:
+                        print(f"  Reached cap of {max_accepted_per_iteration} acceptances "
+                              f"this iteration — skipping {scope}.")
+                        break
+
+                    print(f"\n  Proposing candidate for prong: {scope}")
+                    candidate_prompt = self.propose_candidate_v2(
+                        scope=scope,
+                        current_prompt=running_prompt,
+                        current_bundle=running_eval,
+                        previous_bundle=previous_eval,
+                        targets=targets,
+                    )
+                    cand_eval, cand_stds, _ = self.evaluate_candidate_on_set(
+                        candidate_prompt, location_set.dev, extracted_policies_fn, rubric,
+                        evaluator, seeds=seeds, trace_dir=run_dir,
+                        iteration_label=f"iter{t + 1}_cand_{scope}",
+                    )
+                    ok, reason = self.accept_candidate_v2(
+                        cand_eval, running_eval, acceptance, scope=scope,
+                    )
+                    print(f"    {reason}")
+
+                    if cand_writer is not None:
+                        cand_writer.writerow({
+                            "iteration": t + 1,
+                            "scope": scope,
+                            "accepted": ok,
+                            "reason": reason,
+                            "composite_score": round(cand_eval.composite_score, 4),
+                            "composite_delta": round(
+                                cand_eval.composite_score - running_eval.composite_score, 4
+                            ),
+                            "extraction_f1": round(cand_eval.extraction.f1, 4),
+                            "hierarchy_role_agreement": round(cand_eval.hierarchy.role_agreement, 4),
+                            "classification_primary_agreement": round(
+                                cand_eval.classification.primary_category_agreement, 4
+                            ),
+                            "plus_one_coverage": round(cand_eval.quality.plus_one_coverage, 4),
+                        })
+                        cand_file.flush()
+
+                    if ok:
+                        running_prompt = candidate_prompt
+                        running_eval = cand_eval
+                        running_stds = cand_stds
+                        accepted_this_iter += 1
+
+            # End-of-iteration logging
+            _write_iter_row(
+                iter_writer, t + 1, running_eval, running_stds,
+                triggered, running_prompt,
+                converged=False, run_dir=run_dir,
+            )
+
+            if accepted_this_iter == 0:
+                consecutive_no_accept += 1
+                print(f"  No candidates accepted ({consecutive_no_accept}/{K_NO_ACCEPT}).")
+            else:
+                consecutive_no_accept = 0
+
+            previous_eval = baseline_eval
+            current_prompt = running_prompt
+
+            if consecutive_no_accept >= K_NO_ACCEPT:
+                print(f"\n  No acceptances for {K_NO_ACCEPT} consecutive iterations — stopping.")
+                break
+
+        # Test-set evaluation (held-out, run once)
+        if location_set.test and run_dir is not None:
+            print(f"\n  Running held-out test set ({len(location_set.test)} location(s))...")
+            test_eval, test_stds, test_per_run = self.evaluate_candidate_on_set(
+                current_prompt, location_set.test, extracted_policies_fn, rubric,
+                evaluator, seeds=seeds, trace_dir=run_dir,
+                iteration_label="test",
+            )
+            test_path = run_dir / "test_results.json"
+            with open(test_path, "w", encoding="utf-8") as fh:
+                _json.dump({
+                    "aggregate": _json.loads(test_eval.model_dump_json()),
+                    "std_per_metric": test_stds,
+                    "per_location": [
+                        _json.loads(b.model_dump_json()) for b in test_per_run
+                    ],
+                    "dev_vs_test_composite_gap": (
+                        (running_eval.composite_score - test_eval.composite_score)
+                        if running_eval is not None else None
+                    ),
+                }, fh, indent=2)
+            print(f"  test composite={test_eval.composite_score:+.3f}  "
+                  f"dev composite={running_eval.composite_score:+.3f}  "
+                  f"gap={(running_eval.composite_score - test_eval.composite_score):+.3f}")
+
+        for fh in (iter_file, cand_file):
+            if fh is not None:
+                fh.close()
+
+        return current_prompt
+
+
+# ---------------------------------------------------------------------------
+# Logging helpers (new evaluator path)
+# ---------------------------------------------------------------------------
+
+
+def _open_v2_logs(log_dir: Optional[pathlib.Path | str]):
+    if log_dir is None:
+        return None, None, None, None, None
+    ts = datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
+    run_dir = pathlib.Path(log_dir) / f"v2_{ts}"
+    run_dir.mkdir(parents=True, exist_ok=True)
+
+    iter_file = open(run_dir / "iteration_log.csv", "w", newline="", encoding="utf-8")
+    iter_writer = csv.DictWriter(
+        iter_file,
+        fieldnames=[
+            "iteration",
+            "composite_score",
+            "composite_score_std",
+            "extraction_f1",
+            "extraction_precision",
+            "extraction_recall",
+            "extraction_jsd",
+            "plus_one_coverage",
+            "hierarchy_role_agreement",
+            "hierarchy_parent_attribution",
+            "classification_primary_agreement",
+            "classification_financial_agreement",
+            "classification_secondary_agreement",
+            "triggered_prongs",
+            "converged",
+            "composed_prompt",
+        ],
+    )
+    iter_writer.writeheader()
+
+    cand_file = open(run_dir / "candidate_log.csv", "w", newline="", encoding="utf-8")
+    cand_writer = csv.DictWriter(
+        cand_file,
+        fieldnames=[
+            "iteration",
+            "scope",
+            "accepted",
+            "reason",
+            "composite_score",
+            "composite_delta",
+            "extraction_f1",
+            "hierarchy_role_agreement",
+            "classification_primary_agreement",
+            "plus_one_coverage",
+        ],
+    )
+    cand_writer.writeheader()
+
+    return run_dir, iter_writer, cand_writer, iter_file, cand_file
+
+
+def _write_iter_row(
+    writer,
+    iteration: int,
+    bundle: EvaluationBundle,
+    stds: dict[str, float],
+    triggered: set[str],
+    prompt: StructuredPrompt,
+    converged: bool,
+    run_dir: Optional[pathlib.Path],
+) -> None:
+    if writer is None:
+        return
+    writer.writerow({
+        "iteration": iteration,
+        "composite_score": round(bundle.composite_score, 4),
+        "composite_score_std": round(stds.get("composite_score", 0.0), 4),
+        "extraction_f1": round(bundle.extraction.f1, 4),
+        "extraction_precision": round(bundle.extraction.precision, 4),
+        "extraction_recall": round(bundle.extraction.recall, 4),
+        "extraction_jsd": round(bundle.extraction.category_distribution_jsd, 4),
+        "plus_one_coverage": round(bundle.quality.plus_one_coverage, 4),
+        "hierarchy_role_agreement": round(bundle.hierarchy.role_agreement, 4),
+        "hierarchy_parent_attribution": round(bundle.hierarchy.parent_attribution_accuracy, 4),
+        "classification_primary_agreement": round(
+            bundle.classification.primary_category_agreement, 4
+        ),
+        "classification_financial_agreement": round(
+            bundle.classification.financial_instrument_agreement, 4
+        ),
+        "classification_secondary_agreement": round(
+            bundle.classification.secondary_category_agreement, 4
+        ),
+        "triggered_prongs": "|".join(sorted(triggered)),
+        "converged": converged,
+        "composed_prompt": prompt.compose(),
+    })
+
+    if run_dir is not None:
+        bundle_path = run_dir / f"metrics_bundle_iter_{iteration}.json"
+        with open(bundle_path, "w", encoding="utf-8") as fh:
+            _json.dump({
+                "iteration": iteration,
+                "bundle": _json.loads(bundle.model_dump_json()),
+                "std_per_metric": stds,
+            }, fh, indent=2)
+
+
+def _print_bundle_headlines(b: EvaluationBundle) -> None:
+    print(
+        f"    extraction.f1={b.extraction.f1:.3f}  "
+        f"hierarchy.role={b.hierarchy.role_agreement:.3f}  "
+        f"classification.primary={b.classification.primary_category_agreement:.3f}  "
+        f"+1 coverage={b.quality.plus_one_coverage:.3f}"
+    )
 
 
 # ---------------------------------------------------------------------------

@@ -30,13 +30,13 @@ Usage:
     print(result.recall)   # {"Mitigation": 0.8, ...}
 """
 
+import asyncio
 import json
 import os
 import pathlib
 import re
 import tempfile
 from typing import Any, Literal, Optional
-import time
 
 import numpy as np
 from dotenv import load_dotenv
@@ -44,7 +44,30 @@ from openai import OpenAI
 from pydantic import BaseModel, Field
 from scipy.optimize import linear_sum_assignment
 
+from metrics import (
+    DEFAULT_COMPOSITE_WEIGHTS,
+    EvaluationBundle,
+    MatchedPair,
+    MatchingResult,
+    compute_classification_bundle,
+    compute_composite_score,
+    compute_extraction_bundle,
+    compute_hierarchy_bundle,
+    compute_quality_bundle,
+)
+
 load_dotenv()
+
+# Single source of truth for the OpenAI model used by both grader paths and
+# the resampler (set in prompt_optimizer.py via this constant).
+DEFAULT_MODEL: str = "gpt-4.1-2025-04-14"
+
+# Default similarity threshold for category-agnostic Hungarian matching.
+DEFAULT_SIMILARITY_THRESHOLD: float = 0.55
+
+# Concurrency cap for async grading. The implementation plan's PR 10 calls for
+# Semaphore(8); drop to 4 if 429s appear in production.
+GRADER_CONCURRENCY: int = 8
 
 CATEGORIES: list[str] = [
     "Mitigation",
@@ -78,10 +101,18 @@ class PolicyGrade(BaseModel):
 
 
 class _GraderOutput(BaseModel):
-    """Structured output enforced on the grader LLM call."""
+    """Structured output enforced on the grader LLM call.
+
+    Extended in the redesign to surface per-field signals so the grader's
+    verdict on statement / role / category alignment can flow into the
+    targeted-feedback assembly used by the per-prong resampler.
+    """
 
     grade: Literal[-1, 0, 1]
     reasoning: str
+    statement_match: Literal["match", "partial", "mismatch"] = "partial"
+    role_match: bool = True
+    category_match: bool = True
 
 
 class EvaluationOutput(BaseModel):
@@ -118,7 +149,7 @@ _GRADER_SYSTEM = """\
 You are an expert unbiased evaluator grading an extracted climate policy against a
 ground-truth policy produced by a reference expert system.
 
-SCORING GUIDE:
+SCORING GUIDE (overall grade):
   +1  The extracted policy matches the ground-truth in scope, commitment, and specificity.
       The core commitment, target, and delivery mechanism are all captured correctly.
    0  Directionally correct but vague or imprecise. The general intent is right but
@@ -126,7 +157,16 @@ SCORING GUIDE:
   -1  No meaningful match, hallucinated content, or the extraction contradicts the
       document intent.
 
-Ground your grade in the source document text when provided.
+You also emit three per-field verdicts that drive the targeted-feedback loop:
+  statement_match : "match" | "partial" | "mismatch"
+                    — does the extracted policy_statement convey the same commitment?
+  role_match      : true | false
+                    — does the extracted role match the GT role
+                      (parent / sub / individual)?
+  category_match  : true | false
+                    — does the extracted primary_category match the GT primary_category?
+
+Ground your overall grade in the source document text when provided.
 Return only the structured output — no preamble.
 """
 
@@ -138,10 +178,15 @@ SOURCE DOCUMENT (excerpt):
 {source_document}
 
 GROUND-TRUTH POLICY:
-{ground_truth}
+  policy_statement:   {gt_statement}
+  role:               {gt_role}
+  primary_category:   {gt_category}
 
 EXTRACTED POLICY:
-{extracted}
+  policy_statement:   {ext_statement}
+  role:               {ext_role}
+  primary_category:   {ext_category}
+  source_quote:       {ext_source_quote}
 """
 
 # RLM grader templates — used when a full source document is provided.
@@ -152,16 +197,28 @@ You are an expert unbiased evaluator grading an extracted climate policy against
 ground-truth policy. You have access to the full source document — read through it
 to find the passage(s) that ground your evaluation before deciding on a grade.
 
-SCORING GUIDE:
+SCORING GUIDE (overall grade):
   +1  The extracted policy matches the ground-truth in scope, commitment, and
       specificity. Core commitment, target, and delivery mechanism all correct.
    0  Directionally correct but vague or imprecise. Intent is right but key
       details (targets, deadlines, mechanisms) are missing or softened.
   -1  No meaningful match, hallucinated content, or contradicts document intent.
 
-After reading the document, return ONLY a JSON object with exactly two keys:
-  "grade":     -1, 0, or 1
-  "reasoning": step-by-step justification grounded in the source text
+You also emit three per-field verdicts that drive the targeted-feedback loop:
+  statement_match : "match" | "partial" | "mismatch"
+                    — does the extracted policy_statement convey the same commitment?
+  role_match      : true | false
+                    — does the extracted role match the GT role
+                      (parent / sub / individual)?
+  category_match  : true | false
+                    — does the extracted primary_category match the GT primary_category?
+
+After reading the document, return ONLY a JSON object with exactly five keys:
+  "grade":           -1, 0, or 1
+  "reasoning":       step-by-step justification grounded in the source text
+  "statement_match": "match" | "partial" | "mismatch"
+  "role_match":      true | false
+  "category_match":  true | false
 
 No preamble. No trailing text.
 """
@@ -171,14 +228,50 @@ RUBRIC:
 {rubric}
 
 GROUND-TRUTH POLICY:
-{ground_truth}
+  policy_statement:   {gt_statement}
+  role:               {gt_role}
+  primary_category:   {gt_category}
 
 EXTRACTED POLICY:
-{extracted}
+  policy_statement:   {ext_statement}
+  role:               {ext_role}
+  primary_category:   {ext_category}
+  source_quote:       {ext_source_quote}
 
 SOURCE DOCUMENT:
 {document}
 """
+
+
+# ---------------------------------------------------------------------------
+# Robust JSON parsing for the RLM grader path
+# ---------------------------------------------------------------------------
+
+
+def _parse_grader_json(raw: str) -> Optional[dict]:
+    """Best-effort parser for the RLM grader response.
+
+    Strategy:
+      1. Try ``json.loads`` on the full response.
+      2. Fall back to slicing from the first ``{`` to the last ``}``.
+      3. Return None to signal a parse failure (caller falls back to grade=0).
+    """
+    if not raw:
+        return None
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError:
+        pass
+
+    start = raw.find("{")
+    end = raw.rfind("}")
+    if start != -1 and end != -1 and end > start:
+        try:
+            return json.loads(raw[start : end + 1])
+        except json.JSONDecodeError:
+            pass
+
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -197,11 +290,15 @@ class LEAPEvaluator:
 
     def __init__(
         self,
-        model: str = "gpt-5.4",
+        model: str = DEFAULT_MODEL,
         embedding_model: str = "text-embedding-3-small",
+        use_new_evaluator: bool = False,
+        similarity_threshold: float = DEFAULT_SIMILARITY_THRESHOLD,
     ) -> None:
         self.model = model
         self.embedding_model = embedding_model
+        self.use_new_evaluator = use_new_evaluator
+        self.similarity_threshold = similarity_threshold
         self._client: Optional[OpenAI] = None
 
     # ------------------------------------------------------------------
@@ -243,6 +340,84 @@ class LEAPEvaluator:
         row_ind, col_ind = linear_sum_assignment(-sim)
         return list(zip(row_ind.tolist(), col_ind.tolist()))
 
+    def _match_globally(
+        self,
+        extracted: list[dict[str, Any]],
+        ground_truth: list[dict[str, Any]],
+        threshold: Optional[float] = None,
+    ) -> MatchingResult:
+        """Category-agnostic Hungarian matching with a similarity threshold.
+
+        All extracted and all GT policies are embedded in a single batch each.
+        We build the full N x M cosine similarity matrix, run Hungarian on it,
+        then drop any assigned pair whose similarity is below ``threshold``.
+        Below-threshold rows / columns flow into ``unmatched_extracted`` /
+        ``unmatched_gt`` respectively.
+
+        Decoupling matching from primary_category is the structural fix in the
+        redesign — a misclassified extraction can still be matched to its GT
+        counterpart because the cosine signal is on policy_statement text.
+        """
+        if threshold is None:
+            threshold = self.similarity_threshold
+
+        if not extracted and not ground_truth:
+            return MatchingResult(
+                matched=[],
+                unmatched_extracted=[],
+                unmatched_gt=[],
+                similarity_threshold=threshold,
+            )
+
+        if not extracted:
+            return MatchingResult(
+                matched=[],
+                unmatched_extracted=[],
+                unmatched_gt=list(ground_truth),
+                similarity_threshold=threshold,
+            )
+
+        if not ground_truth:
+            return MatchingResult(
+                matched=[],
+                unmatched_extracted=list(extracted),
+                unmatched_gt=[],
+                similarity_threshold=threshold,
+            )
+
+        ext_emb = self._embed([p.get("policy_statement", "") for p in extracted])
+        gt_emb = self._embed([p.get("policy_statement", "") for p in ground_truth])
+        sim = self._cosine_sim(ext_emb, gt_emb)
+
+        pairs = self._hungarian_match(sim)
+        matched_ext: set[int] = set()
+        matched_gt: set[int] = set()
+        matched_pairs: list[MatchedPair] = []
+
+        for ei, gi in pairs:
+            s = float(sim[ei, gi])
+            if s < threshold:
+                continue
+            matched_ext.add(ei)
+            matched_gt.add(gi)
+            matched_pairs.append(
+                MatchedPair(
+                    extracted=extracted[ei],
+                    ground_truth=ground_truth[gi],
+                    similarity=s,
+                )
+            )
+
+        unmatched_extracted = [p for i, p in enumerate(extracted) if i not in matched_ext]
+        unmatched_gt = [p for i, p in enumerate(ground_truth) if i not in matched_gt]
+
+        return MatchingResult(
+            matched=matched_pairs,
+            unmatched_extracted=unmatched_extracted,
+            unmatched_gt=unmatched_gt,
+            similarity_threshold=threshold,
+        )
+
     # ------------------------------------------------------------------
     # Grading
     # ------------------------------------------------------------------
@@ -280,8 +455,13 @@ class LEAPEvaluator:
         )
         prompt = _RLM_GRADER_USER.format(
             rubric=rubric,
-            ground_truth=ground_truth.get("policy_statement", str(ground_truth)),
-            extracted=extracted.get("policy_statement", str(extracted)),
+            gt_statement=ground_truth.get("policy_statement", ""),
+            gt_role=ground_truth.get("role", "individual"),
+            gt_category=ground_truth.get("primary_category", "Unknown"),
+            ext_statement=extracted.get("policy_statement", ""),
+            ext_role=extracted.get("role", "individual"),
+            ext_category=extracted.get("primary_category", "Unknown"),
+            ext_source_quote=extracted.get("source_quote", ""),
             document=document_text,
         )
         result = rlm.completion(
@@ -289,13 +469,32 @@ class LEAPEvaluator:
             root_prompt="Grade the extracted policy against the ground truth using the source document.",
         )
         raw = result.response.strip()
-        # Parse the JSON grade from the RLM response
-        match = re.search(r'\{[^{}]*"grade"[^{}]*\}', raw, re.DOTALL)
-        data = json.loads(match.group() if match else raw)
+        data = _parse_grader_json(raw)
+        if data is None:
+            return _GraderOutput(
+                grade=0,
+                reasoning="grader parse failure",
+                statement_match="partial",
+                role_match=(extracted.get("role") == ground_truth.get("role")),
+                category_match=(
+                    extracted.get("primary_category") == ground_truth.get("primary_category")
+                ),
+            )
 
-        print(data["reasoning"])
-        grade = max(-1, min(1, int(data["grade"])))
-        return _GraderOutput(grade=grade, reasoning=data.get("reasoning", ""))
+        grade = max(-1, min(1, int(data.get("grade", 0))))
+        return _GraderOutput(
+            grade=grade,
+            reasoning=data.get("reasoning", ""),
+            statement_match=data.get("statement_match", "partial"),
+            role_match=bool(data.get(
+                "role_match",
+                extracted.get("role") == ground_truth.get("role"),
+            )),
+            category_match=bool(data.get(
+                "category_match",
+                extracted.get("primary_category") == ground_truth.get("primary_category"),
+            )),
+        )
 
     def _grade_pair(
         self,
@@ -316,8 +515,13 @@ class LEAPEvaluator:
         user_msg = _GRADER_USER.format(
             rubric=rubric,
             source_document="Not provided.",
-            ground_truth=ground_truth.get("policy_statement", str(ground_truth)),
-            extracted=extracted.get("policy_statement", str(extracted)),
+            gt_statement=ground_truth.get("policy_statement", ""),
+            gt_role=ground_truth.get("role", "individual"),
+            gt_category=ground_truth.get("primary_category", "Unknown"),
+            ext_statement=extracted.get("policy_statement", ""),
+            ext_role=extracted.get("role", "individual"),
+            ext_category=extracted.get("primary_category", "Unknown"),
+            ext_source_quote=extracted.get("source_quote", ""),
         )
         response = self._get_client().beta.chat.completions.parse(
             model=self.model,
@@ -326,12 +530,47 @@ class LEAPEvaluator:
                 {"role": "user", "content": user_msg},
             ],
             response_format=_GraderOutput,
-        
         )
-
-        print(response)
-        time.sleep(5)
         return response.choices[0].message.parsed
+
+    def _grade_pairs_concurrent(
+        self,
+        pairs: list,
+        rubric: str,
+        document_text: str,
+    ) -> list[_GraderOutput]:
+        """Grade a batch of matched pairs concurrently.
+
+        Falls back to sequential grading when called from inside an existing
+        event loop (e.g. when nested in async code). This keeps the public
+        API sync while still benefiting from concurrency in the common case.
+        """
+        if not pairs:
+            return []
+
+        async def _bound(sem: asyncio.Semaphore, pair) -> _GraderOutput:
+            async with sem:
+                return await asyncio.to_thread(
+                    self._grade_pair,
+                    pair.extracted,
+                    pair.ground_truth,
+                    rubric,
+                    document_text,
+                )
+
+        async def _runner() -> list[_GraderOutput]:
+            sem = asyncio.Semaphore(GRADER_CONCURRENCY)
+            return await asyncio.gather(*[_bound(sem, p) for p in pairs])
+
+        try:
+            asyncio.get_running_loop()
+            # We are already inside an event loop — fall back to sync.
+            return [
+                self._grade_pair(p.extracted, p.ground_truth, rubric, document_text)
+                for p in pairs
+            ]
+        except RuntimeError:
+            return asyncio.run(_runner())
 
     # ------------------------------------------------------------------
     # Cell evaluation
@@ -459,24 +698,40 @@ class LEAPEvaluator:
         ground_truth_policies: list[dict[str, Any]],
         rubric: str,
         source_document_path: Optional[pathlib.Path | str] = None,
+    ) -> "EvaluationOutput | EvaluationBundle":
+        """
+        Dispatch to either the legacy bucketed path (returns ``EvaluationOutput``)
+        or the redesigned global-matching path (returns ``EvaluationBundle``).
+
+        The dispatch is controlled by ``self.use_new_evaluator``. The legacy path
+        is preserved verbatim so we can A/B-compare during the cutover.
+        """
+        if self.use_new_evaluator:
+            return self._evaluate_new(
+                location=location,
+                extracted_policies=extracted_policies,
+                ground_truth_policies=ground_truth_policies,
+                rubric=rubric,
+                source_document_path=source_document_path,
+            )
+
+        return self._evaluate_legacy(
+            location=location,
+            extracted_policies=extracted_policies,
+            ground_truth_policies=ground_truth_policies,
+            rubric=rubric,
+            source_document_path=source_document_path,
+        )
+
+    def _evaluate_legacy(
+        self,
+        location: str,
+        extracted_policies: list[dict[str, Any]],
+        ground_truth_policies: list[dict[str, Any]],
+        rubric: str,
+        source_document_path: Optional[pathlib.Path | str] = None,
     ) -> EvaluationOutput:
-        """
-        Run Algorithm 1 for a single location.
-
-        Args:
-            location:               location key, e.g. "Seattle_US"
-            extracted_policies:     policy dicts from the RLM run
-            ground_truth_policies:  policy dicts from GENIUS (Ziyad model)
-            rubric:                 freeform grading guidelines string
-            source_document_path:   path to the markdown source document. When
-                                    provided, grading is done via RLM so the full
-                                    document can be traversed. When omitted, the
-                                    grader LLM is called directly without document
-                                    context.
-
-        Returns:
-            EvaluationOutput with per-category scores, recall, FPR, and grades.
-        """
+        """Original bucketed-then-Hungarian path. Kept verbatim for legacy A/B."""
         doc_text = (
             pathlib.Path(source_document_path).read_text(encoding="utf-8")
             if source_document_path is not None
@@ -522,6 +777,63 @@ class LEAPEvaluator:
             fpr=fpr,
             grades=all_grades,
             hierarchy_accuracy=hierarchy_accuracy,
+        )
+
+    # ------------------------------------------------------------------
+    # New evaluator path — global matching + orthogonal bundles
+    # ------------------------------------------------------------------
+
+    def _evaluate_new(
+        self,
+        location: str,
+        extracted_policies: list[dict[str, Any]],
+        ground_truth_policies: list[dict[str, Any]],
+        rubric: str,
+        source_document_path: Optional[pathlib.Path | str] = None,
+    ) -> EvaluationBundle:
+        """Redesigned evaluator path.
+
+        1. Run category-agnostic Hungarian matching with similarity threshold.
+        2. Grade every matched pair via the (extended) grader prompt.
+        3. Compute extraction / hierarchy / classification / quality bundles.
+        4. Compose the four into an ``EvaluationBundle``.
+        """
+        doc_text = (
+            pathlib.Path(source_document_path).read_text(encoding="utf-8")
+            if source_document_path is not None
+            else ""
+        )
+
+        matching = self._match_globally(
+            extracted_policies, ground_truth_policies, threshold=self.similarity_threshold
+        )
+
+        # Grade every matched pair concurrently. ``_grade_pair`` is sync and
+        # blocking — we offload it via ``asyncio.to_thread`` and gate the
+        # concurrent count with a semaphore to stay under provider rate
+        # limits.
+        graded_outputs = self._grade_pairs_concurrent(matching.matched, rubric, doc_text)
+        for pair, graded in zip(matching.matched, graded_outputs):
+            pair.grade = graded.grade
+            pair.reasoning = graded.reasoning
+            pair.statement_match = graded.statement_match
+            pair.role_match = graded.role_match
+            pair.category_match = graded.category_match
+
+        extraction = compute_extraction_bundle(matching, ground_truth_policies)
+        hierarchy = compute_hierarchy_bundle(matching)
+        classification = compute_classification_bundle(matching)
+        quality = compute_quality_bundle(matching, ground_truth_policies)
+        composite = compute_composite_score(extraction, hierarchy, classification, quality)
+
+        return EvaluationBundle(
+            location=location,
+            matching=matching,
+            extraction=extraction,
+            hierarchy=hierarchy,
+            classification=classification,
+            quality=quality,
+            composite_score=composite,
         )
 
 
