@@ -48,20 +48,24 @@ import datetime
 import json
 import os
 import pathlib
-import re
-import tempfile
-from typing import Any, Optional, Protocol, runtime_checkable
+from typing import Any, Optional
 
 from dotenv import load_dotenv
 
 from evaluator import LEAPEvaluator, EvaluationOutput
 from rlm_pipeline import (
     CLIMATE_RLM_SYSTEM_PROMPT,
-    _parse_rlm_output,
     parse_document,
-    run_rlm_for_optimizer,
     _DEFAULT_EXPERT_KNOWLEDGE_PATH,
     _HERE as _PIPELINE_HERE,
+)
+from runners import (
+    ModelRunner,
+    RLMRunner,
+    OpenAIRunner,
+    AnthropicRunner,
+    GeminiRunner,
+    RUNNER_CLASSES,
 )
 
 load_dotenv()
@@ -152,251 +156,6 @@ def load_ground_truth_all() -> dict[str, list[dict[str, Any]]]:
                 gt[city].append(row)
     return gt
 
-# ---------------------------------------------------------------------------
-# Runner protocol
-# ---------------------------------------------------------------------------
-
-
-@runtime_checkable
-class ModelRunner(Protocol):
-    """Any object with a .run() method can be used as a runner."""
-
-    @property
-    def model_slug(self) -> str:
-        """Filesystem-safe identifier used for the output folder name."""
-        ...
-
-    def run(
-        self,
-        document_markdown: str,
-        system_prompt: str,
-    ) -> list[dict[str, Any]]:
-        """
-        Run extraction on ``document_markdown`` using ``system_prompt``.
-        Returns a list of raw policy dicts (no DSPy validation).
-        """
-        ...
-
-
-# ---------------------------------------------------------------------------
-# Shared helpers
-# ---------------------------------------------------------------------------
-
-
-def _slugify(s: str) -> str:
-    """Replace non-alphanumeric characters with hyphens for safe folder names."""
-    return re.sub(r"[^a-zA-Z0-9._-]", "-", s).strip("-")
-
-
-def _flat_prompt(system_prompt: str, document_markdown: str) -> str:
-    """Single-turn user message: system prompt header + document."""
-    return (
-        f"{system_prompt}\n\n"
-        f"DOCUMENT:\n{document_markdown}\n\n"
-        "Extract and classify all climate policies from the document as a JSON list."
-    )
-
-
-# ---------------------------------------------------------------------------
-# RLM runner
-# ---------------------------------------------------------------------------
-
-
-class RLMRunner:
-    """
-    RLM recursive pipeline (run_rlm_for_optimizer from rlm_pipeline.py).
-
-    Supports expert_knowledge_path for grounding criteria injection.
-    """
-
-    def __init__(
-        self,
-        model_name: str = "gpt-5.4",
-        sub_model_name: str | None = None,
-        expert_knowledge_path: str | None = None,
-        max_iterations: int = 50,
-        trace_dir: str | None = None,
-    ) -> None:
-        self.model_name = model_name
-        self.sub_model_name = sub_model_name or model_name
-        self.expert_knowledge_path = (
-            expert_knowledge_path or _DEFAULT_EXPERT_KNOWLEDGE_PATH
-        )
-        self.max_iterations = max_iterations
-        self.trace_dir = trace_dir
-
-    @property
-    def model_slug(self) -> str:
-        return _slugify(f"rlm_{self.model_name}")
-
-    def run(self, document_markdown: str, system_prompt: str) -> list[dict[str, Any]]:
-        # run_rlm_for_optimizer takes a document path, not markdown directly.
-        # Write to a temp file so the existing API is satisfied.
-        with tempfile.NamedTemporaryFile(
-            mode="w", suffix=".md", delete=False, encoding="utf-8"
-        ) as tmp:
-            tmp.write(document_markdown)
-            tmp_path = tmp.name
-        try:
-            return run_rlm_for_optimizer(
-                prompt_string=system_prompt,
-                document_path=tmp_path,
-                trace_dir=self.trace_dir,
-                expert_knowledge_path=self.expert_knowledge_path,
-                model_name=self.model_name,
-                sub_model_name=self.sub_model_name,
-                max_iterations=self.max_iterations,
-            )
-        finally:
-            os.unlink(tmp_path)
-
-
-# ---------------------------------------------------------------------------
-# OpenAI runner
-# ---------------------------------------------------------------------------
-
-
-class OpenAIRunner:
-    """Direct OpenAI Chat Completions extraction (no recursion)."""
-
-    def __init__(
-        self,
-        model_name: str = "gpt-5.4",
-        temperature: float = 0.0,
-    ) -> None:
-        self.model_name = model_name
-        self.temperature = temperature
-        self._client = None
-
-    @property
-    def model_slug(self) -> str:
-        return _slugify(f"openai_{self.model_name}")
-
-    def _get_client(self):
-        if self._client is None:
-            from openai import OpenAI
-            self._client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-        return self._client
-
-    def run(self, document_markdown: str, system_prompt: str) -> list[dict[str, Any]]:
-        response = self._get_client().chat.completions.create(
-            model=self.model_name,
-            temperature=self.temperature,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {
-                    "role": "user",
-                    "content": (
-                        f"DOCUMENT:\n{document_markdown}\n\n"
-                        "Extract and classify all climate policies from the document "
-                        "as a JSON list."
-                    ),
-                },
-            ],
-        )
-        raw = response.choices[0].message.content or ""
-        return _parse_rlm_output(raw)
-
-
-# ---------------------------------------------------------------------------
-# Anthropic runner
-# ---------------------------------------------------------------------------
-
-
-class AnthropicRunner:
-    """Anthropic Messages API extraction."""
-
-    def __init__(
-        self,
-        model_name: str = "claude-opus-4-6",
-        temperature: float = 0.0,
-        max_tokens: int = 8192,
-    ) -> None:
-        self.model_name = model_name
-        self.temperature = temperature
-        self.max_tokens = max_tokens
-        self._client = None
-
-    @property
-    def model_slug(self) -> str:
-        return _slugify(f"anthropic_{self.model_name}")
-
-    def _get_client(self):
-        if self._client is None:
-            import anthropic
-            self._client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
-        return self._client
-
-    def run(self, document_markdown: str, system_prompt: str) -> list[dict[str, Any]]:
-        response = self._get_client().messages.create(
-            model=self.model_name,
-            max_tokens=self.max_tokens,
-            temperature=self.temperature,
-            system=system_prompt,
-            messages=[
-                {
-                    "role": "user",
-                    "content": (
-                        f"DOCUMENT:\n{document_markdown}\n\n"
-                        "Extract and classify all climate policies from the document "
-                        "as a JSON list."
-                    ),
-                }
-            ],
-        )
-        raw = response.content[0].text if response.content else ""
-        return _parse_rlm_output(raw)
-
-
-# ---------------------------------------------------------------------------
-# Gemini runner
-# ---------------------------------------------------------------------------
-
-
-class GeminiRunner:
-    """Google Generative AI extraction."""
-
-    def __init__(
-        self,
-        model_name: str = "gemini-2.0-flash",
-        temperature: float = 0.0,
-    ) -> None:
-        self.model_name = model_name
-        self.temperature = temperature
-
-    @property
-    def model_slug(self) -> str:
-        return _slugify(f"gemini_{self.model_name}")
-
-    def run(self, document_markdown: str, system_prompt: str) -> list[dict[str, Any]]:
-        import google.generativeai as genai
-
-        genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
-        model = genai.GenerativeModel(
-            model_name=self.model_name,
-            system_instruction=system_prompt,
-            generation_config=genai.GenerationConfig(temperature=self.temperature),
-        )
-        prompt = (
-            f"DOCUMENT:\n{document_markdown}\n\n"
-            "Extract and classify all climate policies from the document "
-            "as a JSON list."
-        )
-        response = model.generate_content(prompt)
-        raw = response.text or ""
-        return _parse_rlm_output(raw)
-
-
-# ---------------------------------------------------------------------------
-# Runner registry
-# ---------------------------------------------------------------------------
-
-RUNNER_CLASSES: dict[str, type] = {
-    "rlm": RLMRunner,
-    "openai": OpenAIRunner,
-    "anthropic": AnthropicRunner,
-    "gemini": GeminiRunner,
-}
 
 
 # ---------------------------------------------------------------------------
