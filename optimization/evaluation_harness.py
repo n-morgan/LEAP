@@ -449,7 +449,7 @@ def _build_parser() -> argparse.ArgumentParser:
     return p
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover — use benchmark.py for full runs
     # Smoke test — runs RLM and GPT against Hiroshima (14 GT policies, small doc).
     # Swap SMOKE_CITY to any key in CITY_CONFIG to test a different city.
     SMOKE_CITY   = "Hiroshima"
