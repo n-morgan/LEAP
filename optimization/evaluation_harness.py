@@ -423,7 +423,7 @@ if __name__ == "__main__":
     # Smoke test — runs RLM and GPT against Hiroshima (14 GT policies, small doc).
     # Swap SMOKE_CITY to any key in CITY_CONFIG to test a different city.
     SMOKE_CITY   = "Hiroshima"
-    MODEL        = "gpt-5.4"
+    MODEL        = "gpt-5.2"
     OUTPUT_DIR   = _PIPELINE_HERE / "evaluation_results"
 
     cfg = CITY_CONFIG[SMOKE_CITY]
