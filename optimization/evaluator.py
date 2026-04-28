@@ -71,43 +71,6 @@ CATEGORIES: list[str] = [
 ]
 
 
-# ---------------------------------------------------------------------------
-# Financial instrument normalization (GT vs extracted field names)
-# ---------------------------------------------------------------------------
-
-
-def get_financial_instrument(policy: dict[str, Any]) -> Optional[str]:
-    """
-    Return a normalized financial flag: 'yes' | 'no' | None if unknown.
-
-    Checks `financial_instrument` first, then `is_financial_instrument`
-    (boolean or string).
-    """
-    if "financial_instrument" in policy and policy["financial_instrument"] not in (
-        None,
-        "",
-    ):
-        v = policy["financial_instrument"]
-        if isinstance(v, bool):
-            return "yes" if v else "no"
-        s = str(v).strip().lower()
-        if s in ("yes", "y", "true", "1"):
-            return "yes"
-        if s in ("no", "n", "false", "0"):
-            return "no"
-        return s if s else None
-    raw = policy.get("is_financial_instrument")
-    if raw is None or raw == "":
-        return None
-    if isinstance(raw, bool):
-        return "yes" if raw else "no"
-    s = str(raw).strip().lower()
-    if s in ("yes", "y", "true", "1"):
-        return "yes"
-    if s in ("no", "n", "false", "0"):
-        return "no"
-    return None
-
 
 def _normalize_parent(s: Optional[str]) -> str:
     if not s:
@@ -687,11 +650,16 @@ class LEAPEvaluator:
                 ):
                     parent_correct += 1
 
-            fi_e = get_financial_instrument(ext)
-            fi_g = get_financial_instrument(gt)
-            if fi_e is not None and fi_g is not None:
+            fi_e = ext.get("is_financial_instrument")
+            fi_g = gt.get("is_financial_instrument")
+            if fi_e is not None and fi_e != "" and fi_g is not None and fi_g != "":
                 fi_total += 1
-                if fi_e == fi_g:
+                # CSV rows arrive as strings; coerce "True"/"False" safely
+                def _to_bool(v: Any) -> bool:
+                    if isinstance(v, bool):
+                        return v
+                    return str(v).strip().lower() in ("true", "1", "yes")
+                if _to_bool(fi_e) == _to_bool(fi_g):
                     fi_matches += 1
 
             se = ext.get("secondary_category")

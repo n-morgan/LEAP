@@ -105,6 +105,14 @@ system prompt. The section you receive is one of three task-based prongs:
                    climate_relevance, and secondary_category, including the
                    decision table and edge cases.
 
+FIXED GROUNDING CRITERIA:
+The RLM always receives a fixed expert extraction criteria document alongside the
+source policy document. This grounding criteria is provided to you under
+GROUNDING CRITERIA below. You cannot change it and must not duplicate it.
+Your rewrite should complement the grounding criteria — add specificity where it
+is silent, resolve ambiguities it leaves open, and avoid restating rules it
+already covers clearly.
+
 SCORING OBJECTIVE:
 Each extracted policy is matched 1-to-1 against ground-truth policies via
 embedding similarity (Hungarian algorithm). Matched pairs are graded +1 / 0 / -1.
@@ -138,6 +146,9 @@ CATEGORY: {category}
 
 METRICS:
   score={score:+.3f}  recall={recall:.3f}  fpr={fpr:.3f}
+
+GROUNDING CRITERIA (fixed, read-only — do not restate or contradict):
+{grounding_criteria}
 
 SECTION:
 {section}
@@ -186,10 +197,14 @@ class LEAPPromptOptimizer:
         score: float = 0.0,
         recall: float = 0.0,
         fpr: float = 0.0,
+        grounding_criteria: str = "",
     ) -> str:
         """
-        Rewrite one prompt prong conditioned on grade reasoning feedback and
-        current performance metrics. Returns the rewritten prong text (no header).
+        Rewrite one prompt prong conditioned on grade reasoning feedback,
+        current performance metrics, and the fixed grounding criteria document.
+        Returns the rewritten prong text (no header).
+        grounding_criteria is shown to the resampler as a read-only fixed input
+        so it does not duplicate or contradict rules already covered by that doc.
         """
         response = self._get_client().chat.completions.create(
             model=self.model,
@@ -200,6 +215,7 @@ class LEAPPromptOptimizer:
                     score=score,
                     recall=recall,
                     fpr=fpr,
+                    grounding_criteria=grounding_criteria or "(none provided)",
                     section=section or "(empty — write from scratch based on feedback)",
                     feedback=feedback or "No specific feedback available.",
                 )},
@@ -242,6 +258,7 @@ class LEAPPromptOptimizer:
         previous_prompt: StructuredPrompt,
         current_eval: EvaluationOutput,
         previous_scores: dict[str, float],
+        grounding_criteria: str = "",
     ) -> StructuredPrompt:
         """
         Simplified task-prong update using aggregate signals.
@@ -293,14 +310,17 @@ class LEAPPromptOptimizer:
             extraction=self._resample(
                 ext_base, feedback, category="extraction",
                 score=mean_score, recall=mean_recall, fpr=mean_fpr,
+                grounding_criteria=grounding_criteria,
             ),
             hierarchy=self._resample(
                 hier_base, feedback, category="hierarchy",
                 score=mean_score, recall=mean_recall, fpr=mean_fpr,
+                grounding_criteria=grounding_criteria,
             ),
             classification=self._resample(
                 cls_base, feedback, category="classification",
                 score=mean_score, recall=mean_recall, fpr=mean_fpr,
+                grounding_criteria=grounding_criteria,
             ),
         )
 
@@ -315,6 +335,7 @@ class LEAPPromptOptimizer:
         previous_prompt: StructuredPrompt,
         current_eval: EvaluationOutput,
         previous_eval: EvaluationOutput,
+        grounding_criteria: str = "",
     ) -> StructuredPrompt:
         """
         Rewrite only the specified prong and return a new StructuredPrompt.
@@ -354,6 +375,7 @@ class LEAPPromptOptimizer:
             resampled = self._resample(
                 base, feedback, category="extraction",
                 score=mean_score, recall=mean_recall, fpr=mean_fpr,
+                grounding_criteria=grounding_criteria,
             )
             return StructuredPrompt(
                 extraction=resampled,
@@ -370,6 +392,7 @@ class LEAPPromptOptimizer:
             resampled = self._resample(
                 base, feedback, category="hierarchy",
                 score=mean_score, recall=mean_recall, fpr=mean_fpr,
+                grounding_criteria=grounding_criteria,
             )
             return StructuredPrompt(
                 extraction=current_prompt.extraction,
@@ -389,6 +412,7 @@ class LEAPPromptOptimizer:
         resampled = self._resample(
             base, feedback, category="classification",
             score=mean_score, recall=mean_recall, fpr=mean_fpr,
+            grounding_criteria=grounding_criteria,
         )
         return StructuredPrompt(
             extraction=current_prompt.extraction,
@@ -468,6 +492,7 @@ class LEAPPromptOptimizer:
         rubric: str,
         initial_prompt: StructuredPrompt,
         source_document_path: Optional[pathlib.Path | str] = None,
+        grounding_criteria_path: Optional[pathlib.Path | str] = None,
         max_iterations: int = 10,
         epsilon: float = 0.01,
         log_dir: Optional[pathlib.Path | str] = None,
@@ -505,6 +530,17 @@ class LEAPPromptOptimizer:
             Optimized StructuredPrompt rho*.
         """
         evaluator = LEAPEvaluator(model=self.model)
+
+        # Load grounding criteria once — shown to the resampler every iteration
+        # as a read-only fixed input it must complement but cannot change.
+        grounding_criteria: str = ""
+        if grounding_criteria_path is not None:
+            gc_path = pathlib.Path(grounding_criteria_path)
+            if gc_path.exists():
+                grounding_criteria = gc_path.read_text(encoding="utf-8")
+                print(f"  Grounding criteria loaded: {gc_path} ({len(grounding_criteria):,} chars)")
+            else:
+                print(f"  [WARN] grounding_criteria_path not found: {gc_path} — proceeding without it")
 
         current_prompt = initial_prompt
         previous_prompt = initial_prompt
@@ -690,6 +726,7 @@ class LEAPPromptOptimizer:
                     previous_prompt=previous_prompt,
                     current_eval=eval_result,
                     previous_eval=previous_eval or eval_result,
+                    grounding_criteria=grounding_criteria,
                 )
 
                 cand_trace = (
@@ -987,6 +1024,8 @@ if __name__ == "__main__":
         for note in mapping_notes:
             print(f"    {note}")
 
+    GROUNDING_CRITERIA_PATH = _DEFAULT_EXPERT_KNOWLEDGE_PATH
+
     optimizer = LEAPPromptOptimizer(model=MODEL)
     optimized = optimizer.run_loop(
         location="Seattle_US",
@@ -995,6 +1034,7 @@ if __name__ == "__main__":
         rubric=DEFAULT_RUBRIC,
         initial_prompt=initial_prompt,
         source_document_path=SEATTLE_DOC,
+        grounding_criteria_path=GROUNDING_CRITERIA_PATH,
         max_iterations=3,
         log_dir=_HERE / "logs",
     )

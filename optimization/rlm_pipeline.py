@@ -127,13 +127,13 @@ class ClimatePolicy(BaseModel):
         )
     )
 
-    financial_instrument: Literal["yes", "no"] = Field(
-        default="no",
+    is_financial_instrument: bool = Field(
+        default=False,
         description=(
             "Whether this policy is a broad financial instrument. "
-            "Return 'yes' when the policy is a fee, carbon pricing tool, rebate, "
+            "Return true when the policy is a fee, carbon pricing tool, rebate, "
             "grant, subsidy, tax credit, loan, trust fund, budget appropriation, "
-            "or public investment line. Return 'no' otherwise."
+            "or public investment line. Return false otherwise."
         ),
     )
 
@@ -234,10 +234,10 @@ CLASSIFICATION FIELDS — assign alongside extraction:
     • Nature-Based Solutions: uses ecosystems as climate infrastructure (urban greening, wetlands, reforestation)
     Classify by the primary causal mechanism, not secondary co-benefits.
 
-- "financial_instrument": "yes" | "no"
-    • "yes": the policy IS a broad financial instrument — a fee, carbon pricing tool, rebate, grant, subsidy,
+- "is_financial_instrument": true | false
+    • true: the policy IS a broad financial instrument — a fee, carbon pricing tool, rebate, grant, subsidy,
       tax credit, loan, trust fund, budget appropriation, or public investment line.
-    • "no": the policy is a regulatory, operational, planning, or target-setting commitment.
+    • false: the policy is a regulatory, operational, planning, or target-setting commitment.
 
 - "climate_relevance": "direct" | "indirect" | "peripheral"
     • "direct": climate is the primary stated objective — the policy explicitly targets GHG reduction,
@@ -601,7 +601,7 @@ def validate_policies(
                 section_header=raw.get("section_header", ""),
                 extraction_rationale=raw.get("extraction_rationale", ""),
                 primary_category=raw.get("primary_category", "Mitigation"),
-                financial_instrument=raw.get("financial_instrument", "no"),
+                is_financial_instrument=bool(raw.get("is_financial_instrument", False)),
                 climate_relevance=raw.get("climate_relevance", "direct"),
                 secondary_category=raw.get("secondary_category") or None,
                 is_actionable=bool(val.final_verdict),
