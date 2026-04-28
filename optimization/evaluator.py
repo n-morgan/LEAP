@@ -166,13 +166,14 @@ class EvaluationOutput(BaseModel):
     ``recall`` / ``fpr`` are matched GT / unmatched extracted ratios **within**
     each category bucket; ``hierarchy_accuracy`` mirrors ``role_agreement``.
 
-    **Headline (global matching):** After Hungarian + similarity filtering,
-    ``extraction_precision`` = accepted_pairs / n_extracted,
-    ``extraction_recall`` = accepted_pairs / n_gt,
+    **Headline (global matching):** After Hungarian + similarity filtering and
+    grading, only pairs with grade **+1** count toward extraction metrics:
+    ``extraction_precision`` = plus_one_pairs / n_extracted,
+    ``extraction_recall`` = plus_one_pairs / n_gt  (≡ ``plus_one_coverage``),
     ``extraction_f1`` = harmonic mean of those.
     ``role_agreement`` / ``primary_category_agreement`` / field agreements are
-    computed only on **accepted** pairs; ``parent_attribution_accuracy`` only on
-    pairs where both roles are ``sub`` (else trivially 1.0 when no subs).
+    computed only on **accepted** pairs (all grades); ``parent_attribution_accuracy``
+    only on pairs where both roles are ``sub`` (else trivially 1.0 when no subs).
     ``plus_one_coverage`` = (# accepted pairs with grade +1) / n_gt.
 
     ``composite_score`` = 0.40 * extraction_f1 + 0.25 * hierarchy_headline +
@@ -208,15 +209,15 @@ class EvaluationOutput(BaseModel):
     composite_score: float = Field(default=0.0, description="Weighted headline score.")
     extraction_precision: float = Field(
         default=0.0,
-        description="accepted_pairs / n_extracted.",
+        description="plus_one_pairs / n_extracted.",
     )
     extraction_recall: float = Field(
         default=0.0,
-        description="accepted_pairs / n_gt.",
+        description="plus_one_pairs / n_gt (equals plus_one_coverage).",
     )
     extraction_f1: float = Field(
         default=0.0,
-        description="Harmonic mean of precision and recall.",
+        description="Harmonic mean of plus-one precision and plus-one recall.",
     )
     role_agreement: float = Field(
         default=0.0,
@@ -600,6 +601,7 @@ class LEAPEvaluator:
 
         grades: dict[str, PolicyGrade] = {}
         pair_grades: dict[tuple[int, int], int] = {}
+        plus_one_pairs: set[tuple[int, int]] = set()  # pairs graded +1
 
         role_matches = 0
         cat_matches = 0
@@ -687,13 +689,15 @@ class LEAPEvaluator:
 
             if graded.grade == 1:
                 plus_one_gt_count += 1
+                plus_one_pairs.add((ei, gj))
 
         matched_n = len(accepted)
         unmatched_ext = n_ext - len(matched_ext_idx)
         unmatched_gt = n_gt - len(matched_gt_idx)
 
-        extraction_precision = _safe_div(matched_n, n_ext)
-        extraction_recall = _safe_div(matched_n, n_gt)
+        # Plus-one metrics: only pairs graded +1 count as true positives.
+        extraction_precision = _safe_div(plus_one_gt_count, n_ext)
+        extraction_recall = _safe_div(plus_one_gt_count, n_gt)  # == plus_one_coverage
         p, r = extraction_precision, extraction_recall
         extraction_f1 = _safe_div(2 * p * r, p + r) if (p + r) > 0 else 0.0
 
@@ -758,17 +762,28 @@ class LEAPEvaluator:
 
             scores[cat] = float(np.mean(contrib)) if contrib else 0.0
 
+            # Plus-one recall: GT items that have a +1-graded match.
             recall[cat] = (
                 _safe_div(
-                    sum(1 for j in gt_indices_c if j in matched_gt_idx),
+                    sum(
+                        1
+                        for j in gt_indices_c
+                        if any((e, j) in plus_one_pairs for e, g, _ in accepted if g == j)
+                    ),
                     len(gt_indices_c),
                 )
                 if gt_indices_c
                 else 1.0
             )
+            # Plus-one FPR: extracted items without a +1-graded match (unmatched or
+            # matched but graded 0 / -1) divided by total extracted in category.
             fpr[cat] = (
                 _safe_div(
-                    sum(1 for i in ext_indices_c if i not in matched_ext_idx),
+                    sum(
+                        1
+                        for i in ext_indices_c
+                        if not any((i, g) in plus_one_pairs for e, g, _ in accepted if e == i)
+                    ),
                     len(ext_indices_c),
                 )
                 if ext_indices_c
