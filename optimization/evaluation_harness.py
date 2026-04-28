@@ -404,7 +404,10 @@ if __name__ == "__main__":
     )
 
     # --- GPT direct pass ---
-    gpt_runner = OpenAIRunner(model_name=MODEL)
+    gpt_runner = OpenAIRunner(
+        model_name=MODEL,
+        expert_knowledge_path=_DEFAULT_EXPERT_KNOWLEDGE_PATH,
+    )
     gpt_result = harness.run(
         runner=gpt_runner,
         location=cfg["location_key"],
