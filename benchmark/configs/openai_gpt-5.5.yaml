@@ -1,0 +1,4 @@
+runner: openai
+model: gpt-5.5
+evaluator_model: gpt-5.4
+similarity_threshold: 0.55

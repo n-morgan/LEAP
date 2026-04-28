@@ -1,0 +1,5 @@
+runner: rlm
+model: gpt-5.2
+max_iterations: 50
+evaluator_model: gpt-5.4
+similarity_threshold: 0.55
