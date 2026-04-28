@@ -57,6 +57,13 @@ def _build_runners(skip_rlm: bool = False) -> list[tuple[str, Any]]:
     """Return (label, runner) pairs in benchmark order."""
     runners: list[tuple[str, Any]] = []
 
+    runners += [
+        ("GPT gpt-5.5",      OpenAIRunner(model_name="gpt-5.5",      expert_knowledge_path=_DEFAULT_EXPERT_KNOWLEDGE_PATH)),
+        ("GPT gpt-5.4",      OpenAIRunner(model_name="gpt-5.4",      expert_knowledge_path=_DEFAULT_EXPERT_KNOWLEDGE_PATH)),
+        ("GPT gpt-5.4-mini", OpenAIRunner(model_name="gpt-5.4-mini", expert_knowledge_path=_DEFAULT_EXPERT_KNOWLEDGE_PATH)),
+        ("GPT gpt-5.2",      OpenAIRunner(model_name="gpt-5.2",      expert_knowledge_path=_DEFAULT_EXPERT_KNOWLEDGE_PATH)),
+    ]
+
     if not skip_rlm:
         runners += [
             ("RLM gpt-5.5", RLMRunner(
@@ -70,13 +77,6 @@ def _build_runners(skip_rlm: bool = False) -> list[tuple[str, Any]]:
                 max_iterations=50,
             )),
         ]
-
-    runners += [
-        ("GPT gpt-5.5",      OpenAIRunner(model_name="gpt-5.5",      expert_knowledge_path=_DEFAULT_EXPERT_KNOWLEDGE_PATH)),
-        ("GPT gpt-5.4",      OpenAIRunner(model_name="gpt-5.4",      expert_knowledge_path=_DEFAULT_EXPERT_KNOWLEDGE_PATH)),
-        ("GPT gpt-5.4-mini", OpenAIRunner(model_name="gpt-5.4-mini", expert_knowledge_path=_DEFAULT_EXPERT_KNOWLEDGE_PATH)),
-        ("GPT gpt-5.2",      OpenAIRunner(model_name="gpt-5.2",      expert_knowledge_path=_DEFAULT_EXPERT_KNOWLEDGE_PATH)),
-    ]
 
     return runners
 
@@ -103,6 +103,7 @@ def run_benchmark(
 
     # results[city][label] = EvaluationOutput
     results: dict[str, dict[str, Any]] = {c: {} for c in city_names}
+    run_dirs: dict[str, Any] = {}  # label -> run_dir, created once per runner
 
     total_runs = len(city_names) * len(runners)
     completed = 0
@@ -116,6 +117,20 @@ def run_benchmark(
 
         for label, runner in runners:
             completed += 1
+
+            # Create the run_dir once per runner (shared across all cities).
+            if city == city_names[0]:
+                run_dirs[label] = harness.make_run_dir(runner.model_slug)
+
+            run_dir = run_dirs[label]
+
+            # Resume: skip cities already written to this run's scores.csv.
+            done = harness.completed_locations(run_dir)
+            cfg = CITY_CONFIG[city]
+            if cfg["location_key"] in done:
+                print(f"\n[{completed}/{total_runs}] {label} — {city} (already completed, skipping)")
+                continue
+
             print(f"\n[{completed}/{total_runs}] {label} — {city}")
             try:
                 result = harness.run(
@@ -124,6 +139,7 @@ def run_benchmark(
                     document_path=cfg["markdown"],
                     ground_truth_policies=ground_truth,
                     rubric=DEFAULT_RUBRIC,
+                    run_dir=run_dir,
                 )
                 results[city][label] = result
             except Exception as e:

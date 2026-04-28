@@ -112,8 +112,11 @@ def run_benchmark(
         city: {} for city in cities
     }
 
-    total = len(config_paths) * len(cities)
-    done  = 0
+    import datetime
+    from eval import _append_results
+
+    total       = len(config_paths) * len(cities)
+    run_counter = 0
 
     for config_path in config_paths:
         with open(config_path, encoding="utf-8") as fh:
@@ -125,12 +128,25 @@ def run_benchmark(
             similarity_threshold=config.get("similarity_threshold", 0.55),
         )
 
+        # One run_dir per config, shared across all cities.
+        ts      = datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
+        run_dir = _HERE / "results" / config_path.stem / ts
+        run_dir.mkdir(parents=True, exist_ok=True)
+
+        # Resume: read any cities already completed in a previous attempt.
+        from eval import completed_locations
+        done_locs = completed_locations(run_dir)
+
         for city in cities:
-            done += 1
+            run_counter += 1
             cfg          = CORPUS[city]
             ground_truth = load_ground_truth(city)
 
-            print(f"\n[{done}/{total}] {config_path.stem} — {city} "
+            if cfg["location_key"] in done_locs:
+                print(f"\n[{run_counter}/{total}] {config_path.stem} — {city} (already completed, skipping)")
+                continue
+
+            print(f"\n[{run_counter}/{total}] {config_path.stem} — {city} "
                   f"({len(ground_truth)} GT policies)")
 
             try:
@@ -144,13 +160,7 @@ def run_benchmark(
                     source_document_path=cfg["document"] if grade_with_doc else None,
                 )
                 results[city][config_path.stem] = result
-
-                # Persist via eval._save_results
-                import datetime
-                from eval import _save_results
-                ts      = datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
-                run_dir = _HERE / "results" / config_path.stem / ts / city
-                _save_results(run_dir, result, extracted)
+                _append_results(run_dir, result, extracted)
 
                 print(f"  composite={result.composite_score:.4f}  "
                       f"f1={result.extraction_f1:.4f}  "
@@ -194,7 +204,9 @@ if __name__ == "__main__":
     if args.configs:
         config_paths = [pathlib.Path(p) for p in args.configs]
     else:
-        config_paths = sorted(config_dir.glob("*.yaml"))
+        # GPT configs first, RLM configs after — openai_* sorts before rlm_* alphabetically.
+        config_paths = sorted(config_dir.glob("*.yaml"),
+                              key=lambda p: (0 if p.stem.startswith("openai_") else 1, p.stem))
 
     if args.skip_rlm:
         config_paths = [p for p in config_paths if not p.stem.startswith("rlm_")]

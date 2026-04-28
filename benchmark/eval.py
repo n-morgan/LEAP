@@ -53,26 +53,42 @@ RESULTS_DIR = _HERE / "results"
 
 
 # ---------------------------------------------------------------------------
-# Output helpers (mirrors evaluation_harness._save_scores)
+# Output helpers
 # ---------------------------------------------------------------------------
 
-def _save_results(run_dir: pathlib.Path, result: EvaluationOutput, policies: list[dict]) -> None:
+def _append_csv(path: pathlib.Path, rows: list[dict], fieldnames: list[str]) -> None:
+    """Append rows to a CSV, writing the header only on first write."""
+    write_header = not path.exists()
+    with open(path, "a", newline="", encoding="utf-8") as fh:
+        writer = csv.DictWriter(fh, fieldnames=fieldnames, extrasaction="ignore")
+        if write_header:
+            writer.writeheader()
+        writer.writerows(rows)
+
+
+def completed_locations(run_dir: pathlib.Path) -> set[str]:
+    """Return location keys already present in run_dir/scores.csv."""
+    scores_path = run_dir / "scores.csv"
+    if not scores_path.exists():
+        return set()
+    with open(scores_path, newline="", encoding="utf-8") as fh:
+        return {row["location"] for row in csv.DictReader(fh)}
+
+
+def _append_results(run_dir: pathlib.Path, result: EvaluationOutput, policies: list[dict]) -> None:
+    """Append one city's results into the shared run_dir CSV files."""
     run_dir.mkdir(parents=True, exist_ok=True)
 
-    # extracted_policies.csv
+    # extracted_policies.csv — stamped with location
     if policies:
-        with open(run_dir / "extracted_policies.csv", "w", newline="", encoding="utf-8") as fh:
-            writer = csv.DictWriter(fh, fieldnames=list(policies[0].keys()), extrasaction="ignore")
-            writer.writeheader()
-            writer.writerows(policies)
-    else:
-        (run_dir / "extracted_policies.csv").write_text("policy_statement\n", encoding="utf-8")
+        stamped = [{"location": result.location, **p} for p in policies]
+        _append_csv(run_dir / "extracted_policies.csv", stamped, list(stamped[0].keys()))
 
-    # scores.json
-    with open(run_dir / "scores.json", "w", encoding="utf-8") as fh:
-        json.dump(result.model_dump(), fh, indent=2, ensure_ascii=False)
+    # scores.jsonl — one JSON object per line
+    with open(run_dir / "scores.jsonl", "a", encoding="utf-8") as fh:
+        fh.write(json.dumps(result.model_dump(), ensure_ascii=False) + "\n")
 
-    # scores.csv (flat, one row — easy to concat across runs)
+    # scores.csv — one row per city
     row: dict = {
         "location":                       result.location,
         "composite_score":                round(result.composite_score, 4),
@@ -94,15 +110,12 @@ def _save_results(run_dir: pathlib.Path, result: EvaluationOutput, policies: lis
         row[f"{slug}_score"]  = round(result.scores.get(cat, 0.0), 4)
         row[f"{slug}_recall"] = round(result.recall.get(cat, 0.0), 4)
         row[f"{slug}_fpr"]    = round(result.fpr.get(cat, 0.0), 4)
-    with open(run_dir / "scores.csv", "w", newline="", encoding="utf-8") as fh:
-        writer = csv.DictWriter(fh, fieldnames=list(row.keys()))
-        writer.writeheader()
-        writer.writerow(row)
+    _append_csv(run_dir / "scores.csv", [row], list(row.keys()))
 
-    # grades.csv
+    # grades.csv — all matched pairs
     grade_rows = []
     for key, grade in result.grades.items():
-        cat, _ = key.split("::", 1) if "::" in key else ("", key)
+        cat = key.split("::", 1)[0] if "::" in key else ""
         grade_rows.append({
             "location":        result.location,
             "key":             key,
@@ -115,41 +128,38 @@ def _save_results(run_dir: pathlib.Path, result: EvaluationOutput, policies: lis
             "category_match":  grade.category_match if grade.category_match is not None else "",
             "reasoning":       grade.reasoning,
         })
-    with open(run_dir / "grades.csv", "w", newline="", encoding="utf-8") as fh:
-        writer = csv.DictWriter(fh, fieldnames=[
+    if grade_rows:
+        _append_csv(run_dir / "grades.csv", grade_rows, [
             "location", "key", "category", "policy_id", "grade",
             "similarity", "statement_match", "role_match", "category_match", "reasoning",
         ])
-        writer.writeheader()
-        writer.writerows(grade_rows)
 
-    # summary.csv (human-readable metric/value)
-    summary = [
-        {"metric": "composite_score",                "value": round(result.composite_score, 4)},
-        {"metric": "extraction_f1",                  "value": round(result.extraction_f1, 4)},
-        {"metric": "extraction_precision",           "value": round(result.extraction_precision, 4)},
-        {"metric": "extraction_recall",              "value": round(result.extraction_recall, 4)},
-        {"metric": "role_agreement",                 "value": round(result.role_agreement, 4)},
-        {"metric": "parent_attribution_accuracy",    "value": round(result.parent_attribution_accuracy, 4)},
-        {"metric": "primary_cat_agreement",          "value": round(result.primary_category_agreement, 4)},
-        {"metric": "financial_instrument_agreement", "value": round(result.financial_instrument_agreement, 4)},
-        {"metric": "secondary_category_agreement",   "value": round(result.secondary_category_agreement, 4)},
-        {"metric": "plus_one_coverage",              "value": round(result.plus_one_coverage, 4)},
-        {"metric": "matched",                        "value": result.matched_count},
-        {"metric": "unmatched_ext",                  "value": result.unmatched_extracted_count},
-        {"metric": "unmatched_gt",                   "value": result.unmatched_ground_truth_count},
-    ]
+    # summary.csv — metric/value rows keyed by location
+    summary = []
+    for metric, value in [
+        ("composite_score",                round(result.composite_score, 4)),
+        ("extraction_f1",                  round(result.extraction_f1, 4)),
+        ("extraction_precision",           round(result.extraction_precision, 4)),
+        ("extraction_recall",              round(result.extraction_recall, 4)),
+        ("role_agreement",                 round(result.role_agreement, 4)),
+        ("parent_attribution_accuracy",    round(result.parent_attribution_accuracy, 4)),
+        ("primary_cat_agreement",          round(result.primary_category_agreement, 4)),
+        ("financial_instrument_agreement", round(result.financial_instrument_agreement, 4)),
+        ("secondary_category_agreement",   round(result.secondary_category_agreement, 4)),
+        ("plus_one_coverage",              round(result.plus_one_coverage, 4)),
+        ("matched",                        result.matched_count),
+        ("unmatched_ext",                  result.unmatched_extracted_count),
+        ("unmatched_gt",                   result.unmatched_ground_truth_count),
+    ]:
+        summary.append({"location": result.location, "metric": metric, "value": value})
     for cat in CATEGORIES:
         slug = cat.replace(" ", "_").replace("-", "_")
         summary += [
-            {"metric": f"{slug}_score",  "value": round(result.scores.get(cat, 0.0), 4)},
-            {"metric": f"{slug}_recall", "value": round(result.recall.get(cat, 0.0), 4)},
-            {"metric": f"{slug}_fpr",    "value": round(result.fpr.get(cat, 0.0), 4)},
+            {"location": result.location, "metric": f"{slug}_score",  "value": round(result.scores.get(cat, 0.0), 4)},
+            {"location": result.location, "metric": f"{slug}_recall", "value": round(result.recall.get(cat, 0.0), 4)},
+            {"location": result.location, "metric": f"{slug}_fpr",    "value": round(result.fpr.get(cat, 0.0), 4)},
         ]
-    with open(run_dir / "summary.csv", "w", newline="", encoding="utf-8") as fh:
-        writer = csv.DictWriter(fh, fieldnames=["metric", "value"])
-        writer.writeheader()
-        writer.writerows(summary)
+    _append_csv(run_dir / "summary.csv", summary, ["location", "metric", "value"])
 
 
 # ---------------------------------------------------------------------------
@@ -173,10 +183,18 @@ def run_eval(
         similarity_threshold=config.get("similarity_threshold", 0.55),
     )
 
+    run_dir      = base_dir
+    run_dir.mkdir(parents=True, exist_ok=True)
+    done_locs    = completed_locations(run_dir)
+
     for city in cities:
         cfg          = CORPUS[city]
         ground_truth = load_ground_truth(city)
         doc_path     = cfg["document"]
+
+        if cfg["location_key"] in done_locs:
+            print(f"\n  {city} already completed — skipping.")
+            continue
 
         print(f"\n{'=' * 60}")
         print(f"  Config   : {config_path.name}")
@@ -199,8 +217,7 @@ def run_eval(
             source_document_path=doc_path if grade_with_doc else None,
         )
 
-        run_dir = base_dir / city
-        _save_results(run_dir, result, extracted)
+        _append_results(run_dir, result, extracted)
 
         print(f"  composite={result.composite_score:.4f}  "
               f"f1={result.extraction_f1:.4f}  "

@@ -180,34 +180,58 @@ class EvaluationHarness:
     # Internal helpers
     # ------------------------------------------------------------------
 
-    def _make_run_dir(self, model_slug: str) -> pathlib.Path:
+    def make_run_dir(self, model_slug: str) -> pathlib.Path:
+        """Create and return a timestamped run directory for one model.
+
+        Call this once per model run before the city loop, then pass the
+        returned path to every ``run()`` call so all cities share one folder.
+        """
         ts = datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
         run_dir = self.output_dir / model_slug / ts
         run_dir.mkdir(parents=True, exist_ok=True)
         return run_dir
 
     @staticmethod
-    def _save_extracted(run_dir: pathlib.Path, policies: list[dict[str, Any]]) -> None:
-        if not policies:
-            (run_dir / "extracted_policies.csv").write_text(
-                "policy_statement\n", encoding="utf-8"
-            )
-            return
-        path = run_dir / "extracted_policies.csv"
-        fieldnames = list(policies[0].keys())
-        with open(path, "w", newline="", encoding="utf-8") as fh:
+    def completed_locations(run_dir: pathlib.Path) -> set[str]:
+        """Return location keys already written to scores.csv in run_dir.
+
+        Used for resuming a failed multi-city run without re-running completed
+        cities.
+        """
+        scores_path = run_dir / "scores.csv"
+        if not scores_path.exists():
+            return set()
+        with open(scores_path, newline="", encoding="utf-8") as fh:
+            return {row["location"] for row in csv.DictReader(fh)}
+
+    @staticmethod
+    def _append_csv(path: pathlib.Path, rows: list[dict[str, Any]], fieldnames: list[str]) -> None:
+        """Append rows to a CSV, writing the header only on first write."""
+        write_header = not path.exists()
+        with open(path, "a", newline="", encoding="utf-8") as fh:
             writer = csv.DictWriter(fh, fieldnames=fieldnames, extrasaction="ignore")
-            writer.writeheader()
-            writer.writerows(policies)
+            if write_header:
+                writer.writeheader()
+            writer.writerows(rows)
+
+    @staticmethod
+    def _save_extracted(run_dir: pathlib.Path, policies: list[dict[str, Any]], location: str) -> None:
+        if not policies:
+            return
+        # Stamp every row with its location so the combined file is self-describing.
+        stamped = [{"location": location, **p} for p in policies]
+        fieldnames = list(stamped[0].keys())
+        EvaluationHarness._append_csv(run_dir / "extracted_policies.csv", stamped, fieldnames)
 
     @staticmethod
     def _save_scores(run_dir: pathlib.Path, result: EvaluationOutput) -> None:
-        # Full detail — JSON
-        with open(run_dir / "scores.json", "w", encoding="utf-8") as fh:
-            json.dump(result.model_dump(), fh, indent=2, ensure_ascii=False)
-
-        # Flat summary — scores.csv (one row, easy to concat across runs)
         from evaluator import CATEGORIES
+
+        # scores.jsonl — one JSON object per line, one per city
+        with open(run_dir / "scores.jsonl", "a", encoding="utf-8") as fh:
+            fh.write(json.dumps(result.model_dump(), ensure_ascii=False) + "\n")
+
+        # scores.csv — one row per city, location is the key
         row: dict[str, Any] = {
             "location":                       result.location,
             "composite_score":                round(result.composite_score, 4),
@@ -229,17 +253,12 @@ class EvaluationHarness:
             row[f"{slug}_score"]  = round(result.scores.get(cat, 0.0), 4)
             row[f"{slug}_recall"] = round(result.recall.get(cat, 0.0), 4)
             row[f"{slug}_fpr"]    = round(result.fpr.get(cat, 0.0), 4)
+        EvaluationHarness._append_csv(run_dir / "scores.csv", [row], list(row.keys()))
 
-        with open(run_dir / "scores.csv", "w", newline="", encoding="utf-8") as fh:
-            writer = csv.DictWriter(fh, fieldnames=list(row.keys()))
-            writer.writeheader()
-            writer.writerow(row)
-
-        # Per-pair grades — grades.csv (one row per matched pair, includes reasoning)
+        # grades.csv — one row per matched pair across all cities
         grade_rows = []
         for key, grade in result.grades.items():
-            # Key format: {gt_primary_category}::gt{j}_ext{i}_{policy_id}
-            category, rest = key.split("::", 1) if "::" in key else ("", key)
+            category = key.split("::", 1)[0] if "::" in key else ""
             grade_rows.append({
                 "location":        result.location,
                 "key":             key,
@@ -252,44 +271,37 @@ class EvaluationHarness:
                 "category_match":  grade.category_match if grade.category_match is not None else "",
                 "reasoning":       grade.reasoning,
             })
+        if grade_rows:
+            EvaluationHarness._append_csv(
+                run_dir / "grades.csv", grade_rows,
+                ["location", "key", "category", "policy_id", "grade",
+                 "similarity", "statement_match", "role_match", "category_match", "reasoning"],
+            )
 
-        with open(run_dir / "grades.csv", "w", newline="", encoding="utf-8") as fh:
-            fieldnames = [
-                "location", "key", "category", "policy_id", "grade",
-                "similarity", "statement_match", "role_match", "category_match",
-                "reasoning",
-            ]
-            writer = csv.DictWriter(fh, fieldnames=fieldnames)
-            writer.writeheader()
-            writer.writerows(grade_rows)
-
-        # Human-readable summary — summary.csv (metric + value, one row per metric)
+        # summary.csv — metric/value rows, keyed by location
         summary_rows = [
-            {"metric": "composite_score",                "value": round(result.composite_score, 4)},
-            {"metric": "extraction_f1",                  "value": round(result.extraction_f1, 4)},
-            {"metric": "extraction_precision",           "value": round(result.extraction_precision, 4)},
-            {"metric": "extraction_recall",              "value": round(result.extraction_recall, 4)},
-            {"metric": "role_agreement",                 "value": round(result.role_agreement, 4)},
-            {"metric": "parent_attribution_accuracy",    "value": round(result.parent_attribution_accuracy, 4)},
-            {"metric": "primary_cat_agreement",          "value": round(result.primary_category_agreement, 4)},
-            {"metric": "financial_instrument_agreement", "value": round(result.financial_instrument_agreement, 4)},
-            {"metric": "secondary_category_agreement",   "value": round(result.secondary_category_agreement, 4)},
-            {"metric": "plus_one_coverage",              "value": round(result.plus_one_coverage, 4)},
-            {"metric": "matched",                        "value": result.matched_count},
-            {"metric": "unmatched_ext",                  "value": result.unmatched_extracted_count},
-            {"metric": "unmatched_gt",                   "value": result.unmatched_ground_truth_count},
+            {"location": result.location, "metric": "composite_score",                "value": round(result.composite_score, 4)},
+            {"location": result.location, "metric": "extraction_f1",                  "value": round(result.extraction_f1, 4)},
+            {"location": result.location, "metric": "extraction_precision",           "value": round(result.extraction_precision, 4)},
+            {"location": result.location, "metric": "extraction_recall",              "value": round(result.extraction_recall, 4)},
+            {"location": result.location, "metric": "role_agreement",                 "value": round(result.role_agreement, 4)},
+            {"location": result.location, "metric": "parent_attribution_accuracy",    "value": round(result.parent_attribution_accuracy, 4)},
+            {"location": result.location, "metric": "primary_cat_agreement",          "value": round(result.primary_category_agreement, 4)},
+            {"location": result.location, "metric": "financial_instrument_agreement", "value": round(result.financial_instrument_agreement, 4)},
+            {"location": result.location, "metric": "secondary_category_agreement",   "value": round(result.secondary_category_agreement, 4)},
+            {"location": result.location, "metric": "plus_one_coverage",              "value": round(result.plus_one_coverage, 4)},
+            {"location": result.location, "metric": "matched",                        "value": result.matched_count},
+            {"location": result.location, "metric": "unmatched_ext",                  "value": result.unmatched_extracted_count},
+            {"location": result.location, "metric": "unmatched_gt",                   "value": result.unmatched_ground_truth_count},
         ]
         for cat in CATEGORIES:
             slug = cat.replace(" ", "_").replace("-", "_")
             summary_rows += [
-                {"metric": f"{slug}_score",  "value": round(result.scores.get(cat, 0.0), 4)},
-                {"metric": f"{slug}_recall", "value": round(result.recall.get(cat, 0.0), 4)},
-                {"metric": f"{slug}_fpr",    "value": round(result.fpr.get(cat, 0.0), 4)},
+                {"location": result.location, "metric": f"{slug}_score",  "value": round(result.scores.get(cat, 0.0), 4)},
+                {"location": result.location, "metric": f"{slug}_recall", "value": round(result.recall.get(cat, 0.0), 4)},
+                {"location": result.location, "metric": f"{slug}_fpr",    "value": round(result.fpr.get(cat, 0.0), 4)},
             ]
-        with open(run_dir / "summary.csv", "w", newline="", encoding="utf-8") as fh:
-            writer = csv.DictWriter(fh, fieldnames=["metric", "value"])
-            writer.writeheader()
-            writer.writerows(summary_rows)
+        EvaluationHarness._append_csv(run_dir / "summary.csv", summary_rows, ["location", "metric", "value"])
 
     # ------------------------------------------------------------------
     # Public API
@@ -304,6 +316,7 @@ class EvaluationHarness:
         rubric: str = DEFAULT_RUBRIC,
         system_prompt: str = CLIMATE_RLM_SYSTEM_PROMPT,
         source_document_path: str | pathlib.Path | None = None,
+        run_dir: Optional[pathlib.Path] = None,
     ) -> EvaluationOutput:
         """
         Run extraction with ``runner``, evaluate, and write results.
@@ -314,18 +327,24 @@ class EvaluationHarness:
             document_path:           Source document (PDF or markdown).
             ground_truth_policies:   List of GT policy dicts.
             rubric:                  Grading guidelines passed to LEAPEvaluator.
-            system_prompt:           Extraction system prompt. Defaults to
-                                     CLIMATE_RLM_SYSTEM_PROMPT.
+            system_prompt:           Extraction system prompt.
             source_document_path:    Passed to LEAPEvaluator for RLM-graded pairs.
-                                     Defaults to ``document_path``.
+            run_dir:                 Shared output directory for this model run.
+                                     If omitted, a new timestamped directory is
+                                     created (single-city / smoke-test usage).
+                                     For multi-city runs, create once with
+                                     ``make_run_dir()`` and pass here so all
+                                     cities append into the same folder.
 
         Returns:
-            EvaluationOutput written to the run directory.
+            ``EvaluationOutput`` appended into run_dir's CSV files.
         """
         doc_path = pathlib.Path(document_path)
         src_path = (source_document_path or doc_path) if self.grade_with_document else None
 
-        run_dir = self._make_run_dir(runner.model_slug)
+        if run_dir is None:
+            run_dir = self.make_run_dir(runner.model_slug)
+
         print(f"\n{'=' * 60}")
         print(f"Model    : {runner.model_slug}")
         print(f"Location : {location}")
@@ -342,7 +361,7 @@ class EvaluationHarness:
         print(f"\n[2/3] Running extraction ({runner.model_slug})...")
         extracted = runner.run(document_markdown, system_prompt)
         print(f"  {len(extracted)} policies extracted")
-        self._save_extracted(run_dir, extracted)
+        self._save_extracted(run_dir, extracted, location)
 
         # Step 3: Evaluate
         print("\n[3/3] Evaluating...")
@@ -450,13 +469,13 @@ def _build_parser() -> argparse.ArgumentParser:
 
 
 if __name__ == "__main__":  # pragma: no cover — use benchmark.py for full runs
-    # Smoke test — runs RLM and GPT against Hiroshima (14 GT policies, small doc).
+    # Smoke test — runs GPT then RLM against Hiroshima (14 GT policies, small doc).
     # Swap SMOKE_CITY to any key in CITY_CONFIG to test a different city.
-    SMOKE_CITY   = "Hiroshima"
-    MODEL        = "gpt-5.2"
-    OUTPUT_DIR   = _PIPELINE_HERE / "evaluation_results"
+    SMOKE_CITY = "Hiroshima"
+    MODEL      = "gpt-5.2"
+    OUTPUT_DIR = _PIPELINE_HERE / "evaluation_results"
 
-    cfg = CITY_CONFIG[SMOKE_CITY]
+    cfg          = CITY_CONFIG[SMOKE_CITY]
     ground_truth = load_ground_truth_for_city(SMOKE_CITY)
     print(f"Loaded {len(ground_truth)} ground-truth policies for {SMOKE_CITY}")
 
@@ -464,7 +483,19 @@ if __name__ == "__main__":  # pragma: no cover — use benchmark.py for full run
         output_dir=OUTPUT_DIR,
         evaluator_model=MODEL,
         similarity_threshold=0.55,
-        grade_with_document=False,  # set True to use RLM grader with full doc
+        grade_with_document=False,
+    )
+
+    # --- GPT direct pass (runs first) ---
+    gpt_runner = OpenAIRunner(
+        model_name=MODEL,
+        expert_knowledge_path=_DEFAULT_EXPERT_KNOWLEDGE_PATH,
+    )
+    gpt_result = harness.run(
+        runner=gpt_runner,
+        location=cfg["location_key"],
+        document_path=cfg["markdown"],
+        ground_truth_policies=ground_truth,
     )
 
     # --- RLM pass ---
@@ -480,18 +511,6 @@ if __name__ == "__main__":  # pragma: no cover — use benchmark.py for full run
         ground_truth_policies=ground_truth,
     )
 
-    # --- GPT direct pass ---
-    gpt_runner = OpenAIRunner(
-        model_name=MODEL,
-        expert_knowledge_path=_DEFAULT_EXPERT_KNOWLEDGE_PATH,
-    )
-    gpt_result = harness.run(
-        runner=gpt_runner,
-        location=cfg["location_key"],
-        document_path=cfg["markdown"],
-        ground_truth_policies=ground_truth,
-    )
-
     # --- Side-by-side summary ---
     print(f"\n{'=' * 60}")
     print(f"Smoke test results — {SMOKE_CITY} ({len(ground_truth)} GT policies)")
@@ -499,39 +518,19 @@ if __name__ == "__main__":  # pragma: no cover — use benchmark.py for full run
     print(f"{'Metric':<30} {'RLM':>10} {'GPT':>10}")
     print("-" * 52)
     for label, rv, gv in [
-        ("composite_score",         rlm_result.composite_score,          gpt_result.composite_score),
-        ("extraction_f1",           rlm_result.extraction_f1,            gpt_result.extraction_f1),
-        ("extraction_precision",    rlm_result.extraction_precision,     gpt_result.extraction_precision),
-        ("extraction_recall",       rlm_result.extraction_recall,        gpt_result.extraction_recall),
-        ("role_agreement",          rlm_result.role_agreement,           gpt_result.role_agreement),
-        ("primary_cat_agreement",   rlm_result.primary_category_agreement, gpt_result.primary_category_agreement),
-        ("plus_one_coverage",       rlm_result.plus_one_coverage,        gpt_result.plus_one_coverage),
-        ("matched",                 rlm_result.matched_count,            gpt_result.matched_count),
-        ("unmatched_ext",           rlm_result.unmatched_extracted_count, gpt_result.unmatched_extracted_count),
-        ("unmatched_gt",            rlm_result.unmatched_ground_truth_count, gpt_result.unmatched_ground_truth_count),
+        ("composite_score",      rlm_result.composite_score,               gpt_result.composite_score),
+        ("extraction_f1",        rlm_result.extraction_f1,                 gpt_result.extraction_f1),
+        ("extraction_precision", rlm_result.extraction_precision,          gpt_result.extraction_precision),
+        ("extraction_recall",    rlm_result.extraction_recall,             gpt_result.extraction_recall),
+        ("role_agreement",       rlm_result.role_agreement,                gpt_result.role_agreement),
+        ("primary_cat_agreement",rlm_result.primary_category_agreement,    gpt_result.primary_category_agreement),
+        ("plus_one_coverage",    rlm_result.plus_one_coverage,             gpt_result.plus_one_coverage),
+        ("matched",              rlm_result.matched_count,                 gpt_result.matched_count),
+        ("unmatched_ext",        rlm_result.unmatched_extracted_count,     gpt_result.unmatched_extracted_count),
+        ("unmatched_gt",         rlm_result.unmatched_ground_truth_count,  gpt_result.unmatched_ground_truth_count),
     ]:
-        print(f"  {label:<28} {rv:>10.4f} {gv:>10.4f}")
-    print(f"{'=' * 60}")
-    print(f"\nPer-model summary.csv saved in each run folder under {OUTPUT_DIR}.")
-
-    # --- Side-by-side summary ---
-    print(f"\n{'=' * 60}")
-    print(f"Smoke test results — {SMOKE_CITY} ({len(ground_truth)} GT policies)")
-    print(f"{'=' * 60}")
-    print(f"{'Metric':<30} {'RLM':>10} {'GPT':>10}")
-    print("-" * 52)
-    for label, rv, gv in [
-        ("composite_score",         rlm_result.composite_score,          gpt_result.composite_score),
-        ("extraction_f1",           rlm_result.extraction_f1,            gpt_result.extraction_f1),
-        ("extraction_precision",    rlm_result.extraction_precision,     gpt_result.extraction_precision),
-        ("extraction_recall",       rlm_result.extraction_recall,        gpt_result.extraction_recall),
-        ("role_agreement",          rlm_result.role_agreement,           gpt_result.role_agreement),
-        ("primary_cat_agreement",   rlm_result.primary_category_agreement, gpt_result.primary_category_agreement),
-        ("plus_one_coverage",       rlm_result.plus_one_coverage,        gpt_result.plus_one_coverage),
-        ("matched",                 rlm_result.matched_count,            gpt_result.matched_count),
-        ("unmatched_ext",           rlm_result.unmatched_extracted_count, gpt_result.unmatched_extracted_count),
-        ("unmatched_gt",            rlm_result.unmatched_ground_truth_count, gpt_result.unmatched_ground_truth_count),
-    ]:
-        print(f"  {label:<28} {rv:>10.4f} {gv:>10.4f}")
+        rv_fmt = f"{rv:>10.4f}" if isinstance(rv, float) else f"{rv:>10}"
+        gv_fmt = f"{gv:>10.4f}" if isinstance(gv, float) else f"{gv:>10}"
+        print(f"  {label:<28} {rv_fmt} {gv_fmt}")
     print(f"{'=' * 60}")
     print(f"\nPer-model summary.csv saved in each run folder under {OUTPUT_DIR}.")
