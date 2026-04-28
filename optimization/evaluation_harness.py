@@ -169,10 +169,12 @@ class EvaluationHarness:
         output_dir: str | pathlib.Path = "evaluation_results",
         evaluator_model: str = "gpt-5.4",
         similarity_threshold: float = 0.55,
+        grade_with_document: bool = False,
     ) -> None:
         self.output_dir = pathlib.Path(output_dir)
         self.evaluator_model = evaluator_model
         self.similarity_threshold = similarity_threshold
+        self.grade_with_document = grade_with_document
 
     # ------------------------------------------------------------------
     # Internal helpers
@@ -293,7 +295,7 @@ class EvaluationHarness:
             EvaluationOutput written to the run directory.
         """
         doc_path = pathlib.Path(document_path)
-        src_path = source_document_path or doc_path
+        src_path = (source_document_path or doc_path) if self.grade_with_document else None
 
         run_dir = self._make_run_dir(runner.model_slug)
         print(f"\n{'=' * 60}")
@@ -434,6 +436,7 @@ if __name__ == "__main__":
         output_dir=OUTPUT_DIR,
         evaluator_model=MODEL,
         similarity_threshold=0.55,
+        grade_with_document=False,  # set True to use RLM grader with full doc
     )
 
     # --- RLM pass ---
@@ -447,7 +450,6 @@ if __name__ == "__main__":
         location=cfg["location_key"],
         document_path=cfg["markdown"],
         ground_truth_policies=ground_truth,
-        source_document_path=cfg["markdown"],
     )
 
     # --- GPT direct pass ---
@@ -460,7 +462,6 @@ if __name__ == "__main__":
         location=cfg["location_key"],
         document_path=cfg["markdown"],
         ground_truth_policies=ground_truth,
-        source_document_path=cfg["markdown"],
     )
 
     # --- Side-by-side summary ---
