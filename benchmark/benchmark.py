@@ -118,6 +118,8 @@ def run_benchmark(
     total       = len(config_paths) * len(cities)
     run_counter = 0
 
+    from eval import completed_locations
+
     for config_path in config_paths:
         with open(config_path, encoding="utf-8") as fh:
             config = yaml.safe_load(fh)
@@ -134,8 +136,11 @@ def run_benchmark(
         run_dir.mkdir(parents=True, exist_ok=True)
 
         # Resume: read any cities already completed in a previous attempt.
-        from eval import completed_locations
         done_locs = completed_locations(run_dir)
+
+        print(f"\n{'#' * 60}")
+        print(f"# Config: {config_path.stem}")
+        print(f"{'#' * 60}")
 
         for city in cities:
             run_counter += 1

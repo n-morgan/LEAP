@@ -108,30 +108,28 @@ def run_benchmark(
     total_runs = len(city_names) * len(runners)
     completed = 0
 
-    for city in city_names:
-        cfg = CITY_CONFIG[city]
-        ground_truth = load_ground_truth_for_city(city)
+    for label, runner in runners:
         print(f"\n{'#' * 60}")
-        print(f"# City: {city}  ({len(ground_truth)} GT policies)")
+        print(f"# Runner: {label}")
         print(f"{'#' * 60}")
 
-        for label, runner in runners:
+        # Create the run_dir once per runner (shared across all cities).
+        run_dirs[label] = harness.make_run_dir(runner.model_slug)
+        run_dir = run_dirs[label]
+
+        # Resume: load cities already completed in a previous attempt.
+        done = harness.completed_locations(run_dir)
+
+        for city in city_names:
             completed += 1
-
-            # Create the run_dir once per runner (shared across all cities).
-            if city == city_names[0]:
-                run_dirs[label] = harness.make_run_dir(runner.model_slug)
-
-            run_dir = run_dirs[label]
-
-            # Resume: skip cities already written to this run's scores.csv.
-            done = harness.completed_locations(run_dir)
             cfg = CITY_CONFIG[city]
+            ground_truth = load_ground_truth_for_city(city)
+
             if cfg["location_key"] in done:
                 print(f"\n[{completed}/{total_runs}] {label} — {city} (already completed, skipping)")
                 continue
 
-            print(f"\n[{completed}/{total_runs}] {label} — {city}")
+            print(f"\n[{completed}/{total_runs}] {label} — {city}  ({len(ground_truth)} GT policies)")
             try:
                 result = harness.run(
                     runner=runner,
