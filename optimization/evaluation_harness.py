@@ -84,45 +84,45 @@ DEFAULT_RUBRIC = (
 # Las Vegas (LV.md) is excluded — no ground truth rows in the CSV.
 # ---------------------------------------------------------------------------
 
-_GENIUS_CITIES_DIR = _PIPELINE_HERE.parent.parent / "GENIUS" / "docs" / "cities"
+_CITIES_DIR = _PIPELINE_HERE / "docs" / "cities"
 _GT_CSV = _PIPELINE_HERE.parent.parent / "GENIUS" / "notebooks" / "outputs" / "all_cities_kept_classified_policies_final.csv"
 
 CITY_CONFIG: dict[str, dict] = {
     "Austin": {
         "location_key": "Austin_US",
-        "markdown":     _GENIUS_CITIES_DIR / "austin.md",
+        "markdown":     _CITIES_DIR / "austin.md",
     },
     "Chicago": {
         "location_key": "Chicago_US",
-        "markdown":     _GENIUS_CITIES_DIR / "chicago.md",
+        "markdown":     _CITIES_DIR / "chicago.md",
     },
     "Dakar": {
         "location_key": "Dakar_SN",
-        "markdown":     _GENIUS_CITIES_DIR / "dakar.md",
+        "markdown":     _CITIES_DIR / "dakar.md",
     },
     "Geneva": {
         "location_key": "Geneva_CH",
-        "markdown":     _GENIUS_CITIES_DIR / "geneva.md",
+        "markdown":     _CITIES_DIR / "geneva.md",
     },
     "Hiroshima": {
         "location_key": "Hiroshima_JP",
-        "markdown":     _GENIUS_CITIES_DIR / "Hiroshima.md",
+        "markdown":     _CITIES_DIR / "Hiroshima.md",
     },
     "Kuwait": {
         "location_key": "Kuwait_KW",
-        "markdown":     _GENIUS_CITIES_DIR / "kuwait.md",
+        "markdown":     _CITIES_DIR / "kuwait.md",
     },
     "Miami_Dade": {
         "location_key": "Miami_Dade_US",
-        "markdown":     _GENIUS_CITIES_DIR / "miami_markdown.md",
+        "markdown":     _CITIES_DIR / "miami_markdown.md",
     },
     "Portugal": {
         "location_key": "Portugal_PT",
-        "markdown":     _GENIUS_CITIES_DIR / "Portugal.md",
+        "markdown":     _CITIES_DIR / "Portugal.md",
     },
     "Seattle": {
         "location_key": "Seattle_US",
-        "markdown":     _GENIUS_CITIES_DIR / "seattle_markdown.md",
+        "markdown":     _CITIES_DIR / "seattle_markdown.md",
     },
 }
 

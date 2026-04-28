@@ -967,10 +967,9 @@ if __name__ == "__main__":
 
     _HERE = pathlib.Path(__file__).resolve().parent       # LEAP/optimization/
     _LEAP_ROOT = _HERE.parent                              # LEAP/
-    _GENIUS_DOCS = _LEAP_ROOT.parent / "GENIUS" / "docs" / "cities"
 
     OUTPUTS_DIR = _HERE / "organized_outputs"
-    SEATTLE_DOC = str(_GENIUS_DOCS / "seattle_markdown.md")
+    SEATTLE_DOC = str(_HERE / "docs" / "cities" / "seattle_markdown.md")
 
     # Single source of truth for model and RLM settings — used by both the
     # optimizer (grader/resampler) and the extraction closure below.
