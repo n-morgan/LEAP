@@ -1,0 +1,127 @@
+{
+  "location": "Hiroshima_JP",
+  "scores": {
+    "Mitigation": -0.46153846153846156,
+    "Adaptation": 0.0,
+    "Resource Efficiency": 0.0,
+    "Nature-Based Solutions": 0.0
+  },
+  "recall": {
+    "Mitigation": 0.6923076923076923,
+    "Adaptation": 1.0,
+    "Resource Efficiency": 1.0,
+    "Nature-Based Solutions": 1.0
+  },
+  "fpr": {
+    "Mitigation": 0.0,
+    "Adaptation": 0.0,
+    "Resource Efficiency": 0.0,
+    "Nature-Based Solutions": 0.0
+  },
+  "grades": {
+    "Mitigation::gt0_ext0_Set citywide greenhouse gas (GHG) emissions reduction targets of 80% by FY2050, ": {
+      "policy_id": "Set citywide greenhouse gas (GHG) emissions reduction targets of 80% by FY2050, ",
+      "grade": -1,
+      "reasoning": "The conversation provides neither (a) the extracted climate policy statement nor (b) the ground-truth policy statement to compare against, and it also does not surface any readable excerpt of the source document stored in `context`. The REPL outputs shown only list available variables and do not reveal document content. Without the two policy statements and without document passages to ground verification, I cannot assess match in scope/commitment/specificity or cite supporting text. Per the rubric, this is non-evaluable/unsupported, so the grade is -1.",
+      "similarity": 0.8123232126235962,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": false
+    },
+    "Resource Efficiency::gt4_ext5_Achieve household KPI targets for ZEH/low-carbon housing, household fuel cells, ": {
+      "policy_id": "Achieve household KPI targets for ZEH/low-carbon housing, household fuel cells, ",
+      "grade": 0,
+      "reasoning": "The context provides the two statements to compare. Ground-truth: “Hiroshima City targets more than 80% household LED lighting adoption by 50% of citizens by FY2020 and almost 100% by FY2030.” Extracted: “Achieve household KPI targets for ZEH/low-carbon housing, household fuel cells, and LED lighting adoption by FY2020 and FY2030.” The extracted policy is directionally consistent (it includes household LED lighting adoption and the FY2020/FY2030 milestones), but it omits the ground-truth’s key quantified targets (more than 80% by FY2020; almost 100% by FY2030) and the qualifier “by 50% of citizens,” and it broadens scope by bundling other KPIs. Therefore it is a partial/imprecise match rather than a fully specific one.",
+      "similarity": 0.6723867654800415,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": false
+    },
+    "Mitigation::gt7_ext10_Achieve business KPI targets for environmental management systems (Eco Action 21": {
+      "policy_id": "Achieve business KPI targets for environmental management systems (Eco Action 21",
+      "grade": -1,
+      "reasoning": "The materials provided do not include an extracted climate policy statement or a ground-truth policy statement to compare. Also, although a `context`/`context_0` variable is said to exist, none of the shown REPL outputs display any actual document text (only a list of REPL variables), so I cannot locate or cite source passages. With no comparable policy claims and no accessible source content, a document-grounded match assessment is impossible; per the rubric this is -1.",
+      "similarity": 0.6487689018249512,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": false
+    },
+    "Mitigation::gt9_ext14_Achieve transport KPI targets for next generation vehicle ownership share (19% b": {
+      "policy_id": "Achieve transport KPI targets for next generation vehicle ownership share (19% b",
+      "grade": 0,
+      "reasoning": "1) Ground-truth policy: Hiroshima City targets public transport use at 598,000 people/day by FY2020.\n2) Source document support: In the KPI table, the column header is “Short-term (FY2020)” and the row “No. of public transport users in the city” lists “598,000 people/day” (current status 567,000 people/day (FY2014)), confirming the target and deadline.\n3) Extracted policy match: It includes “increase public transport users to 598,000 people/day by FY2020,” which matches the ground-truth commitment.\n4) Scope issue: The extracted policy adds next-generation vehicle ownership share targets (19% by FY2020; 38% by FY2030). These are also present in the KPI table, but they are not part of the ground-truth policy statement being graded.\n5) Therefore, the extraction is correct on the ground-truth element but not an exact scope match, warranting a 0.",
+      "similarity": 0.628709077835083,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": false
+    },
+    "Mitigation::gt10_ext18_Reduce waste generation and incineration via KPI targets (waste per person per d": {
+      "policy_id": "Reduce waste generation and incineration via KPI targets (waste per person per d",
+      "grade": 1,
+      "reasoning": "1) In the SOURCE DOCUMENT text (after the “SOURCE DOCUMENT:” marker), the plan includes a “Key Performance Indicator (KPI)” table with “Short-term (FY2020)” targets: “Waste amount per day per person … 826 g/person/day” and “Incineration amount of waste … 295,000 ton/year.”\n2) The GROUND-TRUTH POLICY states Hiroshima City targets reducing waste generation to 826 g per person per day and waste incineration to 295,000 tons per year by FY2020, which matches the KPI table exactly in metrics, values, units, and timeframe.\n3) The EXTRACTED POLICY repeats the same KPI targets and FY2020 deadline (826 g/person/day; 295,000 tons/year), matching scope and specificity without contradiction.\n4) Therefore the extracted policy matches the ground truth as supported by the source document.",
+      "similarity": 0.7562918066978455,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": false
+    },
+    "Mitigation::gt3_ext21_Expand woody biomass use by introducing biomass boilers in city facilities (KPI:": {
+      "policy_id": "Expand woody biomass use by introducing biomass boilers in city facilities (KPI:",
+      "grade": -1,
+      "reasoning": "1) The ground-truth policy is explicitly about household fuel cell installations, with targets of 15,000 by FY2020 and 56,000 by FY2030. In the source document KPI table: “Number of introduced household fuel cells (Total) … 822 (FY2015) | 15,000 | 56,000.” Another table also lists “Introduction of household fuel cells | 15,000 | 56,000.”\n2) The extracted policy is instead about woody biomass/biomass boilers in city facilities, with a KPI of 3 by FY2020 and 9 by FY2030. The source document contains this as a separate KPI: “No. of introduced biomass boilers in the city facilities (cumulative total) … 1 (FY2016) | 3 | 9,” and also lists “Usage expansion of woody biomass” and “Introduction of biomass boilers in city facilities | 3 | 9.”\n3) Since the extracted policy addresses a different measure (biomass boilers in municipal facilities) than the ground-truth (household fuel cells), it does not match in scope, target, or mechanism.\n4) Therefore the correct grade is -1.",
+      "similarity": 0.5605818629264832,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": false
+    },
+    "Mitigation::gt11_ext26_Introduce dispersed power in city facilities (KPI: 1 by FY2020; 8 by FY2030) and": {
+      "policy_id": "Introduce dispersed power in city facilities (KPI: 1 by FY2020; 8 by FY2030) and",
+      "grade": 1,
+      "reasoning": "The SOURCE DOCUMENT’s “Key Performance Indicator (KPI)” table includes the row “Introduction no. of dispersed power in the city facilities (cumulative total)” with targets of 1 by Short-term (FY2020) and 8 by Mid-term (FY2030). This exactly matches the GROUND-TRUTH POLICY (cumulative dispersed power installations in city facilities: 1 by FY2020; 8 by FY2030). The EXTRACTED POLICY reproduces those same quantified targets and deadlines for dispersed power in city facilities; its additional smart communities KPI is also present in the same source table and does not contradict the dispersed power target being graded.",
+      "similarity": 0.6835588216781616,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": false
+    },
+    "Mitigation::gt12_ext27_Share Hiroshima City's achievements with neighboring towns and consider a system": {
+      "policy_id": "Share Hiroshima City's achievements with neighboring towns and consider a system",
+      "grade": -1,
+      "reasoning": "1) Ground-truth policy is a specific quantified target with deadlines: “Hiroshima City targets cumulative smart communities of 3 by FY2020 and 10 by FY2030.”\n\n2) The extracted policy instead discusses sharing Hiroshima City’s achievements with neighboring towns and considering a system to promote introduction of eco-friendly/next-generation energy (woody biomass, small hydro, hydrogen). It contains no reference to smart communities, no cumulative numeric targets (3 and 10), and no FY2020/FY2030 deadlines.\n\n3) A grounding check in the provided context shows the extracted-policy sentence appears only in the embedded rubric section (no second occurrence in the source document text), so it is not supported by the source as provided.\n\nTherefore, the extracted policy does not match the ground-truth in scope, commitment, specificity, or grounding.",
+      "similarity": 0.6034919023513794,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": false
+    },
+    "Mitigation::gt13_ext34_Set government-operations (city office) GHG reduction targets: 5.1% by FY2020 an": {
+      "policy_id": "Set government-operations (city office) GHG reduction targets: 5.1% by FY2020 an",
+      "grade": 1,
+      "reasoning": "1) In the SOURCE DOCUMENT under “## 3. Reduction target,” the table lists City office (government operations) targets: Short-term target with base year FY2013 and target year FY2020 is ▲5.1% for “City office,” and mid-term target with base year FY2013 and target year FY2030 is ▲30% for “City office.”\n2) This matches the GROUND-TRUTH POLICY exactly: city-office GHG emissions reduction targets of 5.1% below FY2013 by FY2020 and 30% below FY2013 by FY2030.\n3) The EXTRACTED POLICY states the same quantified targets, years, and FY2013 baseline for government operations/city office.\n4) The extracted policy’s added detail about “emission-type targets (e.g., 9.1% for municipal administration offices)” is also present in the same source table (“Target by emission type… Emissions from offices concerning municipal administration… ▲9.1%” under City office), so it is supported.\n5) Therefore, the extracted policy matches the ground-truth in scope, commitment, and specificity and is accurate relative to the source.",
+      "similarity": 0.8050836324691772,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": false
+    },
+    "Mitigation::gt5_ext35_Change administrative systems to reduce GHGs via (1) eco-friendly (green) contra": {
+      "policy_id": "Change administrative systems to reduce GHGs via (1) eco-friendly (green) contra",
+      "grade": -1,
+      "reasoning": "The only information provided is a meta-description that a `context` string exists with 88016 characters. The actual source document text is not included, and neither the extracted policy nor the ground-truth policy statements are provided to compare. Without being able to read and cite relevant passages from the document and assess the extracted policy against the ground truth on scope, commitment, and specificity, I cannot perform the required evaluation. Therefore, no meaningful match can be established and the appropriate grade is -1.",
+      "similarity": 0.6377800703048706,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": false
+    }
+  },
+  "hierarchy_accuracy": 1.0,
+  "composite_score": 0.4142857142857143,
+  "extraction_precision": 0.23809523809523808,
+  "extraction_recall": 0.7142857142857143,
+  "extraction_f1": 0.35714285714285715,
+  "role_agreement": 1.0,
+  "parent_attribution_accuracy": 1.0,
+  "primary_category_agreement": 0.0,
+  "financial_instrument_agreement": 0.0,
+  "secondary_category_agreement": 0.0,
+  "plus_one_coverage": 0.21428571428571427,
+  "matched_count": 10,
+  "unmatched_extracted_count": 32,
+  "unmatched_ground_truth_count": 4
+}
