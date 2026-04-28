@@ -9,7 +9,7 @@ from typing import Any, Callable, Literal, Optional
 from dotenv import load_dotenv
 from openai import OpenAI
 
-from evaluator import CATEGORIES, EvaluationOutput, LEAPEvaluator
+from evaluator import CATEGORIES, DEFAULT_RUBRIC, EvaluationOutput, LEAPEvaluator
 from rlm_pipeline import CLIMATE_RLM_SYSTEM_PROMPT, run_rlm_for_optimizer
 
 load_dotenv()
@@ -997,12 +997,6 @@ if __name__ == "__main__":
             sub_model_name=MODEL,
             max_iterations=RLM_MAX_ITERATIONS,
         )
-
-    DEFAULT_RUBRIC = (
-        "Grade on specificity (quantified targets, deadlines, mechanisms), "
-        "commitment strength (binding vs aspirational language), "
-        "and accuracy relative to the source document."
-    )
 
     # Load or generate the three-prong baseline.
     # If a previously migrated baseline exists on disk, load it so the LLM

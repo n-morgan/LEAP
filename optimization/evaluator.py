@@ -70,6 +70,12 @@ CATEGORIES: list[str] = [
     "Nature-Based Solutions",
 ]
 
+DEFAULT_RUBRIC: str = (
+    "Grade on specificity (quantified targets, deadlines, mechanisms), "
+    "commitment strength (binding vs aspirational language), "
+    "and accuracy relative to the source document."
+)
+
 
 
 def _normalize_parent(s: Optional[str]) -> str:
@@ -802,12 +808,6 @@ if __name__ == "__main__":
 
     print(f"Loaded {len(rlm_policies)} RLM policies and "
           f"{len(structured_policies)} structured (ground-truth) policies.")
-
-    DEFAULT_RUBRIC = (
-        "Grade on specificity (quantified targets, deadlines, mechanisms), "
-        "commitment strength (binding vs aspirational language), "
-        "and accuracy relative to the source document."
-    )
 
     evaluator = LEAPEvaluator(similarity_threshold=0.55)
     result = evaluator.evaluate(

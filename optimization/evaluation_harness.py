@@ -52,7 +52,7 @@ from typing import Any, Optional
 
 from dotenv import load_dotenv
 
-from evaluator import LEAPEvaluator, EvaluationOutput
+from evaluator import DEFAULT_RUBRIC, LEAPEvaluator, EvaluationOutput
 from rlm_pipeline import (
     CLIMATE_RLM_SYSTEM_PROMPT,
     parse_document,
@@ -69,16 +69,6 @@ from runners import (
 )
 
 load_dotenv()
-
-# ---------------------------------------------------------------------------
-# Default rubric (mirrors prompt_optimizer.__main__)
-# ---------------------------------------------------------------------------
-
-DEFAULT_RUBRIC = (
-    "Grade on specificity (quantified targets, deadlines, mechanisms), "
-    "commitment strength (binding vs aspirational language), "
-    "and accuracy relative to the source document."
-)
 
 # ---------------------------------------------------------------------------
 # City config — maps GT CSV city name → (location_key, markdown_filename)
