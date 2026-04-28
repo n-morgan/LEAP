@@ -52,7 +52,6 @@ import os
 import pathlib
 import re
 import tempfile
-import time
 from typing import Any, Literal, Optional
 
 import numpy as np
@@ -459,7 +458,6 @@ class LEAPEvaluator:
         match = re.search(r'\{[^{}]*"grade"[^{}]*\}', raw, re.DOTALL)
         data = json.loads(match.group() if match else raw)
 
-        print(data["reasoning"])
         grade = max(-1, min(1, int(data["grade"])))
         return _GraderOutput(grade=grade, reasoning=data.get("reasoning", ""))
 
@@ -509,8 +507,6 @@ class LEAPEvaluator:
             response_format=_GraderOutput,
         )
 
-        print(response)
-        time.sleep(5)
         return response.choices[0].message.parsed
 
     def evaluate(
@@ -711,8 +707,8 @@ class LEAPEvaluator:
 
             if gt_role == "sub" and ext_role == "sub":
                 parent_total += 1
-                ext_parent = _normalize_parent(ext.get("parent_statement"))
-                gt_parent = _normalize_parent(gt.get("parent_statement"))
+                ext_parent = ext.get("parent_statement") or ""
+                gt_parent = gt.get("parent_statement") or ""
                 if not ext_parent and not gt_parent:
                     # Both sides have no parent stated — trivially correct.
                     parent_correct += 1

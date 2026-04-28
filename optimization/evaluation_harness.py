@@ -263,6 +263,34 @@ class EvaluationHarness:
             writer.writeheader()
             writer.writerows(grade_rows)
 
+        # Human-readable summary — summary.csv (metric + value, one row per metric)
+        summary_rows = [
+            {"metric": "composite_score",                "value": round(result.composite_score, 4)},
+            {"metric": "extraction_f1",                  "value": round(result.extraction_f1, 4)},
+            {"metric": "extraction_precision",           "value": round(result.extraction_precision, 4)},
+            {"metric": "extraction_recall",              "value": round(result.extraction_recall, 4)},
+            {"metric": "role_agreement",                 "value": round(result.role_agreement, 4)},
+            {"metric": "parent_attribution_accuracy",    "value": round(result.parent_attribution_accuracy, 4)},
+            {"metric": "primary_cat_agreement",          "value": round(result.primary_category_agreement, 4)},
+            {"metric": "financial_instrument_agreement", "value": round(result.financial_instrument_agreement, 4)},
+            {"metric": "secondary_category_agreement",   "value": round(result.secondary_category_agreement, 4)},
+            {"metric": "plus_one_coverage",              "value": round(result.plus_one_coverage, 4)},
+            {"metric": "matched",                        "value": result.matched_count},
+            {"metric": "unmatched_ext",                  "value": result.unmatched_extracted_count},
+            {"metric": "unmatched_gt",                   "value": result.unmatched_ground_truth_count},
+        ]
+        for cat in CATEGORIES:
+            slug = cat.replace(" ", "_").replace("-", "_")
+            summary_rows += [
+                {"metric": f"{slug}_score",  "value": round(result.scores.get(cat, 0.0), 4)},
+                {"metric": f"{slug}_recall", "value": round(result.recall.get(cat, 0.0), 4)},
+                {"metric": f"{slug}_fpr",    "value": round(result.fpr.get(cat, 0.0), 4)},
+            ]
+        with open(run_dir / "summary.csv", "w", newline="", encoding="utf-8") as fh:
+            writer = csv.DictWriter(fh, fieldnames=["metric", "value"])
+            writer.writeheader()
+            writer.writerows(summary_rows)
+
     # ------------------------------------------------------------------
     # Public API
     # ------------------------------------------------------------------
@@ -484,3 +512,26 @@ if __name__ == "__main__":
     ]:
         print(f"  {label:<28} {rv:>10.4f} {gv:>10.4f}")
     print(f"{'=' * 60}")
+    print(f"\nPer-model summary.csv saved in each run folder under {OUTPUT_DIR}.")
+
+    # --- Side-by-side summary ---
+    print(f"\n{'=' * 60}")
+    print(f"Smoke test results — {SMOKE_CITY} ({len(ground_truth)} GT policies)")
+    print(f"{'=' * 60}")
+    print(f"{'Metric':<30} {'RLM':>10} {'GPT':>10}")
+    print("-" * 52)
+    for label, rv, gv in [
+        ("composite_score",         rlm_result.composite_score,          gpt_result.composite_score),
+        ("extraction_f1",           rlm_result.extraction_f1,            gpt_result.extraction_f1),
+        ("extraction_precision",    rlm_result.extraction_precision,     gpt_result.extraction_precision),
+        ("extraction_recall",       rlm_result.extraction_recall,        gpt_result.extraction_recall),
+        ("role_agreement",          rlm_result.role_agreement,           gpt_result.role_agreement),
+        ("primary_cat_agreement",   rlm_result.primary_category_agreement, gpt_result.primary_category_agreement),
+        ("plus_one_coverage",       rlm_result.plus_one_coverage,        gpt_result.plus_one_coverage),
+        ("matched",                 rlm_result.matched_count,            gpt_result.matched_count),
+        ("unmatched_ext",           rlm_result.unmatched_extracted_count, gpt_result.unmatched_extracted_count),
+        ("unmatched_gt",            rlm_result.unmatched_ground_truth_count, gpt_result.unmatched_ground_truth_count),
+    ]:
+        print(f"  {label:<28} {rv:>10.4f} {gv:>10.4f}")
+    print(f"{'=' * 60}")
+    print(f"\nPer-model summary.csv saved in each run folder under {OUTPUT_DIR}.")
