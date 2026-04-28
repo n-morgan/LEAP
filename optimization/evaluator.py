@@ -158,6 +158,13 @@ class _GraderOutput(BaseModel):
     reasoning: str
 
 
+class _ParentMatchOutput(BaseModel):
+    """Structured output for the parent-attribution LLM judge."""
+
+    same_parent: bool
+    reasoning: str
+
+
 class EvaluationOutput(BaseModel):
     """Full evaluation result for one location.
 
@@ -328,6 +335,27 @@ SOURCE DOCUMENT:
 {document}
 """
 
+_PARENT_MATCH_SYSTEM = """\
+You are an expert evaluator deciding whether two text strings refer to the same
+parent initiative, program, or plan within a climate policy document.
+
+Answer True only when both strings clearly point to the same named initiative —
+even if phrased differently (e.g. abbreviations, paraphrases, or partial names).
+Answer False if they are distinct programs, or if there is genuine ambiguity.
+
+Return only the structured output — no preamble.
+"""
+
+_PARENT_MATCH_USER = """\
+EXTRACTED parent_statement:
+{extracted_parent}
+
+GROUND-TRUTH parent_statement:
+{gt_parent}
+
+Do these refer to the same parent initiative or program?
+"""
+
 
 # ---------------------------------------------------------------------------
 # LEAPEvaluator
@@ -434,6 +462,26 @@ class LEAPEvaluator:
         print(data["reasoning"])
         grade = max(-1, min(1, int(data["grade"])))
         return _GraderOutput(grade=grade, reasoning=data.get("reasoning", ""))
+
+    def _grade_parent_match(
+        self,
+        extracted_parent: str,
+        gt_parent: str,
+    ) -> _ParentMatchOutput:
+        """Ask the LLM whether two parent_statement strings refer to the same initiative."""
+        user_msg = _PARENT_MATCH_USER.format(
+            extracted_parent=extracted_parent or "(empty)",
+            gt_parent=gt_parent or "(empty)",
+        )
+        response = self._get_client().beta.chat.completions.parse(
+            model=self.model,
+            messages=[
+                {"role": "system", "content": _PARENT_MATCH_SYSTEM},
+                {"role": "user", "content": user_msg},
+            ],
+            response_format=_ParentMatchOutput,
+        )
+        return response.choices[0].message.parsed
 
     def _grade_pair(
         self,
@@ -663,10 +711,19 @@ class LEAPEvaluator:
 
             if gt_role == "sub" and ext_role == "sub":
                 parent_total += 1
-                if _normalize_parent(ext.get("parent_statement")) == _normalize_parent(
-                    gt.get("parent_statement")
-                ):
+                ext_parent = _normalize_parent(ext.get("parent_statement"))
+                gt_parent = _normalize_parent(gt.get("parent_statement"))
+                if not ext_parent and not gt_parent:
+                    # Both sides have no parent stated — trivially correct.
                     parent_correct += 1
+                elif ext_parent and gt_parent:
+                    try:
+                        parent_match = self._grade_parent_match(ext_parent, gt_parent)
+                        if parent_match.same_parent:
+                            parent_correct += 1
+                    except Exception as e:
+                        print(f"  [WARN] Parent match grading failed (ext={ei}, gt={gj}): {e} — defaulting to no match")
+                # If one side is empty and the other is not, no credit.
 
             fi_e = ext.get("is_financial_instrument")
             fi_g = gt.get("is_financial_instrument")
