@@ -56,13 +56,23 @@ class OpenAIRunner:
                 "as a JSON list."
             )
 
-        response = self._get_client().chat.completions.create(
-            model=self.model_name,
-            temperature=self.temperature,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_content},
-            ],
-        )
+        try:
+            response = self._get_client().chat.completions.create(
+                model=self.model_name,
+                temperature=self.temperature,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_content},
+                ],
+            )
+        except Exception as e:
+            err = str(e).lower()
+            if "context_length_exceeded" in err or "too many tokens" in err or "maximum context" in err:
+                print(
+                    f"  [WARN] Context length exceeded for {self.model_name} "
+                    f"— recording as empty extraction (do not truncate)."
+                )
+                return []
+            raise
         raw = response.choices[0].message.content or ""
         return _parse_rlm_output(raw)

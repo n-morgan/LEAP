@@ -58,6 +58,22 @@ class GeminiRunner:
                 "as a JSON list."
             )
 
-        response = model.generate_content(prompt)
+        try:
+            response = model.generate_content(prompt)
+        except Exception as e:
+            err = str(e).lower()
+            if (
+                "too large" in err
+                or "token" in err
+                or "context" in err
+                or "resource_exhausted" in err
+                or "payload size" in err
+            ):
+                print(
+                    f"  [WARN] Context length exceeded for {self.model_name} "
+                    f"— recording as empty extraction (do not truncate)."
+                )
+                return []
+            raise
         raw = response.text or ""
         return _parse_rlm_output(raw)
