@@ -616,7 +616,17 @@ class LEAPEvaluator:
             ext = extracted_policies[ei]
             gt = ground_truth_policies[gj]
 
-            graded = self._grade_pair(ext, gt, rubric, doc_text)
+            try:
+                graded = self._grade_pair(ext, gt, rubric, doc_text)
+            except Exception as e:
+                print(
+                    f"  [WARN] Grading failed for pair (ext={ei}, gt={gj}): {e}"
+                    f" — defaulting to grade=0"
+                )
+                graded = _GraderOutput(
+                    grade=0,
+                    reasoning=f"[GRADER ERROR — defaulted to 0]: {e}",
+                )
 
             ext_role = ext.get("role", "individual")
             gt_role = gt.get("role", "individual")
