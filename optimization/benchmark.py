@@ -170,15 +170,16 @@ def _print_summary(
     city_names: list[str],
     runners: list[tuple[str, Any]],
 ) -> None:
-    labels = [label for label, _ in runners]
-    col_w = 10
+    labels  = [label for label, _ in runners]
+    col_w   = max(12, max(len(l) for l in labels) + 2)
     label_w = 26
+    sep_w   = 2 + label_w + col_w * len(labels)
 
     for city in city_names:
-        print(f"\n{'=' * 70}")
+        print(f"\n{'=' * sep_w}")
         print(f"  {city}")
-        print(f"{'=' * 70}")
-        header = f"  {'Metric':<{label_w}}" + "".join(f"{l[:col_w]:>{col_w}}" for l in labels)
+        print(f"{'=' * sep_w}")
+        header = f"  {'Metric':<{label_w}}" + "".join(f"{l:>{col_w}}" for l in labels)
         print(header)
         print("-" * len(header))
 
@@ -198,7 +199,7 @@ def _print_summary(
                         row += f"{val:>{col_w}}"
             print(row)
 
-        print(f"{'=' * 70}")
+        print(f"{'=' * sep_w}")
 
     print(f"\nAll results saved under: {OUTPUT_DIR}")
 

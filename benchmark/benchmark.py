@@ -66,15 +66,16 @@ def _print_table(
     city_names: list[str],
     config_labels: list[str],
 ) -> None:
-    col_w   = 11
+    col_w   = max(12, max(len(lbl) for lbl in config_labels) + 2)
     label_w = 16
+    sep_w   = 2 + label_w + col_w * len(config_labels)
 
     for city in city_names:
-        print(f"\n{'=' * 72}")
+        print(f"\n{'=' * sep_w}")
         print(f"  {city}")
-        print(f"{'=' * 72}")
+        print(f"{'=' * sep_w}")
         header = f"  {'Metric':<{label_w}}" + "".join(
-            f"{lbl[:col_w]:>{col_w}}" for lbl in config_labels
+            f"{lbl:>{col_w}}" for lbl in config_labels
         )
         print(header)
         print("-" * len(header))
@@ -93,7 +94,7 @@ def _print_table(
                         row += f"{val:>{col_w}}"
             print(row)
 
-        print(f"{'=' * 72}")
+        print(f"{'=' * sep_w}")
 
     print(f"\nPer-system summary.csv saved in each run folder under {_HERE / 'results'}.")
 
