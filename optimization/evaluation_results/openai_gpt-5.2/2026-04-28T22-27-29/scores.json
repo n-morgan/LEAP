@@ -1,0 +1,586 @@
+{
+  "location": "Chicago_US",
+  "scores": {
+    "Mitigation": 0.328125,
+    "Adaptation": 0.19047619047619047,
+    "Resource Efficiency": -1.0,
+    "Nature-Based Solutions": -0.5
+  },
+  "recall": {
+    "Mitigation": 0.8888888888888888,
+    "Adaptation": 0.7333333333333333,
+    "Resource Efficiency": 1.0,
+    "Nature-Based Solutions": 1.0
+  },
+  "fpr": {
+    "Mitigation": 0.3898305084745763,
+    "Adaptation": 0.47368421052631576,
+    "Resource Efficiency": 0.5454545454545454,
+    "Nature-Based Solutions": 0.75
+  },
+  "grades": {
+    "Mitigation::gt60_ext23_Reduce Chicago’s GHG emissions by a minimum of 62% by 2040 (from 2017 inventory ": {
+      "policy_id": "Reduce Chicago’s GHG emissions by a minimum of 62% by 2040 (from 2017 inventory ",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth on the core commitment, quantified target, and deadline: a minimum 62% reduction in Chicago's GHG emissions by 2040. It adds 'from 2017 inventory levels,' which is extra specificity not present in the ground-truth, but it does not contradict the stated policy. With no source excerpt available to verify that added baseline, the extraction still aligns strongly with the ground-truth.",
+      "similarity": 0.870002269744873,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt0_ext24_Pillar 1 Strategy 1: Retrofit buildings.": {
+      "policy_id": "Pillar 1 Strategy 1: Retrofit buildings.",
+      "grade": 0,
+      "reasoning": "The extracted policy matches the general scope of the ground-truth (retrofitting buildings under Pillar 1 Strategy 1), but it is much less specific. It omits the stated aims and mechanism details from the ground-truth: reducing building energy use, saving money, and improving resiliency. With no source excerpt provided, there is no basis to assess stronger accuracy beyond this partial match. Directionally correct but overly vague.",
+      "similarity": 0.7598470449447632,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": false
+    },
+    "Mitigation::gt1_ext25_Retrofit residential buildings with 4 or fewer units: 20% by 2030 and 50% by 204": {
+      "policy_id": "Retrofit residential buildings with 4 or fewer units: 20% by 2030 and 50% by 204",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth closely in scope, targets, deadlines, and prioritization. It preserves the quantified retrofit goals for residential buildings with 4 or fewer units (20% by 2030, 50% by 2040) and the focus on low- or moderate-income households. The only minor omission is the explicit actor/location ('Chicago will'), but this does not materially change the policy content.",
+      "similarity": 0.8152359127998352,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": false
+    },
+    "Mitigation::gt2_ext27_Retrofit 20% of total industrial buildings by 2030.": {
+      "policy_id": "Retrofit 20% of total industrial buildings by 2030.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in target (20%), scope (total industrial buildings), action (retrofit), and deadline (by 2030). Although the source document excerpt is not provided, relative to the ground-truth this is a precise and fully aligned extraction.",
+      "similarity": 0.8140692114830017,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": false
+    },
+    "Mitigation::gt3_ext28_Retrofit 90% of total City-owned and sister agency-owned buildings by 2035.": {
+      "policy_id": "Retrofit 90% of total City-owned and sister agency-owned buildings by 2035.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in scope, target, and deadline: retrofit 90% of total city-owned and sister agency-owned buildings by 2035. It preserves the quantified target (90%), affected asset classes (city-owned and sister agency-owned buildings), and timeline (2035), with no material change in commitment.",
+      "similarity": 0.8347336053848267,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": false
+    },
+    "Mitigation::gt4_ext30_Pillar 1 Strategy 2: Connect communities to renewable energy.": {
+      "policy_id": "Pillar 1 Strategy 2: Connect communities to renewable energy.",
+      "grade": 0,
+      "reasoning": "The extracted policy matches the general intent and structure of the ground-truth ('Pillar 1 Strategy 2' and connecting communities to renewable energy), but it omits key specificity present in the ground-truth: community ownership and access to renewable generation. With no source excerpt provided, this cannot be verified further, but relative to the ground-truth it is directionally correct yet incomplete.",
+      "similarity": 0.7838919758796692,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt5_ext31_Install 5 megawatts of co-owned community solar projects by 2025.": {
+      "policy_id": "Install 5 megawatts of co-owned community solar projects by 2025.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in scope, target, and deadline: installation of 5 megawatts of co-owned community solar projects by 2025. The omission of 'Chicago will' does not change the commitment substance, and there is no contradiction or loss of specificity.",
+      "similarity": 0.7977409362792969,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt6_ext32_Increase Chicago-based community renewables to 20 megawatts by 2025.": {
+      "policy_id": "Increase Chicago-based community renewables to 20 megawatts by 2025.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in scope, target, and deadline: increasing Chicago-based community renewables to 20 megawatts by 2025. Commitment strength is equivalent, with no material loss of specificity or meaning.",
+      "similarity": 0.9372671842575073,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt7_ext33_Increase community renewables subscriptions to achieve 25% subscribed by low-inc": {
+      "policy_id": "Increase community renewables subscriptions to achieve 25% subscribed by low-inc",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth closely in scope, target, beneficiary group, and deadline. It preserves the quantified target of 25%, the focus on low-income and/or environmental justice low-income residents, and the 2030 timeline. Although the city name 'Chicago' is omitted, there is no substantive change to the policy commitment itself.",
+      "similarity": 0.8201115131378174,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt8_ext34_Pillar 2 Strategy 1: Reduce waste and landfilling.": {
+      "policy_id": "Pillar 2 Strategy 1: Reduce waste and landfilling.",
+      "grade": 0,
+      "reasoning": "The extracted policy matches the high-level intent of the ground-truth: Pillar 2 Strategy 1 is about reducing waste and landfilling. However, it omits the specific mechanisms that make the ground-truth more complete and specific—namely diversion, organics collection, and reuse-oriented building practices. Because the source excerpt is not provided, binding strength cannot be verified, but relative to the ground-truth this is directionally correct yet underspecified.",
+      "similarity": 0.8041050434112549,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt9_ext35_Introduce community-wide organic waste collection and decomposition by 2025.": {
+      "policy_id": "Introduce community-wide organic waste collection and decomposition by 2025.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in scope, mechanism, and deadline: community-wide organic waste collection and decomposition by 2025. There is no loss of specificity or change in commitment.",
+      "similarity": 0.8140815496444702,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt10_ext36_Implement equitable waste source prevention strategies by 2030.": {
+      "policy_id": "Implement equitable waste source prevention strategies by 2030.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth on the core commitment, mechanism, and deadline: implementing equitable waste source prevention strategies by 2030. The omission of 'Chicago' does not materially change the policy substance in this evaluation context, and there is no contradiction or loss of specificity in target or timing.",
+      "similarity": 0.790213942527771,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt11_ext37_Divert 90% of commercial, industrial, and institutional waste by 2030.": {
+      "policy_id": "Divert 90% of commercial, industrial, and institutional waste by 2030.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in scope, target, and deadline: divert 90% of commercial, industrial, and institutional waste by 2030. Although the source excerpt is not provided, relative to the ground-truth this is a precise and complete match with no loss of specificity.",
+      "similarity": 0.8171995878219604,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt12_ext38_Divert 75% of construction and demolition waste by 2030.": {
+      "policy_id": "Divert 75% of construction and demolition waste by 2030.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in scope, target, and deadline: divert 75% of construction and demolition waste by 2030. Although the source excerpt is not provided, relative to the ground-truth this is a precise and accurate match with no loss of specificity.",
+      "similarity": 0.7985756993293762,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": false
+    },
+    "Mitigation::gt13_ext39_Enable building design for disassembly and reuse by 2035.": {
+      "policy_id": "Enable building design for disassembly and reuse by 2035.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth policy exactly in substance, target, and deadline: enabling building design for disassembly and reuse by 2035. The only omission is the jurisdictional subject ('Chicago will'), but there is no contradiction and the core commitment is fully preserved.",
+      "similarity": 0.8046900033950806,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": false
+    },
+    "Mitigation::gt14_ext40_Divert 90% of residential waste by 2040.": {
+      "policy_id": "Divert 90% of residential waste by 2040.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in target, scope, and deadline: divert 90% of residential waste by 2040. Although the source document excerpt is not provided, relative to the ground-truth this is a precise and complete match with no loss of specificity.",
+      "similarity": 0.767632782459259,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt15_ext41_Pillar 3 Strategy 1: Make walking, biking, or transit viable options for all tri": {
+      "policy_id": "Pillar 3 Strategy 1: Make walking, biking, or transit viable options for all tri",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth closely in scope and wording: it identifies Pillar 3, Strategy 1 and states the same core commitment to make walking, biking, and transit viable options for all trips. The slight wording change from 'commits Chicago to make' to 'Make' does not materially alter the meaning. No source excerpt is provided to test against document language, but relative to the ground-truth this is an accurate match.",
+      "similarity": 0.8508349061012268,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt16_ext42_Expand high-quality and low-stress on-street bikeways and off-street trails.": {
+      "policy_id": "Expand high-quality and low-stress on-street bikeways and off-street trails.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth policy exactly in scope and substance: expanding high-quality and low-stress on-street bikeways and off-street trails. There are no quantified targets or deadlines in the ground truth to miss, and the commitment strength is preserved aside from omitting the subject 'Chicago,' which does not change the policy meaning.",
+      "similarity": 0.7981723546981812,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt17_ext43_Increase Divvy bikes and shared micromobility trips 30% by 2030.": {
+      "policy_id": "Increase Divvy bikes and shared micromobility trips 30% by 2030.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in scope and specificity: it identifies Divvy bikes and shared micromobility trips, includes the quantified target of 30%, and the deadline of 2030. The omission of 'Chicago will' does not change the commitment or meaning.",
+      "similarity": 0.8356813788414001,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt18_ext44_Enable Chicagoans to walk, bike, take transit, or use shared micromobility for 4": {
+      "policy_id": "Enable Chicagoans to walk, bike, take transit, or use shared micromobility for 4",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in scope, target, mode categories, and deadline: 45% of all trips by 2040 via walking, biking, transit, or shared micromobility. Commitment strength is effectively the same despite omitting the subject 'Chicago will,' with no loss of substantive meaning.",
+      "similarity": 0.9411412477493286,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt19_ext45_Pillar 3 Strategy 2: Increase transit performance and encourage equitable transi": {
+      "policy_id": "Pillar 3 Strategy 2: Increase transit performance and encourage equitable transi",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth closely in scope and substance: it identifies Pillar 3, Strategy 2 and captures both core elements—improving/increasing transit performance and encouraging equitable transit-oriented development. The only minor variation is 'increase' versus 'improve,' which does not materially change the commitment. No source excerpt is provided to assess further specificity, but relative to the ground-truth this is an accurate match.",
+      "similarity": 0.8583665490150452,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt20_ext46_Update land use policies to encourage sustainable development, accessibility, an": {
+      "policy_id": "Update land use policies to encourage sustainable development, accessibility, an",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in scope, target, and deadline: updating land use policies to encourage sustainable development, accessibility, and street safety by 2023. The only omission is the actor ('Chicago'), but there is no contradiction or loss of substantive policy meaning.",
+      "similarity": 0.8053972125053406,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt21_ext47_Expand use of commuter benefits by 2024.": {
+      "policy_id": "Expand use of commuter benefits by 2024.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in substance, timing, and commitment: both state expansion of commuter benefits by 2024. No conflicting or missing target, deadline, or mechanism is apparent relative to the ground-truth.",
+      "similarity": 0.7997313141822815,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt22_ext48_Require transportation demand management plans for new development by 2025.": {
+      "policy_id": "Require transportation demand management plans for new development by 2025.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in scope, mechanism, and deadline: it requires transportation demand management plans for new development by 2025. Although the source document excerpt is not provided, relative to the ground-truth this is a precise and complete match with equivalent commitment strength.",
+      "similarity": 0.7972824573516846,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt23_ext49_Update citywide car and bike parking requirements by 2025.": {
+      "policy_id": "Update citywide car and bike parking requirements by 2025.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in scope, action, and deadline: updating citywide car and bike parking requirements by 2025. The omission of 'Chicago will' does not change the policy meaning or commitment. No contradiction or missing key detail.",
+      "similarity": 0.8106393814086914,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt25_ext50_Pillar 3 Strategy 3: Enable zero-emission transit and fleets.": {
+      "policy_id": "Pillar 3 Strategy 3: Enable zero-emission transit and fleets.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in scope and wording: 'Pillar 3 Strategy 3: Enable zero-emission transit and fleets' corresponds directly to 'Strategy 3 under Pillar 3 commits Chicago to enable zero-emission transit and fleets.' Although no additional targets, deadlines, or mechanisms are included, none are present in the ground-truth policy either. There is no contradiction or hallucination.",
+      "similarity": 0.8432559967041016,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt27_ext51_Support equitable electrification of ride-hail and taxi fleets by 2030.": {
+      "policy_id": "Support equitable electrification of ride-hail and taxi fleets by 2030.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth closely in scope, target, and deadline: it supports equitable electrification of ride-hail and taxi fleets by 2030. The omission of the actor 'Chicago' is minor and does not change the substantive commitment. No contradiction or hallucination is present.",
+      "similarity": 0.820480465888977,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt28_ext52_Enable 100% electrification of delivery fleets by 2035.": {
+      "policy_id": "Enable 100% electrification of delivery fleets by 2035.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in commitment, quantified target, and deadline: enabling 100% electrification of delivery fleets by 2035. The omission of 'Chicago' does not change the substantive policy content given the context, and there is no contradiction or loss of specificity.",
+      "similarity": 0.8009755611419678,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt29_ext53_Electrify 100% of the City's fleet by 2035.": {
+      "policy_id": "Electrify 100% of the City's fleet by 2035.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in substance, target, and deadline: electrify 100% of the City's fleet by 2035. Although the subject 'Chicago will' is omitted, the commitment, scope, and specificity are fully preserved, and there is no contradiction or loss of meaning.",
+      "similarity": 0.8265087604522705,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt30_ext54_Achieve zero-emission transit fleets across Chicagoland by 2040.": {
+      "policy_id": "Achieve zero-emission transit fleets across Chicagoland by 2040.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in scope, target, and deadline: zero-emission transit fleets across Chicagoland by 2040. Although the source document excerpt is not provided, relative to the ground-truth this is a precise match with no material omission or contradiction.",
+      "similarity": 0.8987557291984558,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt31_ext55_Pillar 4 Strategy 1: 100% clean renewable energy.": {
+      "policy_id": "Pillar 4 Strategy 1: 100% clean renewable energy.",
+      "grade": 0,
+      "reasoning": "The extracted policy matches the general target in the ground truth—'100% clean renewable energy' under Pillar 4 Strategy 1—but it omits key specificity and mechanism. It does not capture the commitment framing ('commits Chicago to achieve') or the delivery approach through 'local, regional, and city-property projects.' With no source excerpt provided to verify wording, this is directionally correct but too vague to count as a full match.",
+      "similarity": 0.7601953744888306,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt32_ext56_Aggregate 5,000 megawatts of clean renewable energy within a 250-mile radius of ": {
+      "policy_id": "Aggregate 5,000 megawatts of clean renewable energy within a 250-mile radius of ",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in scope, quantified target (5,000 megawatts), geographic constraint (within a 250-mile radius of Chicago), and deadline (by 2030). The only omission is the subject 'Chicago will,' which does not materially change the commitment.",
+      "similarity": 0.937694787979126,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt33_ext57_Install 30 megawatts of clean renewable energy projects on City property by 2030": {
+      "policy_id": "Install 30 megawatts of clean renewable energy projects on City property by 2030",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in scope, quantified target, location/mechanism, and deadline: installing 30 megawatts of clean renewable energy projects on City property by 2030. The omission of 'Chicago will' does not change the commitment meaning.",
+      "similarity": 0.8213552832603455,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt34_ext58_Achieve 100% clean renewable energy community-wide by 2035.": {
+      "policy_id": "Achieve 100% clean renewable energy community-wide by 2035.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in scope, target, and deadline: achieving 100% clean renewable energy communitywide/by the whole community by 2035. It preserves the same commitment and specificity, with only a trivial hyphenation difference.",
+      "similarity": 0.7868381142616272,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt35_ext59_Pillar 4 Strategy 2: Enable building and personal vehicle electrification.": {
+      "policy_id": "Pillar 4 Strategy 2: Enable building and personal vehicle electrification.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in scope and wording: 'Pillar 4 Strategy 2: Enable building and personal vehicle electrification' aligns with 'Strategy 2 under Pillar 4 commits Chicago to enable building and personal vehicle electrification.' Although no source excerpt is provided to verify stronger details, relative to the ground truth this is a precise match with no missing core commitment.",
+      "similarity": 0.8322296142578125,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt36_ext60_Enact policies that support electrified renovations and new construction by 2023": {
+      "policy_id": "Enact policies that support electrified renovations and new construction by 2023",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in scope, timing, and commitment. It preserves the core action ('enact policies'), the supported areas ('electrified renovations and new construction'), and the deadline ('by 2023'). The omission of 'Chicago will' does not materially change the policy substance.",
+      "similarity": 0.8095581531524658,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt37_ext61_Electrify 30% of total existing residential buildings by 2035.": {
+      "policy_id": "Electrify 30% of total existing residential buildings by 2035.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in scope and specificity: it identifies electrification, the 30% target, the covered stock (total existing residential buildings), and the 2035 deadline. Although the subject 'Chicago will' is omitted, there is no contradiction or loss of substantive commitment.",
+      "similarity": 0.7861851453781128,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt39_ext65_Pillar 4 Strategy 3: Align building codes and standards with climate best practi": {
+      "policy_id": "Pillar 4 Strategy 3: Align building codes and standards with climate best practi",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in scope and substance: both identify Pillar 4, Strategy 3 as aligning building codes and standards with climate best practices. Although no source excerpt is provided and neither version includes added detail on targets, deadlines, or mechanisms, the extraction accurately reproduces the stated commitment without softening or distortion.",
+      "similarity": 0.8450037240982056,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Nature-Based Solutions::gt40_ext66_Strengthen policies that support installation of green roofs and walls, tree pla": {
+      "policy_id": "Strengthen policies that support installation of green roofs and walls, tree pla",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth closely in scope, timing, and action. It includes the same commitment to strengthen policies supporting green roofs and walls, tree planting, and other vegetative cover, and preserves the 2023 deadline. The omission of 'Chicago will' does not materially change the policy substance.",
+      "similarity": 0.8114649057388306,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt41_ext67_Enable net-zero-carbon construction by 2040.": {
+      "policy_id": "Enable net-zero-carbon construction by 2040.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in scope and specificity: it commits to enabling net-zero-carbon construction by 2040. Although the source document excerpt is not provided, relative to the stated ground-truth there is no loss of target, deadline, or meaning.",
+      "similarity": 0.7537686824798584,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt42_ext68_Pillar 4 Strategy 4: Decommission fossil power.": {
+      "policy_id": "Pillar 4 Strategy 4: Decommission fossil power.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth policy in scope and core commitment: both identify Pillar 4, Strategy 4 as decommissioning fossil power. The extracted version is slightly shorter and omits the phrase 'through a transition strategy,' but it preserves the essential action and does not contradict the ground truth. With no source excerpt provided, there is no basis to assess further specificity beyond the alignment to the stated ground truth.",
+      "similarity": 0.8007103800773621,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Adaptation::gt43_ext69_Develop a fossil-fuel plants transition strategy by 2024.": {
+      "policy_id": "Develop a fossil-fuel plants transition strategy by 2024.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth policy in commitment, scope, and deadline: it specifies developing a fossil-fuel plants transition strategy by 2024. The omission of 'Chicago will' removes the actor, but there is no source excerpt to assess contradiction, and the core commitment and timing are preserved exactly.",
+      "similarity": 0.8090597987174988,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": false
+    },
+    "Mitigation::gt44_ext70_Pillar 4 Strategy 5: Enable interconnection and storage.": {
+      "policy_id": "Pillar 4 Strategy 5: Enable interconnection and storage.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in scope and core commitment: 'Pillar 4 Strategy 5: Enable interconnection and storage' corresponds directly to 'Strategy 5 under Pillar 4 commits Chicago to enable interconnection and storage.' The added purpose in the ground truth ('to improve reliability and resiliency') is omitted, but the main policy action is captured accurately with no contradiction. Since no source excerpt is provided, grading is based on agreement with the ground truth.",
+      "similarity": 0.763642430305481,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt45_ext71_Ensure 150 megawatts of energy storage by 2025.": {
+      "policy_id": "Ensure 150 megawatts of energy storage by 2025.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in target, metric, and deadline: 150 megawatts of energy storage by 2025. Although the actor ('Chicago') is omitted, there is no contradiction and the core commitment is fully preserved. No source excerpt is available to assess against document text, but relative to the ground truth this is a precise match.",
+      "similarity": 0.7690157890319824,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Adaptation::gt46_ext72_Encourage 1,000 megawatts of new energy demand reduction by 2030, and 3,000 mega": {
+      "policy_id": "Encourage 1,000 megawatts of new energy demand reduction by 2030, and 3,000 mega",
+      "grade": -1,
+      "reasoning": "The extracted policy does not match the ground-truth on key specifics or commitment strength. Ground truth states Chicago 'will invest in' demand response with targets of 1,000 MW by 2024 and 3,000 MW by 2035. The extraction changes the mechanism and strength to 'Encourage' and 'new energy demand reduction,' and shifts both deadlines to 2030 and 2040. These are material inaccuracies, not just vagueness.",
+      "similarity": 0.6318734884262085,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": false
+    },
+    "Adaptation::gt47_ext73_Pillar 5 Strategy 1: Collect relevant data.": {
+      "policy_id": "Pillar 5 Strategy 1: Collect relevant data.",
+      "grade": 0,
+      "reasoning": "The extracted policy matches the general direction of the ground-truth—Pillar 5 Strategy 1 is about collecting data—but it is overly vague. It omits the specific data domains named in the ground-truth (energy burden, water/soil quality, and air quality) and the purpose of supporting equitable climate action. With no source excerpt provided, there is no basis to confirm stronger specificity or commitment. Directionally correct but missing key details.",
+      "similarity": 0.626659631729126,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": true
+    },
+    "Adaptation::gt48_ext74_Report energy burden by community area by 2023.": {
+      "policy_id": "Report energy burden by community area by 2023.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in substance and specificity: it commits to reporting energy burden by community area with a deadline of 2023. The omission of 'Chicago will' does not change scope or commitment.",
+      "similarity": 0.7338934540748596,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Adaptation::gt49_ext75_Develop a water and soil quality measurement and mitigation strategy by 2023.": {
+      "policy_id": "Develop a water and soil quality measurement and mitigation strategy by 2023.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth commitment, deadline, and mechanism: developing a water and soil quality measurement and mitigation strategy by 2023. The omission of 'Chicago will' does not materially change scope given the policy context, and there is no contradiction or loss of specificity.",
+      "similarity": 0.7967879772186279,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Adaptation::gt50_ext76_Establish a robust outdoor air quality monitoring network by 2025.": {
+      "policy_id": "Establish a robust outdoor air quality monitoring network by 2025.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in commitment, mechanism, and deadline: establishing a robust outdoor air quality monitoring network by 2025. The omission of 'Chicago will' does not change the policy substance.",
+      "similarity": 0.7948576807975769,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Adaptation::gt51_ext77_Pillar 5 Strategy 2: Enable data-driven decision-making.": {
+      "policy_id": "Pillar 5 Strategy 2: Enable data-driven decision-making.",
+      "grade": 0,
+      "reasoning": "The extracted policy matches the general scope and title-level intent of the ground-truth ('Enable data-driven decision-making' under Pillar 5 Strategy 2), but it omits the key specifics that define the commitment: integrating equity, resilience, and quality-of-life metrics into planning. With no source excerpt provided, this cannot be verified further, but relative to the ground truth it is directionally correct yet too vague and incomplete for a full match.",
+      "similarity": 0.6959585547447205,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": true
+    },
+    "Adaptation::gt52_ext78_Publish clean energy just transition metrics by 2022.": {
+      "policy_id": "Publish clean energy just transition metrics by 2022.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in substance, target, and deadline: publishing clean energy just transition metrics by 2022. The omission of 'Chicago will' does not change the policy meaning, and there is no contradiction or loss of specificity.",
+      "similarity": 0.7801770567893982,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Adaptation::gt53_ext79_Integrate community resilience and climate justice criteria into department-leve": {
+      "policy_id": "Integrate community resilience and climate justice criteria into department-leve",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in scope, mechanism, and deadline: integrating community resilience and climate justice criteria into department-level strategic planning and annual budget setting by 2023. The only omission is the subject 'Chicago will,' which does not change the substantive commitment.",
+      "similarity": 0.8297718167304993,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Adaptation::gt54_ext80_Develop a Heat Vulnerability Index and integrate it into planning and developmen": {
+      "policy_id": "Develop a Heat Vulnerability Index and integrate it into planning and developmen",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in scope, mechanism, and timing: develop a Heat Vulnerability Index and integrate it into planning and development, community safety, and public health planning processes beginning in 2023. Although the subject 'Chicago' is omitted, the substantive commitment is unchanged and there is no loss of specificity.",
+      "similarity": 0.8006725311279297,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Adaptation::gt55_ext81_Publish citywide and community-level quality-of-life metrics on equity and susta": {
+      "policy_id": "Publish citywide and community-level quality-of-life metrics on equity and susta",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in scope, action, and deadline: publishing citywide and community-level quality-of-life metrics on equity and sustainability by 2023. Although the source document excerpt is not provided, relative to the ground-truth this is a precise and complete match with no loss of specificity.",
+      "similarity": 0.8200491666793823,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Adaptation::gt56_ext82_Assess and optimize community-level emergency management strategies related to c": {
+      "policy_id": "Assess and optimize community-level emergency management strategies related to c",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in scope and timing: it commits to assessing and optimizing community-level emergency management strategies related to climate preparedness by 2024. The only omission is the actor ('Chicago'), but there is no contradiction and the core commitment, mechanism, and deadline are all preserved.",
+      "similarity": 0.8378079533576965,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Adaptation::gt57_ext83_Pillar 5 Strategy 3: Enable community resiliency.": {
+      "policy_id": "Pillar 5 Strategy 3: Enable community resiliency.",
+      "grade": 0,
+      "reasoning": "The extracted policy matches the general topic and structure of the ground-truth ('Pillar 5 Strategy 3' and 'Enable community resiliency'), so it is directionally correct. However, it omits key specificity and mechanism details from the ground-truth: that resiliency is to be enabled through community-led projects and integration of hazard mitigation. With no source excerpt provided, there is no basis to verify stronger wording, and the extraction is materially less specific than the reference.",
+      "similarity": 0.7089674472808838,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": true
+    },
+    "Adaptation::gt58_ext84_Resource community-led climate infrastructure projects by 2022.": {
+      "policy_id": "Resource community-led climate infrastructure projects by 2022.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth commitment in scope, timing, and action: it commits to resourcing community-led climate infrastructure projects by 2022. The omission of 'Chicago will' does not change the substance of the policy, and there is no loss of specificity or commitment strength relative to the ground truth.",
+      "similarity": 0.7859898805618286,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Adaptation::gt59_ext85_Integrate community resiliency strategies with the City's hazard mitigation plan": {
+      "policy_id": "Integrate community resiliency strategies with the City's hazard mitigation plan",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth policy in scope, mechanism, and deadline: integrating community resiliency strategies with the City's hazard mitigation planning by 2023. The omission of 'Chicago will' does not change the commitment or meaning.",
+      "similarity": 0.8322470784187317,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt24_ext87_Increase CTA ridership 20% by 2030.": {
+      "policy_id": "Increase CTA ridership 20% by 2030.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in substance: it specifies increasing CTA ridership by 20% by 2030. Although the source document excerpt is not provided, relative to the ground-truth this captures the same quantified target and deadline with no material loss of specificity or change in commitment.",
+      "similarity": 0.819236695766449,
+      "statement_match": true,
+      "role_match": false,
+      "category_match": true
+    },
+    "Mitigation::gt26_ext88_Enable electric freight loading docks at commercial and industrial buildings, ad": {
+      "policy_id": "Enable electric freight loading docks at commercial and industrial buildings, ad",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in scope, mechanism, and timelines: enabling electric freight loading docks at commercial and industrial buildings, with new buildings addressed by 2025 and existing buildings by 2030. Although the source excerpt is not provided, relative to the ground-truth this is a precise and complete match.",
+      "similarity": 0.8170433044433594,
+      "statement_match": true,
+      "role_match": false,
+      "category_match": true
+    },
+    "Mitigation::gt38_ext89_Enable 2,500 new public passenger electric vehicle charging stations by 2035, pr": {
+      "policy_id": "Enable 2,500 new public passenger electric vehicle charging stations by 2035, pr",
+      "grade": 0,
+      "reasoning": "The extracted policy matches the core target and deadline in the ground truth: enabling 2,500 new public passenger EV charging stations by 2035. However, it adds an extra prioritization detail ('prioritizing low- and middle-income communities') that is not present in the ground-truth policy and cannot be verified from the source excerpt, which is not provided. Because the main commitment is correct but includes unsupported additional specificity, this is directionally correct rather than an exact match.",
+      "similarity": 0.7704744935035706,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": true
+    }
+  },
+  "hierarchy_accuracy": 0.9508196721311475,
+  "composite_score": 0.8164413455397062,
+  "extraction_precision": 0.5591397849462365,
+  "extraction_recall": 0.8524590163934426,
+  "extraction_f1": 0.6753246753246752,
+  "role_agreement": 0.9508196721311475,
+  "parent_attribution_accuracy": 1.0,
+  "primary_category_agreement": 0.8688524590163934,
+  "financial_instrument_agreement": 0.9016393442622951,
+  "secondary_category_agreement": 0.0,
+  "plus_one_coverage": 0.8524590163934426,
+  "matched_count": 61,
+  "unmatched_extracted_count": 32,
+  "unmatched_ground_truth_count": 0
+}

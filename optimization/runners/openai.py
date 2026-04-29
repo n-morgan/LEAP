@@ -73,6 +73,20 @@ class OpenAIRunner:
                     f"— recording as empty extraction (do not truncate)."
                 )
                 return []
-            raise
+            # Some models (e.g. gpt-5.5) only support the default temperature
+            if "temperature" in err and "unsupported" in err:
+                print(
+                    f"  [WARN] {self.model_name} does not support temperature={self.temperature}"
+                    f" — retrying with default temperature."
+                )
+                response = self._get_client().chat.completions.create(
+                    model=self.model_name,
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_content},
+                    ],
+                )
+            else:
+                raise
         raw = response.choices[0].message.content or ""
         return _parse_rlm_output(raw)

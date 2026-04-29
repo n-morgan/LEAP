@@ -1,0 +1,10 @@
+location,composite_score,extraction_f1,extraction_precision,extraction_recall,role_agreement,parent_attribution_accuracy,primary_category_agreement,financial_instrument_agreement,secondary_category_agreement,plus_one_coverage,matched_count,unmatched_extracted_count,unmatched_ground_truth_count,Mitigation_score,Mitigation_recall,Mitigation_fpr,Adaptation_score,Adaptation_recall,Adaptation_fpr,Resource_Efficiency_score,Resource_Efficiency_recall,Resource_Efficiency_fpr,Nature_Based_Solutions_score,Nature_Based_Solutions_recall,Nature_Based_Solutions_fpr
+Austin_US,0.2968,0.3118,0.3152,0.3085,0.5946,0.5349,0.0,0.0,0.0,0.3085,74,18,20,0.0645,0.2903,0.0,-0.3333,0.1667,0.0,0.3333,0.5,0.0,-0.05,0.35,0.0
+Chicago_US,0.8044,0.7671,0.6588,0.918,1.0,1.0,0.623,0.9016,0.0,0.918,61,24,0,0.4828,0.9111,0.3947,0.4,0.9333,0.2778,-1.0,1.0,0.2692,-0.3333,1.0,0.6667
+Dakar_SN,0.4844,0.2319,0.1509,0.5,0.4,1.0,0.6667,1.0,0.0,0.5,15,38,1,-0.5556,0.5,0.8333,-0.6333,0.4444,0.9231,-0.6667,1.0,0.75,0.0,1.0,0.0
+Geneva_CH,0.6421,0.1053,0.0556,1.0,1.0,1.0,1.0,1.0,0.0,1.0,1,17,0,-0.8,1.0,0.9,-1.0,1.0,1.0,-1.0,1.0,1.0,-1.0,1.0,1.0
+Hiroshima_JP,0.3611,0.0,0.0,0.0,0.7778,1.0,0.5556,1.0,0.0,0.0,9,57,5,-0.8611,0.0,1.0,-1.0,1.0,1.0,-0.9412,0.0,1.0,-1.0,1.0,1.0
+Kuwait_KW,0.4858,0.1818,0.1774,0.1864,0.84,0.5556,0.88,0.8,0.0,0.1864,25,37,34,-0.6,0.5,1.0,-0.7059,0.1163,0.8571,-0.5714,0.2857,0.75,-0.3333,0.4286,0.5
+Miami_Dade_US,0.5984,0.3248,0.2111,0.7037,0.8519,1.0,0.6667,1.0,0.0,0.7037,27,63,0,-0.4386,0.6667,0.8333,-1.0,1.0,1.0,-0.913,1.0,0.7812,0.0,0.8,0.5556
+Portugal_PT,0.3628,0.2051,0.1538,0.3077,1.0,1.0,0.0,0.0,0.0,0.3077,13,13,0,1.0,1.0,0.0,0.1818,0.1818,0.0,1.0,1.0,0.0,0.0,1.0,0.0
+Seattle_US,0.53,0.2,0.1154,0.75,1.0,1.0,0.5,0.5,0.0,0.75,4,22,0,-0.6111,0.75,0.875,0.0,1.0,0.0,-1.0,1.0,0.9,0.0,1.0,0.0
