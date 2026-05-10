@@ -18,11 +18,12 @@ Usage
 Output per run
 --------------
     results/{config_stem}/{timestamp}/
-        extracted_policies.csv   raw extraction output
-        scores.json              full EvaluationOutput as JSON
-        scores.csv               flat one-row summary (easy to concat)
-        grades.csv               per-pair grades with reasoning
-        summary.csv              human-readable metric/value table
+        extracted_policies.csv   raw extraction output (one row per policy)
+        scores.jsonl             full EvaluationOutput per city (one JSON per line)
+        scores.csv               flat one-row-per-city summary (easy to concat)
+        grades.csv               per-pair comparison: full GT policy, full extracted
+                                 policy, both categories/roles, grade, similarity,
+                                 match flags, and LLM reasoning
 """
 
 from __future__ import annotations
@@ -32,6 +33,7 @@ import csv
 import datetime
 import json
 import pathlib
+import re
 import sys
 
 import yaml
@@ -40,14 +42,16 @@ from dotenv import load_dotenv
 load_dotenv()
 
 _HERE = pathlib.Path(__file__).resolve().parent
-_OPT  = _HERE.parent / "optimization"
-if str(_OPT) not in sys.path:
-    sys.path.insert(0, str(_OPT))
+_LEAP = _HERE.parent
+if str(_LEAP) not in sys.path:
+    sys.path.insert(0, str(_LEAP))
+if str(_HERE) not in sys.path:
+    sys.path.insert(0, str(_HERE))
 
 from data    import CORPUS, load_ground_truth
 from metrics import LEAPEvaluator, EvaluationOutput, DEFAULT_RUBRIC, CATEGORIES
 from systems import build_runner
-from rlm_pipeline import CLIMATE_RLM_SYSTEM_PROMPT, parse_document
+from core.rlm_pipeline import CLIMATE_RLM_SYSTEM_PROMPT, parse_document
 
 RESULTS_DIR = _HERE / "results"
 
@@ -75,13 +79,28 @@ def completed_locations(run_dir: pathlib.Path) -> set[str]:
         return {row["location"] for row in csv.DictReader(fh)}
 
 
-def _append_results(run_dir: pathlib.Path, result: EvaluationOutput, policies: list[dict]) -> None:
+_KEY_RE = re.compile(r"^(.+?)::gt(\d+)_ext(\d+)_")
+
+_GRADES_FIELDS = [
+    "location", "gt_index", "ext_index",
+    "gt_policy", "gt_category", "gt_role",
+    "produced_policy", "produced_category", "produced_role",
+    "grade", "similarity", "statement_match", "role_match", "category_match", "reasoning",
+]
+
+
+def _append_results(
+    run_dir: pathlib.Path,
+    result: EvaluationOutput,
+    extracted: list[dict],
+    ground_truth: list[dict],
+) -> None:
     """Append one city's results into the shared run_dir CSV files."""
     run_dir.mkdir(parents=True, exist_ok=True)
 
     # extracted_policies.csv — stamped with location
-    if policies:
-        stamped = [{"location": result.location, **p} for p in policies]
+    if extracted:
+        stamped = [{"location": result.location, **p} for p in extracted]
         _append_csv(run_dir / "extracted_policies.csv", stamped, list(stamped[0].keys()))
 
     # scores.jsonl — one JSON object per line
@@ -112,54 +131,36 @@ def _append_results(run_dir: pathlib.Path, result: EvaluationOutput, policies: l
         row[f"{slug}_fpr"]    = round(result.fpr.get(cat, 0.0), 4)
     _append_csv(run_dir / "scores.csv", [row], list(row.keys()))
 
-    # grades.csv — all matched pairs
+    # grades.csv — full GT vs produced comparison, one row per matched pair
     grade_rows = []
     for key, grade in result.grades.items():
-        cat = key.split("::", 1)[0] if "::" in key else ""
+        m = _KEY_RE.match(key)
+        if not m:
+            continue
+        gj = int(m.group(2))
+        ei = int(m.group(3))
+        gt_row  = ground_truth[gj] if gj < len(ground_truth) else {}
+        ext_row = extracted[ei]    if ei < len(extracted)    else {}
         grade_rows.append({
-            "location":        result.location,
-            "key":             key,
-            "category":        cat,
-            "policy_id":       grade.policy_id,
-            "grade":           grade.grade,
-            "similarity":      round(grade.similarity, 4) if grade.similarity is not None else "",
-            "statement_match": grade.statement_match if grade.statement_match is not None else "",
-            "role_match":      grade.role_match if grade.role_match is not None else "",
-            "category_match":  grade.category_match if grade.category_match is not None else "",
-            "reasoning":       grade.reasoning,
+            "location":          result.location,
+            "gt_index":          gj,
+            "ext_index":         ei,
+            "gt_policy":         gt_row.get("policy_statement", ""),
+            "gt_category":       gt_row.get("primary_category", ""),
+            "gt_role":           gt_row.get("role", ""),
+            "produced_policy":   ext_row.get("policy_statement", ""),
+            "produced_category": ext_row.get("primary_category", ""),
+            "produced_role":     ext_row.get("role", ""),
+            "grade":             grade.grade,
+            "similarity":        round(grade.similarity, 4) if grade.similarity is not None else "",
+            "statement_match":   grade.statement_match if grade.statement_match is not None else "",
+            "role_match":        grade.role_match if grade.role_match is not None else "",
+            "category_match":    grade.category_match if grade.category_match is not None else "",
+            "reasoning":         grade.reasoning,
         })
     if grade_rows:
-        _append_csv(run_dir / "grades.csv", grade_rows, [
-            "location", "key", "category", "policy_id", "grade",
-            "similarity", "statement_match", "role_match", "category_match", "reasoning",
-        ])
+        _append_csv(run_dir / "grades.csv", grade_rows, _GRADES_FIELDS)
 
-    # summary.csv — metric/value rows keyed by location
-    summary = []
-    for metric, value in [
-        ("composite_score",                round(result.composite_score, 4)),
-        ("extraction_f1",                  round(result.extraction_f1, 4)),
-        ("extraction_precision",           round(result.extraction_precision, 4)),
-        ("extraction_recall",              round(result.extraction_recall, 4)),
-        ("role_agreement",                 round(result.role_agreement, 4)),
-        ("parent_attribution_accuracy",    round(result.parent_attribution_accuracy, 4)),
-        ("primary_cat_agreement",          round(result.primary_category_agreement, 4)),
-        ("financial_instrument_agreement", round(result.financial_instrument_agreement, 4)),
-        ("secondary_category_agreement",   round(result.secondary_category_agreement, 4)),
-        ("plus_one_coverage",              round(result.plus_one_coverage, 4)),
-        ("matched",                        result.matched_count),
-        ("unmatched_ext",                  result.unmatched_extracted_count),
-        ("unmatched_gt",                   result.unmatched_ground_truth_count),
-    ]:
-        summary.append({"location": result.location, "metric": metric, "value": value})
-    for cat in CATEGORIES:
-        slug = cat.replace(" ", "_").replace("-", "_")
-        summary += [
-            {"location": result.location, "metric": f"{slug}_score",  "value": round(result.scores.get(cat, 0.0), 4)},
-            {"location": result.location, "metric": f"{slug}_recall", "value": round(result.recall.get(cat, 0.0), 4)},
-            {"location": result.location, "metric": f"{slug}_fpr",    "value": round(result.fpr.get(cat, 0.0), 4)},
-        ]
-    _append_csv(run_dir / "summary.csv", summary, ["location", "metric", "value"])
 
 
 # ---------------------------------------------------------------------------
@@ -217,7 +218,7 @@ def run_eval(
             source_document_path=doc_path if grade_with_doc else None,
         )
 
-        _append_results(run_dir, result, extracted)
+        _append_results(run_dir, result, extracted, ground_truth)
 
         print(f"  composite={result.composite_score:.4f}  "
               f"f1={result.extraction_f1:.4f}  "

@@ -6,11 +6,18 @@ import pathlib
 from dataclasses import dataclass
 from typing import Any, Callable, Literal, Optional
 
+import pathlib as _pathlib
+import sys as _sys
+
+_LEAP = _pathlib.Path(__file__).resolve().parent.parent
+if str(_LEAP) not in _sys.path:
+    _sys.path.insert(0, str(_LEAP))
+
 from dotenv import load_dotenv
 from openai import OpenAI
 
-from evaluator import CATEGORIES, DEFAULT_RUBRIC, EvaluationOutput, LEAPEvaluator
-from rlm_pipeline import CLIMATE_RLM_SYSTEM_PROMPT, run_rlm_for_optimizer
+from core.evaluator import CATEGORIES, DEFAULT_RUBRIC, EvaluationOutput, LEAPEvaluator
+from core.rlm_pipeline import CLIMATE_RLM_SYSTEM_PROMPT, run_rlm_for_optimizer
 
 load_dotenv()
 

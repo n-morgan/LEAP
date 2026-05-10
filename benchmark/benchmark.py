@@ -32,15 +32,17 @@ from dotenv import load_dotenv
 load_dotenv()
 
 _HERE = pathlib.Path(__file__).resolve().parent
-_OPT  = _HERE.parent / "optimization"
-if str(_OPT) not in sys.path:
-    sys.path.insert(0, str(_OPT))
+_LEAP = _HERE.parent
+if str(_LEAP) not in sys.path:
+    sys.path.insert(0, str(_LEAP))
+if str(_HERE) not in sys.path:
+    sys.path.insert(0, str(_HERE))
 
 from data    import CORPUS, load_ground_truth
 from metrics import LEAPEvaluator, DEFAULT_RUBRIC, CATEGORIES, EvaluationOutput
 from systems import build_runner
 from eval    import run_eval
-from rlm_pipeline import CLIMATE_RLM_SYSTEM_PROMPT, parse_document
+from core.rlm_pipeline import CLIMATE_RLM_SYSTEM_PROMPT, parse_document
 
 # ---------------------------------------------------------------------------
 # Summary table
@@ -96,7 +98,7 @@ def _print_table(
 
         print(f"{'=' * sep_w}")
 
-    print(f"\nPer-system summary.csv saved in each run folder under {_HERE / 'results'}.")
+    print(f"\nResults saved under: {_HERE / 'results'}")
 
 
 # ---------------------------------------------------------------------------
@@ -166,7 +168,7 @@ def run_benchmark(
                     source_document_path=cfg["document"] if grade_with_doc else None,
                 )
                 results[city][config_path.stem] = result
-                _append_results(run_dir, result, extracted)
+                _append_results(run_dir, result, extracted, ground_truth)
 
                 print(f"  composite={result.composite_score:.4f}  "
                       f"f1={result.extraction_f1:.4f}  "

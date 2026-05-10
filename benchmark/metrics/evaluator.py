@@ -1,8 +1,7 @@
 """
 metrics/evaluator.py — LEAP Evaluation Protocol
 
-Re-exports the evaluation protocol from the implementation module.
-The full protocol is documented in optimization/evaluator.py.
+Re-exports the evaluation protocol from core.evaluator.
 
 Evaluation protocol summary
 ----------------------------
@@ -19,19 +18,12 @@ Evaluation protocol summary
    agreement.
 7. Aggregate a weighted composite score.
 
-See optimization/evaluator.py for full implementation details.
+See core/evaluator.py for full implementation details.
 """
 
 from __future__ import annotations
 
-import pathlib
-import sys
-
-_OPT = pathlib.Path(__file__).resolve().parent.parent.parent / "optimization"
-if str(_OPT) not in sys.path:
-    sys.path.insert(0, str(_OPT))
-
-from evaluator import (          # noqa: E402
+from core.evaluator import (
     LEAPEvaluator,
     EvaluationOutput,
     DEFAULT_RUBRIC,

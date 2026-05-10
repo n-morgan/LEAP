@@ -1,9 +1,9 @@
 """
 systems/registry.py — System registry
 
-Maps ``runner`` strings from config files to runner classes from the
-optimization/runners/ implementation. Add a new system here to include it
-in the benchmark without touching eval.py or benchmark.py.
+Maps ``runner`` strings from config files to runner classes.
+Add a new system here to include it in the benchmark without touching
+eval.py or benchmark.py.
 
 Supported runner types
 ----------------------
@@ -15,17 +15,10 @@ Supported runner types
 
 from __future__ import annotations
 
-import pathlib
-import sys
 from typing import Any
 
-# Resolve optimization/ so runner imports work regardless of cwd.
-_OPT = pathlib.Path(__file__).resolve().parent.parent.parent / "optimization"
-if str(_OPT) not in sys.path:
-    sys.path.insert(0, str(_OPT))
-
-from runners import RLMRunner, OpenAIRunner, AnthropicRunner, GeminiRunner  # noqa: E402
-from rlm_pipeline import _DEFAULT_EXPERT_KNOWLEDGE_PATH                      # noqa: E402
+from core.runners import RLMRunner, OpenAIRunner, AnthropicRunner, GeminiRunner
+from core.rlm_pipeline import _DEFAULT_EXPERT_KNOWLEDGE_PATH
 
 # ---------------------------------------------------------------------------
 # Registry

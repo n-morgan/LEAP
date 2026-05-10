@@ -1,79 +1,76 @@
 """
-runners/gemini.py — Google Generative AI runner.
+runners/anthropic.py — Anthropic Messages API runner.
 """
 
 from __future__ import annotations
 
 import os
-import sys
-from typing import Any
+from typing import Any, Optional
 
-sys.path.insert(0, str(__import__("pathlib").Path(__file__).resolve().parent.parent))
-
-from rlm_pipeline import _DEFAULT_EXPERT_KNOWLEDGE_PATH, _parse_rlm_output, parse_document
-from runners.base import slugify
+from ..rlm_pipeline import _DEFAULT_EXPERT_KNOWLEDGE_PATH, _parse_rlm_output, parse_document
+from .base import slugify
 
 
-class GeminiRunner:
-    """Google Generative AI extraction."""
+class AnthropicRunner:
+    """Anthropic Messages API extraction."""
 
     def __init__(
         self,
-        model_name: str = "gemini-2.0-flash",
+        model_name: str = "claude-opus-4-6",
         temperature: float = 0.0,
+        max_tokens: int = 8192,
         expert_knowledge_path: str | None = None,
     ) -> None:
         self.model_name = model_name
         self.temperature = temperature
+        self.max_tokens = max_tokens
         self.expert_knowledge_path = (
             expert_knowledge_path or _DEFAULT_EXPERT_KNOWLEDGE_PATH
         )
+        self._client: Optional[Any] = None
 
     @property
     def model_slug(self) -> str:
-        return slugify(f"gemini_{self.model_name}")
+        return slugify(f"anthropic_{self.model_name}")
+
+    def _get_client(self) -> Any:
+        if self._client is None:
+            import anthropic
+            self._client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+        return self._client
 
     def run(self, document_markdown: str, system_prompt: str) -> list[dict[str, Any]]:
-        import google.generativeai as genai
-
-        genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
-        model = genai.GenerativeModel(
-            model_name=self.model_name,
-            system_instruction=system_prompt,
-            generation_config=genai.GenerationConfig(temperature=self.temperature),
-        )
-
         if self.expert_knowledge_path and os.path.exists(self.expert_knowledge_path):
             expert_knowledge = parse_document(self.expert_knowledge_path)
-            prompt = (
+            user_content = (
                 f"DOCUMENT:\n{document_markdown}\n\n"
                 f"EXTRACTION CRITERIA:\n{expert_knowledge}\n\n"
                 "Extract and classify all climate policies from the document "
                 "as a JSON list."
             )
         else:
-            prompt = (
+            user_content = (
                 f"DOCUMENT:\n{document_markdown}\n\n"
                 "Extract and classify all climate policies from the document "
                 "as a JSON list."
             )
 
         try:
-            response = model.generate_content(prompt)
+            response = self._get_client().messages.create(
+                model=self.model_name,
+                max_tokens=self.max_tokens,
+                temperature=self.temperature,
+                system=system_prompt,
+                messages=[{"role": "user", "content": user_content}],
+            )
         except Exception as e:
             err = str(e).lower()
-            if (
-                "too large" in err
-                or "token" in err
-                or "context" in err
-                or "resource_exhausted" in err
-                or "payload size" in err
-            ):
+            if "too large" in err or "too many tokens" in err or "maximum context" in err or "context_length" in err:
                 print(
                     f"  [WARN] Context length exceeded for {self.model_name} "
                     f"— recording as empty extraction (do not truncate)."
                 )
                 return []
             raise
-        raw = response.text or ""
+        raw = response.content[0].text if response.content else ""
         return _parse_rlm_output(raw)

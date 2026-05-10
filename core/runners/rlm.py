@@ -5,16 +5,11 @@ runners/rlm.py — RLM recursive pipeline runner.
 from __future__ import annotations
 
 import os
-import sys
 import tempfile
 from typing import Any
 
-# Ensure the parent optimization/ directory is on the path so rlm_pipeline
-# can be imported regardless of where the script is invoked from.
-sys.path.insert(0, str(__import__("pathlib").Path(__file__).resolve().parent.parent))
-
-from rlm_pipeline import _DEFAULT_EXPERT_KNOWLEDGE_PATH, run_rlm_for_optimizer
-from runners.base import slugify
+from ..rlm_pipeline import _DEFAULT_EXPERT_KNOWLEDGE_PATH, run_rlm_for_optimizer
+from .base import slugify
 
 
 class RLMRunner:

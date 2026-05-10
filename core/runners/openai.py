@@ -1,32 +1,27 @@
 """
-runners/anthropic.py — Anthropic Messages API runner.
+runners/openai.py — Direct OpenAI Chat Completions runner.
 """
 
 from __future__ import annotations
 
 import os
-import sys
 from typing import Any, Optional
 
-sys.path.insert(0, str(__import__("pathlib").Path(__file__).resolve().parent.parent))
-
-from rlm_pipeline import _DEFAULT_EXPERT_KNOWLEDGE_PATH, _parse_rlm_output, parse_document
-from runners.base import slugify
+from ..rlm_pipeline import _DEFAULT_EXPERT_KNOWLEDGE_PATH, _parse_rlm_output, parse_document
+from .base import slugify
 
 
-class AnthropicRunner:
-    """Anthropic Messages API extraction."""
+class OpenAIRunner:
+    """Direct OpenAI Chat Completions extraction (no recursion)."""
 
     def __init__(
         self,
-        model_name: str = "claude-opus-4-6",
+        model_name: str = "gpt-5.4",
         temperature: float = 0.0,
-        max_tokens: int = 8192,
         expert_knowledge_path: str | None = None,
     ) -> None:
         self.model_name = model_name
         self.temperature = temperature
-        self.max_tokens = max_tokens
         self.expert_knowledge_path = (
             expert_knowledge_path or _DEFAULT_EXPERT_KNOWLEDGE_PATH
         )
@@ -34,12 +29,12 @@ class AnthropicRunner:
 
     @property
     def model_slug(self) -> str:
-        return slugify(f"anthropic_{self.model_name}")
+        return slugify(f"openai_{self.model_name}")
 
     def _get_client(self) -> Any:
         if self._client is None:
-            import anthropic
-            self._client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+            from openai import OpenAI
+            self._client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
         return self._client
 
     def run(self, document_markdown: str, system_prompt: str) -> list[dict[str, Any]]:
@@ -59,21 +54,36 @@ class AnthropicRunner:
             )
 
         try:
-            response = self._get_client().messages.create(
+            response = self._get_client().chat.completions.create(
                 model=self.model_name,
-                max_tokens=self.max_tokens,
                 temperature=self.temperature,
-                system=system_prompt,
-                messages=[{"role": "user", "content": user_content}],
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_content},
+                ],
             )
         except Exception as e:
             err = str(e).lower()
-            if "too large" in err or "too many tokens" in err or "maximum context" in err or "context_length" in err:
+            if "context_length_exceeded" in err or "too many tokens" in err or "maximum context" in err:
                 print(
                     f"  [WARN] Context length exceeded for {self.model_name} "
                     f"— recording as empty extraction (do not truncate)."
                 )
                 return []
-            raise
-        raw = response.content[0].text if response.content else ""
+            # Some models (e.g. gpt-5.5) only support the default temperature
+            if "temperature" in err and "unsupported" in err:
+                print(
+                    f"  [WARN] {self.model_name} does not support temperature={self.temperature}"
+                    f" — retrying with default temperature."
+                )
+                response = self._get_client().chat.completions.create(
+                    model=self.model_name,
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_content},
+                    ],
+                )
+            else:
+                raise
+        raw = response.choices[0].message.content or ""
         return _parse_rlm_output(raw)

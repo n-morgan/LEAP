@@ -28,8 +28,7 @@ from typing import Any
 
 _HERE     = pathlib.Path(__file__).resolve().parent          # benchmark/data/
 _BENCH    = _HERE.parent                                     # benchmark/
-_OPT      = _BENCH.parent / "optimization"                  # optimization/
-_DOCS     = _OPT / "docs" / "cities"
+_DOCS     = _BENCH / "docs" / "cities"
 
 GT_CSV: pathlib.Path = (
     _BENCH.parent.parent                                     # UROP_Climate_SP26/
