@@ -30,11 +30,7 @@ _HERE     = pathlib.Path(__file__).resolve().parent          # benchmark/data/
 _BENCH    = _HERE.parent                                     # benchmark/
 _DOCS     = _BENCH / "docs" / "cities"
 
-GT_CSV: pathlib.Path = (
-    _BENCH.parent.parent                                     # UROP_Climate_SP26/
-    / "GENIUS" / "notebooks" / "outputs"
-    / "all_cities_kept_classified_policies_final.csv"
-)
+GT_CSV: pathlib.Path = _HERE / "all_cities_kept_classified_policies_final.csv"
 
 
 # ---------------------------------------------------------------------------
