@@ -3,22 +3,20 @@ data/dataset.py — LEAP Benchmark Corpus
 
 All data files are colocated in this directory (self-contained):
   all_cities_kept_classified_policies_final.csv  — ground-truth policies
-  hex_to_city_mapping.json                        — hex -> human city label
-  pdf_markdown_cache/{hex}.md                     — pre-converted PDF markdown
+  hex_location_to_final_run_csv.csv              — authoritative hex -> city_key mapping
+  pdf_markdown_cache/{hex}.md                    — pre-converted PDF markdown
+
+The CORPUS is derived from hex_location_to_final_run_csv.csv. Only entries
+whose city_key appears in the GT CSV are included. Three entries are excluded:
+  - Budapest_Hungary_final_artemis_report_hungary  (no GT rows)
+  - Geneva_Switzerland                             (no GT rows)
+  - Los_Angeles_San_Diego_California_United_States (no GT rows)
 
 Adding a new city
 -----------------
-1. Add the converted markdown to pdf_markdown_cache/ and an entry to
-   hex_to_city_mapping.json.
-2. Add a row to CORPUS below with the correct gt_city value(s).
+1. Add the converted markdown to pdf_markdown_cache/.
+2. Add a row to hex_location_to_final_run_csv.csv.
 3. Ensure ground-truth rows exist in GT_CSV with a matching ``city`` value.
-
-Notes
------
-- Budapest has two source documents (two separate policy plans); both are
-  included as Budapest_A and Budapest_B.
-- Geneva has a markdown document but no ground-truth rows in the CSV.
-- Cities with empty or unresolvable city keys in the CSV are skipped.
 """
 
 from __future__ import annotations
@@ -31,8 +29,8 @@ from typing import Any
 _HERE  = pathlib.Path(__file__).resolve().parent   # benchmark/data/
 _CACHE = _HERE / "pdf_markdown_cache"
 
-GT_CSV:       pathlib.Path = _HERE / "all_cities_kept_classified_policies_final.csv"
-HEX_CITY_MAP: pathlib.Path = _HERE / "hex_to_city_mapping.json"
+GT_CSV:      pathlib.Path = _HERE / "all_cities_kept_classified_policies_final.csv"
+HEX_MAP_CSV: pathlib.Path = _HERE / "hex_location_to_final_run_csv.csv"
 
 
 # ---------------------------------------------------------------------------
@@ -65,14 +63,9 @@ CORPUS: dict[str, dict[str, Any]] = {
         "document":     _CACHE / "833fc42e36139927.md",
         "gt_city":      ["Brussles_Belgium"],
     },
-    "Budapest_A": {
-        "location_key": "Budapest_A_HU",
+    "Budapest": {
+        "location_key": "Budapest_HU",
         "document":     _CACHE / "55b806dece1683a6.md",
-        "gt_city":      ["Budapest_Hungary"],
-    },
-    "Budapest_B": {
-        "location_key": "Budapest_B_HU",
-        "document":     _CACHE / "41aec8bd8898190b.md",
         "gt_city":      ["Budapest_Hungary"],
     },
     "California": {
@@ -298,9 +291,3 @@ def load_ground_truth_all() -> dict[str, list[dict[str, Any]]]:
             if corpus_key and row.get("policy_statement", "").strip():
                 gt[corpus_key].append(row)
     return gt
-
-
-def load_hex_city_map() -> dict[str, str]:
-    """Return the hex -> human city label mapping."""
-    with open(HEX_CITY_MAP, encoding="utf-8") as fh:
-        return json.load(fh)
