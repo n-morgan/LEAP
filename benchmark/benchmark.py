@@ -158,6 +158,12 @@ def run_benchmark(
                   f"({len(ground_truth)} GT policies)")
 
             try:
+                # For RLM runs, save reasoning traces to a per-city subdir.
+                if hasattr(runner, "trace_dir"):
+                    trace_dir = run_dir / "traces" / cfg["location_key"]
+                    trace_dir.mkdir(parents=True, exist_ok=True)
+                    runner.trace_dir = str(trace_dir)
+
                 doc_markdown = parse_document(str(cfg["document"]))
                 extracted    = runner.run(doc_markdown, CLIMATE_RLM_SYSTEM_PROMPT)
                 result       = evaluator.evaluate(
