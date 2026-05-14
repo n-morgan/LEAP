@@ -1,0 +1,324 @@
+location,role,parent_statement,policy_statement,source_quote,section_header,extraction_rationale,primary_category,is_financial_instrument,climate_relevance,secondary_category
+Austin_US,individual,,Austin will achieve net-zero community-wide greenhouse gas emissions by 2040.,Overall Goal: Austin will achieve net-zero community-wide greenhouse gas emissions by 2040,GOALS AND STRATEGIES LIST,Sets a quantified target/deadline.,Mitigation,False,direct,
+Austin_US,individual,,Create green jobs and entrepreneurship opportunities that advance the Climate Equity Plan.,"## Green Jobs and Entrepreneurship
+
+- Create green jobs and entrepreneurship opportunities that advance the goals of this plan, expand economic opportunity and inclusion, and build agency and decision-making power in low-income communities and communities of color.",Overarching Strategies (OS),Named action-oriented climate-plan intervention.,Mitigation,False,direct,
+Austin_US,individual,,"Support existing community-led organizations, businesses, and programs that help achieve the Climate Equity Plan.","## Prioritize Local Community Initiatives
+
+- Recognize and support existing community-led organizations, businesses, and programs that can help achieve the goals in this plan while building a green and just economy and culture.",Overarching Strategies (OS),Named action-oriented climate-plan intervention.,Mitigation,False,direct,
+Austin_US,individual,,Create a Texas Climate Collaborative and work with regional cities and county governments on climate plan implementation.,"## Regional Collaboration
+
+- Create a Texas Climate Collaborative linking elected officials, City staff, and utility staff working to implement recently adopted climate plans in San Antonio, Houston, Dallas, and Austin. Work with cities across the state and neighboring cities, such as Round Rock, Cedar Park, Buda, Pflugerville, San Marcos, and Kyle, and the five-county governments: Travis, Williamson, Hays, Bastrop, and Caldwell.",Overarching Strategies (OS),Named action-oriented climate-plan intervention.,Mitigation,False,direct,
+Austin_US,individual,,"Prioritize local greenhouse gas reduction, carbon removal, carbon dioxide removal, and carbon offset projects when needed.","## Local Carbon Reduction Projects, Carbon Dioxide Removal, and Carbon Offsets
+
+- Establish clear support and prioritization for local greenhouse gas reduction and carbon removal projects, carbon dioxide removal, and carbon offsets when necessary.",Overarching Strategies (OS),Named action-oriented climate-plan intervention.,Mitigation,False,direct,
+Austin_US,parent,,SB.G1: Achieve net-zero carbon for all new buildings and reduce emissions by 25% for existing buildings while lowering all natural gas-related emissions by 30%.,"SB, Goal 1 (SB.G1): Achieve net-zero carbon for all new buildings and reduce emissions by 25% for existing buildings while lowering all natural gas-related emissions by 30%.
+
+- SB.G1-S1: Ensure benefits flow to low-income communities and communities of color
+
+- SB.G1-S2: Enhance understanding of energy consumption",Sustainable Buildings (SB),Sets a quantified target/deadline.,Mitigation,False,direct,
+Austin_US,sub,SB.G1: Achieve net-zero carbon for all new buildings and reduce emissions by 25% for existing buildings while lowering all natural gas-related emissions by 30%.,SB.G1-S1: Ensure benefits flow to low-income communities and communities of color.,"SB, Goal 1 (SB.G1): Achieve net-zero carbon for all new buildings and reduce emissions by 25% for existing buildings while lowering all natural gas-related emissions by 30%.
+
+- SB.G1-S1: Ensure benefits flow to low-income communities and communities of color",Sustainable Buildings (SB),Named strategy under a quantified goal; identifies a specific intervention.,Resource Efficiency,False,direct,Adaptation
+Austin_US,sub,SB.G1: Achieve net-zero carbon for all new buildings and reduce emissions by 25% for existing buildings while lowering all natural gas-related emissions by 30%.,SB.G1-S2: Enhance understanding of energy consumption.,"SB, Goal 1 (SB.G1): Achieve net-zero carbon for all new buildings and reduce emissions by 25% for existing buildings while lowering all natural gas-related emissions by 30%.
+
+- SB.G1-S2: Enhance understanding of energy consumption",Sustainable Buildings (SB),Named strategy under a quantified goal; identifies a specific intervention.,Resource Efficiency,False,direct,
+Austin_US,sub,SB.G1: Achieve net-zero carbon for all new buildings and reduce emissions by 25% for existing buildings while lowering all natural gas-related emissions by 30%.,"SB.G1-S3: Achieve energy-efficient, net-zero carbon buildings.","SB, Goal 1 (SB.G1): Achieve net-zero carbon for all new buildings and reduce emissions by 25% for existing buildings while lowering all natural gas-related emissions by 30%.
+
+- SB.G1-S3: Achieve energy-efficient, net-zero carbon buildings",Sustainable Buildings (SB),Named strategy under a quantified goal; identifies a specific intervention.,Mitigation,False,direct,Resource Efficiency
+Austin_US,sub,SB.G1: Achieve net-zero carbon for all new buildings and reduce emissions by 25% for existing buildings while lowering all natural gas-related emissions by 30%.,SB.G1-S4: Ensure equitable workforce development for emerging technologies.,"SB, Goal 1 (SB.G1): Achieve net-zero carbon for all new buildings and reduce emissions by 25% for existing buildings while lowering all natural gas-related emissions by 30%.
+
+- SB.G1-S4: Ensure equitable workforce development for emerging technologies",Sustainable Buildings (SB),Named strategy under a quantified goal; identifies a specific intervention.,Mitigation,False,direct,Resource Efficiency
+Austin_US,parent,,SB.G2: Reduce community-wide greenhouse gas emissions from refrigerant leakage by 25%.,"SB, Goal 2 (SB.G2): Reduce community-wide greenhouse gas emissions from refrigerant leakage by 25%.
+
+- SB.G2-S1: Capture and destroy old refrigerants
+
+- SB.G2-S2: Improve building codes to encourage cleaner refrigerants",Sustainable Buildings (SB),Sets a quantified target/deadline.,Mitigation,False,direct,
+Austin_US,sub,SB.G2: Reduce community-wide greenhouse gas emissions from refrigerant leakage by 25%.,SB.G2-S1: Capture and destroy old refrigerants.,"SB, Goal 2 (SB.G2): Reduce community-wide greenhouse gas emissions from refrigerant leakage by 25%.
+
+- SB.G2-S1: Capture and destroy old refrigerants",Sustainable Buildings (SB),Named strategy under a quantified goal; identifies a specific intervention.,Mitigation,False,direct,
+Austin_US,sub,SB.G2: Reduce community-wide greenhouse gas emissions from refrigerant leakage by 25%.,SB.G2-S2: Improve building codes to encourage cleaner refrigerants.,"SB, Goal 2 (SB.G2): Reduce community-wide greenhouse gas emissions from refrigerant leakage by 25%.
+
+- SB.G2-S2: Improve building codes to encourage cleaner refrigerants",Sustainable Buildings (SB),Named strategy under a quantified goal; identifies a specific intervention.,Mitigation,False,direct,
+Austin_US,sub,SB.G2: Reduce community-wide greenhouse gas emissions from refrigerant leakage by 25%.,SB.G2-S3: Create incentives for leak detection and repair.,"SB, Goal 2 (SB.G2): Reduce community-wide greenhouse gas emissions from refrigerant leakage by 25%.
+
+- SB.G2-S3: Create incentives for leak detection and repair",Sustainable Buildings (SB),Named strategy under a quantified goal; identifies a specific intervention.,Mitigation,True,direct,
+Austin_US,sub,SB.G2: Reduce community-wide greenhouse gas emissions from refrigerant leakage by 25%.,SB.G2-S4: Awareness and training for HVAC service providers.,"SB, Goal 2 (SB.G2): Reduce community-wide greenhouse gas emissions from refrigerant leakage by 25%.
+
+- SB.G2-S4: Awareness and training for HVAC service providers",Sustainable Buildings (SB),Named strategy under a quantified goal; identifies a specific intervention.,Mitigation,False,direct,
+Austin_US,sub,SB.G2: Reduce community-wide greenhouse gas emissions from refrigerant leakage by 25%.,SB.G2-S5: Reduce the volume of refrigerants.,"SB, Goal 2 (SB.G2): Reduce community-wide greenhouse gas emissions from refrigerant leakage by 25%.
+
+- SB.G2-S5: Reduce the volume of refrigerants",Sustainable Buildings (SB),Named strategy under a quantified goal; identifies a specific intervention.,Mitigation,False,direct,
+Austin_US,parent,,SB.G3: Reduce the embodied carbon footprint of building materials used in local construction by 40%.,"SB, Goal 3 (SB.G3): Reduce the embodied carbon footprint of building materials used in local construction by 40%.
+
+- SB.G3-S1: Lead by example through design and construction standards
+
+- SB.G3-S2: Incentivize lower-carbon materials",Sustainable Buildings (SB),Sets a quantified target/deadline.,Mitigation,False,direct,
+Austin_US,sub,SB.G3: Reduce the embodied carbon footprint of building materials used in local construction by 40%.,SB.G3-S1: Lead by example through design and construction standards.,"SB, Goal 3 (SB.G3): Reduce the embodied carbon footprint of building materials used in local construction by 40%.
+
+- SB.G3-S1: Lead by example through design and construction standards",Sustainable Buildings (SB),Named strategy under a quantified goal; identifies a specific intervention.,Mitigation,False,direct,
+Austin_US,sub,SB.G3: Reduce the embodied carbon footprint of building materials used in local construction by 40%.,SB.G3-S2: Incentivize lower-carbon materials.,"SB, Goal 3 (SB.G3): Reduce the embodied carbon footprint of building materials used in local construction by 40%.
+
+- SB.G3-S2: Incentivize lower-carbon materials",Sustainable Buildings (SB),Named strategy under a quantified goal; identifies a specific intervention.,Mitigation,True,direct,
+Austin_US,sub,SB.G3: Reduce the embodied carbon footprint of building materials used in local construction by 40%.,SB.G3-S3: Educate stakeholders on materials best practices.,"SB, Goal 3 (SB.G3): Reduce the embodied carbon footprint of building materials used in local construction by 40%.
+
+- SB.G3-S3: Educate stakeholders on materials best practices",Sustainable Buildings (SB),Named strategy under a quantified goal; identifies a specific intervention.,Mitigation,False,direct,
+Austin_US,sub,SB.G3: Reduce the embodied carbon footprint of building materials used in local construction by 40%.,SB.G3-S4: Stimulate decarbonization with local producers.,"SB, Goal 3 (SB.G3): Reduce the embodied carbon footprint of building materials used in local construction by 40%.
+
+- SB.G3-S4: Stimulate decarbonization with local producers",Sustainable Buildings (SB),Named strategy under a quantified goal; identifies a specific intervention.,Mitigation,False,direct,
+Austin_US,parent,,"SB.G4: Equitably achieve a community-wide water demand of approximately 152,000 acre-feet per year.","SB, Goal 4 (SB.G4): Equitably achieve a community-wide water demand of approximately 152,000 acre-feet per year.
+
+- SB.G4-S1: Engage residents in water efficiency technological transitions, and conservation programs
+
+- SB.G4-S2: Evaluate water conservation, customer assistance, and workforce development program participation criteria",Sustainable Buildings (SB),Sets a quantified target/deadline.,Resource Efficiency,False,indirect,
+Austin_US,sub,"SB.G4: Equitably achieve a community-wide water demand of approximately 152,000 acre-feet per year.","SB.G4-S1: Engage residents in water efficiency technological transitions, and conservation programs.","SB, Goal 4 (SB.G4): Equitably achieve a community-wide water demand of approximately 152,000 acre-feet per year.
+
+- SB.G4-S1: Engage residents in water efficiency technological transitions, and conservation programs",Sustainable Buildings (SB),Named strategy under a quantified goal; identifies a specific intervention.,Resource Efficiency,False,indirect,
+Austin_US,sub,"SB.G4: Equitably achieve a community-wide water demand of approximately 152,000 acre-feet per year.","SB.G4-S2: Evaluate water conservation, customer assistance, and workforce development program participation criteria.","SB, Goal 4 (SB.G4): Equitably achieve a community-wide water demand of approximately 152,000 acre-feet per year.
+
+- SB.G4-S2: Evaluate water conservation, customer assistance, and workforce development program participation criteria",Sustainable Buildings (SB),Named strategy under a quantified goal; identifies a specific intervention.,Resource Efficiency,False,indirect,
+Austin_US,sub,"SB.G4: Equitably achieve a community-wide water demand of approximately 152,000 acre-feet per year.",SB.G4-S3: Reduce emissions at the water-energy nexus.,"SB, Goal 4 (SB.G4): Equitably achieve a community-wide water demand of approximately 152,000 acre-feet per year.
+
+- SB.G4-S3: Reduce emissions at the water-energy nexus",Sustainable Buildings (SB),Named strategy under a quantified goal; identifies a specific intervention.,Resource Efficiency,False,direct,Mitigation
+Austin_US,parent,,TLU.G1: 80% of new non-residential development is located within the city's activity centers and corridors.,"TLU, Goal 1 (TLU.G1): 80% of new non-residential development is located within the city's activity centers and corridors.
+
+- TLU.G1-S1: Plan for complete communities
+
+- TLU.G1-S2: Work with employers on location and amenities",Transportation and Land Use (TLU),Sets a quantified target/deadline.,Resource Efficiency,False,direct,
+Austin_US,sub,TLU.G1: 80% of new non-residential development is located within the city's activity centers and corridors.,TLU.G1-S1: Plan for complete communities.,"TLU, Goal 1 (TLU.G1): 80% of new non-residential development is located within the city's activity centers and corridors.
+
+- TLU.G1-S1: Plan for complete communities",Transportation and Land Use (TLU),Named strategy under a quantified goal; identifies a specific intervention.,Resource Efficiency,False,direct,
+Austin_US,sub,TLU.G1: 80% of new non-residential development is located within the city's activity centers and corridors.,TLU.G1-S2: Work with employers on location and amenities.,"TLU, Goal 1 (TLU.G1): 80% of new non-residential development is located within the city's activity centers and corridors.
+
+- TLU.G1-S2: Work with employers on location and amenities",Transportation and Land Use (TLU),Named strategy under a quantified goal; identifies a specific intervention.,Resource Efficiency,False,direct,
+Austin_US,sub,TLU.G1: 80% of new non-residential development is located within the city's activity centers and corridors.,TLU.G1-S3: Create mobility hubs.,"TLU, Goal 1 (TLU.G1): 80% of new non-residential development is located within the city's activity centers and corridors.
+
+- TLU.G1-S3: Create mobility hubs",Transportation and Land Use (TLU),Named strategy under a quantified goal; identifies a specific intervention.,Resource Efficiency,False,direct,
+Austin_US,sub,TLU.G1: 80% of new non-residential development is located within the city's activity centers and corridors.,TLU.G1-S4: Phase out free parking.,"TLU, Goal 1 (TLU.G1): 80% of new non-residential development is located within the city's activity centers and corridors.
+
+- TLU.G1-S4: Phase out free parking",Transportation and Land Use (TLU),Named strategy under a quantified goal; identifies a specific intervention.,Resource Efficiency,False,direct,
+Austin_US,parent,,"TLU.G2: By 2027, preserve and produce 135,000 housing units, including 60,000 affordable housing units, with 75% of new housing located within ½ mile of activity centers and corridors.","TLU, Goal 2 (TLU.G2): By 2027, preserve and produce 135,000 housing units, including 60,000 affordable housing units, with 75% of new housing located within ½ mile of activity centers and corridors.
+
+- TLU.G2-S1: Offer immediate affordable housing assistance
+
+- TLU.G2-S2: Fund affordable housing",Transportation and Land Use (TLU),Sets a quantified target/deadline.,Resource Efficiency,False,indirect,
+Austin_US,sub,"TLU.G2: By 2027, preserve and produce 135,000 housing units, including 60,000 affordable housing units, with 75% of new housing located within ½ mile of activity centers and corridors.",TLU.G2-S1: Offer immediate affordable housing assistance.,"TLU, Goal 2 (TLU.G2): By 2027, preserve and produce 135,000 housing units, including 60,000 affordable housing units, with 75% of new housing located within ½ mile of activity centers and corridors.
+
+- TLU.G2-S1: Offer immediate affordable housing assistance",Transportation and Land Use (TLU),Named strategy under a quantified goal; identifies a specific intervention.,Resource Efficiency,False,indirect,
+Austin_US,sub,"TLU.G2: By 2027, preserve and produce 135,000 housing units, including 60,000 affordable housing units, with 75% of new housing located within ½ mile of activity centers and corridors.",TLU.G2-S2: Fund affordable housing.,"TLU, Goal 2 (TLU.G2): By 2027, preserve and produce 135,000 housing units, including 60,000 affordable housing units, with 75% of new housing located within ½ mile of activity centers and corridors.
+
+- TLU.G2-S2: Fund affordable housing",Transportation and Land Use (TLU),Named strategy under a quantified goal; identifies a specific intervention.,Resource Efficiency,True,indirect,
+Austin_US,sub,"TLU.G2: By 2027, preserve and produce 135,000 housing units, including 60,000 affordable housing units, with 75% of new housing located within ½ mile of activity centers and corridors.",TLU.G2-S3: Enhance community engagement for affordable housing and anti-displacement programs.,"TLU, Goal 2 (TLU.G2): By 2027, preserve and produce 135,000 housing units, including 60,000 affordable housing units, with 75% of new housing located within ½ mile of activity centers and corridors.
+
+- TLU.G2-S3: Enhance community engagement for affordable housing and anti-displacement programs",Transportation and Land Use (TLU),Named strategy under a quantified goal; identifies a specific intervention.,Resource Efficiency,False,indirect,
+Austin_US,parent,,"TLU.G3: 50% of trips in Austin are made using public transit, biking, walking, carpooling, or avoided altogether by working from home.","TLU, Goal 3 (TLU.G3): 50% of trips in Austin are made using public transit, biking, walking, carpooling, or avoided altogether by working from home.
+
+- TLU.G3-S1: Expand and improve public transportation
+
+- TLU.G3-S2: Promote free transportation options",Transportation and Land Use (TLU),Sets a quantified target/deadline.,Resource Efficiency,False,direct,
+Austin_US,sub,"TLU.G3: 50% of trips in Austin are made using public transit, biking, walking, carpooling, or avoided altogether by working from home.",TLU.G3-S1: Expand and improve public transportation.,"TLU, Goal 3 (TLU.G3): 50% of trips in Austin are made using public transit, biking, walking, carpooling, or avoided altogether by working from home.
+
+- TLU.G3-S1: Expand and improve public transportation",Transportation and Land Use (TLU),Named strategy under a quantified goal; identifies a specific intervention.,Resource Efficiency,False,direct,
+Austin_US,sub,"TLU.G3: 50% of trips in Austin are made using public transit, biking, walking, carpooling, or avoided altogether by working from home.",TLU.G3-S2: Promote free transportation options.,"TLU, Goal 3 (TLU.G3): 50% of trips in Austin are made using public transit, biking, walking, carpooling, or avoided altogether by working from home.
+
+- TLU.G3-S2: Promote free transportation options",Transportation and Land Use (TLU),Named strategy under a quantified goal; identifies a specific intervention.,Resource Efficiency,False,direct,
+Austin_US,sub,"TLU.G3: 50% of trips in Austin are made using public transit, biking, walking, carpooling, or avoided altogether by working from home.",TLU.G3-S3: Enhance transit stations and stops.,"TLU, Goal 3 (TLU.G3): 50% of trips in Austin are made using public transit, biking, walking, carpooling, or avoided altogether by working from home.
+
+- TLU.G3-S3: Enhance transit stations and stops",Transportation and Land Use (TLU),Named strategy under a quantified goal; identifies a specific intervention.,Resource Efficiency,False,direct,
+Austin_US,sub,"TLU.G3: 50% of trips in Austin are made using public transit, biking, walking, carpooling, or avoided altogether by working from home.",TLU.G3-S4: Prioritize bicycle networks.,"TLU, Goal 3 (TLU.G3): 50% of trips in Austin are made using public transit, biking, walking, carpooling, or avoided altogether by working from home.
+
+- TLU.G3-S4: Prioritize bicycle networks",Transportation and Land Use (TLU),Named strategy under a quantified goal; identifies a specific intervention.,Resource Efficiency,False,direct,
+Austin_US,sub,"TLU.G3: 50% of trips in Austin are made using public transit, biking, walking, carpooling, or avoided altogether by working from home.",TLU.G3-S5: Enhance bicycle education and training.,"TLU, Goal 3 (TLU.G3): 50% of trips in Austin are made using public transit, biking, walking, carpooling, or avoided altogether by working from home.
+
+- TLU.G3-S5: Enhance bicycle education and training",Transportation and Land Use (TLU),Named strategy under a quantified goal; identifies a specific intervention.,Resource Efficiency,False,direct,
+Austin_US,sub,"TLU.G3: 50% of trips in Austin are made using public transit, biking, walking, carpooling, or avoided altogether by working from home.","TLU.G3-S6: Improve sidewalks, urban trails, and crossings.","TLU, Goal 3 (TLU.G3): 50% of trips in Austin are made using public transit, biking, walking, carpooling, or avoided altogether by working from home.
+
+- TLU.G3-S6: Improve sidewalks, urban trails, and crossings",Transportation and Land Use (TLU),Named strategy under a quantified goal; identifies a specific intervention.,Resource Efficiency,False,direct,
+Austin_US,sub,"TLU.G3: 50% of trips in Austin are made using public transit, biking, walking, carpooling, or avoided altogether by working from home.",TLU.G3-S7: Promote remote and flexible work policies.,"TLU, Goal 3 (TLU.G3): 50% of trips in Austin are made using public transit, biking, walking, carpooling, or avoided altogether by working from home.
+
+- TLU.G3-S7: Promote remote and flexible work policies",Transportation and Land Use (TLU),Named strategy under a quantified goal; identifies a specific intervention.,Resource Efficiency,False,direct,
+Austin_US,parent,,"TE.G1: 40% of total vehicle miles traveled in Austin are electrified, and electric vehicle ownership is culturally, geographically, and economically diverse.","TE, Goal 1 (TE.G1): 40% of total vehicle miles traveled in Austin are electrified, and electric vehicle ownership is culturally, geographically, and economically diverse.
+
+- TE.G1-S1: Conduct an EV Community Needs Assessment
+
+- TE.G1-S2: Create equitable incentives for buying and leasing EVs",Transportation Electrification (TE),Sets a quantified target/deadline.,Mitigation,False,direct,
+Austin_US,sub,"TE.G1: 40% of total vehicle miles traveled in Austin are electrified, and electric vehicle ownership is culturally, geographically, and economically diverse.",TE.G1-S1: Conduct an EV Community Needs Assessment.,"TE, Goal 1 (TE.G1): 40% of total vehicle miles traveled in Austin are electrified, and electric vehicle ownership is culturally, geographically, and economically diverse.
+
+- TE.G1-S1: Conduct an EV Community Needs Assessment",Transportation Electrification (TE),Named strategy under a quantified goal; identifies a specific intervention.,Mitigation,False,direct,
+Austin_US,sub,"TE.G1: 40% of total vehicle miles traveled in Austin are electrified, and electric vehicle ownership is culturally, geographically, and economically diverse.",TE.G1-S2: Create equitable incentives for buying and leasing EVs.,"TE, Goal 1 (TE.G1): 40% of total vehicle miles traveled in Austin are electrified, and electric vehicle ownership is culturally, geographically, and economically diverse.
+
+- TE.G1-S2: Create equitable incentives for buying and leasing EVs",Transportation Electrification (TE),Named strategy under a quantified goal; identifies a specific intervention.,Mitigation,True,direct,
+Austin_US,sub,"TE.G1: 40% of total vehicle miles traveled in Austin are electrified, and electric vehicle ownership is culturally, geographically, and economically diverse.",TE.G1-S3: Reduce tolls for EVs in the Eastern Crescent.,"TE, Goal 1 (TE.G1): 40% of total vehicle miles traveled in Austin are electrified, and electric vehicle ownership is culturally, geographically, and economically diverse.
+
+- TE.G1-S3: Reduce tolls for EVs in the Eastern Crescent",Transportation Electrification (TE),Named strategy under a quantified goal; identifies a specific intervention.,Mitigation,True,direct,
+Austin_US,sub,"TE.G1: 40% of total vehicle miles traveled in Austin are electrified, and electric vehicle ownership is culturally, geographically, and economically diverse.",TE.G1-S4: Launch an e-bike and electric car-sharing program.,"TE, Goal 1 (TE.G1): 40% of total vehicle miles traveled in Austin are electrified, and electric vehicle ownership is culturally, geographically, and economically diverse.
+
+- TE.G1-S4: Launch an e-bike and electric car-sharing program",Transportation Electrification (TE),Named strategy under a quantified goal; identifies a specific intervention.,Mitigation,False,direct,
+Austin_US,sub,"TE.G1: 40% of total vehicle miles traveled in Austin are electrified, and electric vehicle ownership is culturally, geographically, and economically diverse.",TE.G1-S5: Electrify public sector fleet vehicles.,"TE, Goal 1 (TE.G1): 40% of total vehicle miles traveled in Austin are electrified, and electric vehicle ownership is culturally, geographically, and economically diverse.
+
+- TE.G1-S5: Electrify public sector fleet vehicles",Transportation Electrification (TE),Named strategy under a quantified goal; identifies a specific intervention.,Mitigation,False,direct,
+Austin_US,sub,"TE.G1: 40% of total vehicle miles traveled in Austin are electrified, and electric vehicle ownership is culturally, geographically, and economically diverse.",TE.G1-S6: Electrify private sector fleet vehicles.,"## Strategy 6: Electrify private sector fleet vehicles
+
+By 2030, transition 100% of the gig, rideshare, public health, and delivery vehicle fleets to electric. Starting with private fleets in the Eastern Crescent, establish pilots, technical support, regulation, incentives, and education to support rapid electrification.",Transportation Electrification (TE),Named strategy under a quantified goal; identifies a specific intervention.,Mitigation,False,direct,
+Austin_US,parent,,"TE.G2: Austin has a compelling and equitably distributed mix of level 1, 2, and DC fast-charging stations to accommodate 40% of total vehicle miles traveled in the city.","TE, Goal 2 (TE.G2): Austin has a compelling and equitably distributed mix of level 1, 2, and DC fast-charging stations to accommodate 40% of total vehicle miles traveled in the city.
+
+- TE.G2-S1: Create a network with more low-cost, accessible charging stations
+
+- TE.G2-S2: Incentivize internet-connected smart charging",Transportation Electrification (TE),Sets a quantified target/deadline.,Mitigation,False,direct,
+Austin_US,sub,"TE.G2: Austin has a compelling and equitably distributed mix of level 1, 2, and DC fast-charging stations to accommodate 40% of total vehicle miles traveled in the city.","TE.G2-S1: Create a network with more low-cost, accessible charging stations.","TE, Goal 2 (TE.G2): Austin has a compelling and equitably distributed mix of level 1, 2, and DC fast-charging stations to accommodate 40% of total vehicle miles traveled in the city.
+
+- TE.G2-S1: Create a network with more low-cost, accessible charging stations",Transportation Electrification (TE),Named strategy under a quantified goal; identifies a specific intervention.,Mitigation,False,direct,
+Austin_US,sub,"TE.G2: Austin has a compelling and equitably distributed mix of level 1, 2, and DC fast-charging stations to accommodate 40% of total vehicle miles traveled in the city.",TE.G2-S2: Incentivize internet-connected smart charging.,"TE, Goal 2 (TE.G2): Austin has a compelling and equitably distributed mix of level 1, 2, and DC fast-charging stations to accommodate 40% of total vehicle miles traveled in the city.
+
+- TE.G2-S2: Incentivize internet-connected smart charging",Transportation Electrification (TE),Named strategy under a quantified goal; identifies a specific intervention.,Mitigation,True,direct,
+Austin_US,sub,"TE.G2: Austin has a compelling and equitably distributed mix of level 1, 2, and DC fast-charging stations to accommodate 40% of total vehicle miles traveled in the city.",TE.G2-S3: Adopt new energy and building codes.,"TE, Goal 2 (TE.G2): Austin has a compelling and equitably distributed mix of level 1, 2, and DC fast-charging stations to accommodate 40% of total vehicle miles traveled in the city.
+
+- TE.G2-S3: Adopt new energy and building codes",Transportation Electrification (TE),Named strategy under a quantified goal; identifies a specific intervention.,Mitigation,False,direct,
+Austin_US,sub,"TE.G2: Austin has a compelling and equitably distributed mix of level 1, 2, and DC fast-charging stations to accommodate 40% of total vehicle miles traveled in the city.",TE.G2-S4: Expand outreach to systematically excluded groups.,"TE, Goal 2 (TE.G2): Austin has a compelling and equitably distributed mix of level 1, 2, and DC fast-charging stations to accommodate 40% of total vehicle miles traveled in the city.
+
+- TE.G2-S4: Expand outreach to systematically excluded groups",Transportation Electrification (TE),Named strategy under a quantified goal; identifies a specific intervention.,Mitigation,False,direct,
+Austin_US,parent,,TE.G3: The Austin-Round Rock-San Marcos area is a leader in transportation electrification by adopting policies that maximize economic and health benefits while supporting the growth of this emerging industry.,"TE, Goal 3 (TE.G3): The Austin-Round Rock-San Marcos area is a leader in transportation electrification by adopting policies that maximize economic and health benefits while supporting the growth of this emerging industry.
+
+- TE.G3-S1: Create a regional coalition to support EVs
+
+- TE.G3-S2: Pilot and adopt new technology",Transportation Electrification (TE),Sets a quantified target/deadline.,Mitigation,False,direct,
+Austin_US,sub,TE.G3: The Austin-Round Rock-San Marcos area is a leader in transportation electrification by adopting policies that maximize economic and health benefits while supporting the growth of this emerging industry.,TE.G3-S1: Create a regional coalition to support EVs.,"TE, Goal 3 (TE.G3): The Austin-Round Rock-San Marcos area is a leader in transportation electrification by adopting policies that maximize economic and health benefits while supporting the growth of this emerging industry.
+
+- TE.G3-S1: Create a regional coalition to support EVs",Transportation Electrification (TE),Named strategy under a quantified goal; identifies a specific intervention.,Mitigation,False,direct,
+Austin_US,sub,TE.G3: The Austin-Round Rock-San Marcos area is a leader in transportation electrification by adopting policies that maximize economic and health benefits while supporting the growth of this emerging industry.,TE.G3-S2: Pilot and adopt new technology.,"TE, Goal 3 (TE.G3): The Austin-Round Rock-San Marcos area is a leader in transportation electrification by adopting policies that maximize economic and health benefits while supporting the growth of this emerging industry.
+
+- TE.G3-S2: Pilot and adopt new technology",Transportation Electrification (TE),Named strategy under a quantified goal; identifies a specific intervention.,Mitigation,False,direct,
+Austin_US,sub,TE.G3: The Austin-Round Rock-San Marcos area is a leader in transportation electrification by adopting policies that maximize economic and health benefits while supporting the growth of this emerging industry.,TE.G3-S3: Prioritize a just transition.,"TE, Goal 3 (TE.G3): The Austin-Round Rock-San Marcos area is a leader in transportation electrification by adopting policies that maximize economic and health benefits while supporting the growth of this emerging industry.
+
+- TE.G3-S3: Prioritize a just transition",Transportation Electrification (TE),Named strategy under a quantified goal; identifies a specific intervention.,Mitigation,False,direct,
+Austin_US,sub,TE.G3: The Austin-Round Rock-San Marcos area is a leader in transportation electrification by adopting policies that maximize economic and health benefits while supporting the growth of this emerging industry.,TE.G3-S4: Expand the EV-related business ecosystem.,"TE, Goal 3 (TE.G3): The Austin-Round Rock-San Marcos area is a leader in transportation electrification by adopting policies that maximize economic and health benefits while supporting the growth of this emerging industry.
+
+- TE.G3-S4: Expand the EV-related business ecosystem",Transportation Electrification (TE),Named strategy under a quantified goal; identifies a specific intervention.,Mitigation,False,direct,
+Austin_US,parent,,"FPC.G1: Ensure all Austinites can access a food system that is community-driven, addresses food insecurity, prioritizes regenerative agriculture, supports dietary and health agency, promotes plant-based foods, and minimizes food waste.","FPC, Goal 1 (FPC.G1): Ensure all Austinites can access a food system that is community-driven, addresses food insecurity, prioritizes regenerative agriculture, supports dietary and health agency, promotes plant-based foods, and minimizes food waste.
+
+- FPC.G1-S1: Support institutional food purchasing
+
+- FPC.G1-S2: Promote and fund community-driven food retail programs",Food and Product Consumption (FPC),Sets a quantified target/deadline.,Resource Efficiency,False,direct,
+Austin_US,sub,"FPC.G1: Ensure all Austinites can access a food system that is community-driven, addresses food insecurity, prioritizes regenerative agriculture, supports dietary and health agency, promotes plant-based foods, and minimizes food waste.",FPC.G1-S1: Support institutional food purchasing.,"FPC, Goal 1 (FPC.G1): Ensure all Austinites can access a food system that is community-driven, addresses food insecurity, prioritizes regenerative agriculture, supports dietary and health agency, promotes plant-based foods, and minimizes food waste.
+
+- FPC.G1-S1: Support institutional food purchasing",Food and Product Consumption (FPC),Named strategy under a quantified goal; identifies a specific intervention.,Resource Efficiency,False,direct,
+Austin_US,sub,"FPC.G1: Ensure all Austinites can access a food system that is community-driven, addresses food insecurity, prioritizes regenerative agriculture, supports dietary and health agency, promotes plant-based foods, and minimizes food waste.",FPC.G1-S2: Promote and fund community-driven food retail programs.,"FPC, Goal 1 (FPC.G1): Ensure all Austinites can access a food system that is community-driven, addresses food insecurity, prioritizes regenerative agriculture, supports dietary and health agency, promotes plant-based foods, and minimizes food waste.
+
+- FPC.G1-S2: Promote and fund community-driven food retail programs",Food and Product Consumption (FPC),Named strategy under a quantified goal; identifies a specific intervention.,Resource Efficiency,True,direct,
+Austin_US,sub,"FPC.G1: Ensure all Austinites can access a food system that is community-driven, addresses food insecurity, prioritizes regenerative agriculture, supports dietary and health agency, promotes plant-based foods, and minimizes food waste.","FPC.G1-S3: Incentivize pro-climate, pro-health food choices.","FPC, Goal 1 (FPC.G1): Ensure all Austinites can access a food system that is community-driven, addresses food insecurity, prioritizes regenerative agriculture, supports dietary and health agency, promotes plant-based foods, and minimizes food waste.
+
+- FPC.G1-S3: Incentivize pro-climate, pro-health food choices",Food and Product Consumption (FPC),Named strategy under a quantified goal; identifies a specific intervention.,Mitigation,True,direct,
+Austin_US,sub,"FPC.G1: Ensure all Austinites can access a food system that is community-driven, addresses food insecurity, prioritizes regenerative agriculture, supports dietary and health agency, promotes plant-based foods, and minimizes food waste.",FPC.G1-S4: Conduct a food waste root cause analysis.,"FPC, Goal 1 (FPC.G1): Ensure all Austinites can access a food system that is community-driven, addresses food insecurity, prioritizes regenerative agriculture, supports dietary and health agency, promotes plant-based foods, and minimizes food waste.
+
+- FPC.G1-S4: Conduct a food waste root cause analysis",Food and Product Consumption (FPC),Named strategy under a quantified goal; identifies a specific intervention.,Resource Efficiency,False,direct,
+Austin_US,parent,,"FPC.G2: Reduce greenhouse gas emissions from institutional, commercial, and government purchasing by at least 50%.","FPC, Goal 2 (FPC.G2): Reduce greenhouse gas emissions from institutional, commercial, and government purchasing by at least 50%.
+
+- FPC.G2-S1: Measure institutional lifecycle emissions
+
+- FPC.G2-S2: Strengthen the City's sustainable purchasing program",Food and Product Consumption (FPC),Sets a quantified target/deadline.,Mitigation,False,direct,
+Austin_US,sub,"FPC.G2: Reduce greenhouse gas emissions from institutional, commercial, and government purchasing by at least 50%.",FPC.G2-S1: Measure institutional lifecycle emissions.,"FPC, Goal 2 (FPC.G2): Reduce greenhouse gas emissions from institutional, commercial, and government purchasing by at least 50%.
+
+- FPC.G2-S1: Measure institutional lifecycle emissions",Food and Product Consumption (FPC),Named strategy under a quantified goal; identifies a specific intervention.,Mitigation,False,direct,
+Austin_US,sub,"FPC.G2: Reduce greenhouse gas emissions from institutional, commercial, and government purchasing by at least 50%.",FPC.G2-S2: Strengthen the City's sustainable purchasing program.,"FPC, Goal 2 (FPC.G2): Reduce greenhouse gas emissions from institutional, commercial, and government purchasing by at least 50%.
+
+- FPC.G2-S2: Strengthen the City's sustainable purchasing program",Food and Product Consumption (FPC),Named strategy under a quantified goal; identifies a specific intervention.,Mitigation,False,direct,
+Austin_US,sub,"FPC.G2: Reduce greenhouse gas emissions from institutional, commercial, and government purchasing by at least 50%.",FPC.G2-S3: Strengthen non-City institutional purchasing programs.,"FPC, Goal 2 (FPC.G2): Reduce greenhouse gas emissions from institutional, commercial, and government purchasing by at least 50%.
+
+- FPC.G2-S3: Strengthen non-City institutional purchasing programs",Food and Product Consumption (FPC),Named strategy under a quantified goal; identifies a specific intervention.,Mitigation,False,direct,
+Austin_US,sub,"FPC.G2: Reduce greenhouse gas emissions from institutional, commercial, and government purchasing by at least 50%.",FPC.G2-S4: Expand the City's Circular Economy Program.,"FPC, Goal 2 (FPC.G2): Reduce greenhouse gas emissions from institutional, commercial, and government purchasing by at least 50%.
+
+- FPC.G2-S4: Expand the City's Circular Economy Program",Food and Product Consumption (FPC),Named strategy under a quantified goal; identifies a specific intervention.,Resource Efficiency,False,direct,Mitigation
+Austin_US,parent,,"FPC.G3: Aggressively pursue waste reduction, organics composting, and recycling to achieve the waste reduction goals in the 2023 Austin Resource Recovery Comprehensive Plan.","FPC, Goal 3 (FPC.G3): Aggressively pursue waste reduction, organics composting, and recycling to achieve the waste reduction goals in the 2023 Austin Resource Recovery Comprehensive Plan.
+
+- FPC.G3-S1: Promote waste reduction and reuse
+
+- FPC.G3-S2: Create Eco-hubs",Food and Product Consumption (FPC),Sets a quantified target/deadline.,Resource Efficiency,False,direct,
+Austin_US,sub,"FPC.G3: Aggressively pursue waste reduction, organics composting, and recycling to achieve the waste reduction goals in the 2023 Austin Resource Recovery Comprehensive Plan.",FPC.G3-S1: Promote waste reduction and reuse.,"FPC, Goal 3 (FPC.G3): Aggressively pursue waste reduction, organics composting, and recycling to achieve the waste reduction goals in the 2023 Austin Resource Recovery Comprehensive Plan.
+
+- FPC.G3-S1: Promote waste reduction and reuse",Food and Product Consumption (FPC),Named strategy under a quantified goal; identifies a specific intervention.,Resource Efficiency,False,direct,
+Austin_US,sub,"FPC.G3: Aggressively pursue waste reduction, organics composting, and recycling to achieve the waste reduction goals in the 2023 Austin Resource Recovery Comprehensive Plan.",FPC.G3-S2: Create Eco-hubs.,"FPC, Goal 3 (FPC.G3): Aggressively pursue waste reduction, organics composting, and recycling to achieve the waste reduction goals in the 2023 Austin Resource Recovery Comprehensive Plan.
+
+- FPC.G3-S2: Create Eco-hubs",Food and Product Consumption (FPC),Named strategy under a quantified goal; identifies a specific intervention.,Resource Efficiency,False,direct,
+Austin_US,sub,"FPC.G3: Aggressively pursue waste reduction, organics composting, and recycling to achieve the waste reduction goals in the 2023 Austin Resource Recovery Comprehensive Plan.",FPC.G3-S3: Create a workforce development program for the circular economy.,"FPC, Goal 3 (FPC.G3): Aggressively pursue waste reduction, organics composting, and recycling to achieve the waste reduction goals in the 2023 Austin Resource Recovery Comprehensive Plan.
+
+- FPC.G3-S3: Create a workforce development program for the circular economy",Food and Product Consumption (FPC),Named strategy under a quantified goal; identifies a specific intervention.,Resource Efficiency,False,direct,
+Austin_US,sub,"FPC.G3: Aggressively pursue waste reduction, organics composting, and recycling to achieve the waste reduction goals in the 2023 Austin Resource Recovery Comprehensive Plan.",FPC.G3-S4: Offer incentives for products that have lower negative environmental and social impact.,"FPC, Goal 3 (FPC.G3): Aggressively pursue waste reduction, organics composting, and recycling to achieve the waste reduction goals in the 2023 Austin Resource Recovery Comprehensive Plan.
+
+- FPC.G3-S4: Offer incentives for products that have lower negative environmental and social impact",Food and Product Consumption (FPC),Named strategy under a quantified goal; identifies a specific intervention.,Resource Efficiency,True,direct,
+Austin_US,sub,"FPC.G3: Aggressively pursue waste reduction, organics composting, and recycling to achieve the waste reduction goals in the 2023 Austin Resource Recovery Comprehensive Plan.",FPC.G3-S5: Retool the bulk pick-up collection program.,"FPC, Goal 3 (FPC.G3): Aggressively pursue waste reduction, organics composting, and recycling to achieve the waste reduction goals in the 2023 Austin Resource Recovery Comprehensive Plan.
+
+- FPC.G3-S5: Retool the bulk pick-up collection program",Food and Product Consumption (FPC),Named strategy under a quantified goal; identifies a specific intervention.,Resource Efficiency,False,direct,
+Austin_US,parent,,"NS.G1: Legally protect an additional 20,000 acres of carbon pools on natural lands and manage all new and existing natural areas (approx. 70,000 acres total), focusing on resilience.","NS, Goal 1 (NS.G1): Legally protect an additional 20,000 acres of carbon pools on natural lands and manage all new and existing natural areas (approx. 70,000 acres total), focusing on resilience.
+
+- NS.G1-S1: Protect natural lands
+
+- NS.G1-S2: Manage natural lands for resilience",Natural Systems (NS),Sets a quantified target/deadline.,Nature-Based Solutions,False,direct,Mitigation
+Austin_US,sub,"NS.G1: Legally protect an additional 20,000 acres of carbon pools on natural lands and manage all new and existing natural areas (approx. 70,000 acres total), focusing on resilience.",NS.G1-S1: Protect natural lands.,"NS, Goal 1 (NS.G1): Legally protect an additional 20,000 acres of carbon pools on natural lands and manage all new and existing natural areas (approx. 70,000 acres total), focusing on resilience.
+
+- NS.G1-S1: Protect natural lands",Natural Systems (NS),Named strategy under a quantified goal; identifies a specific intervention.,Nature-Based Solutions,False,direct,
+Austin_US,sub,"NS.G1: Legally protect an additional 20,000 acres of carbon pools on natural lands and manage all new and existing natural areas (approx. 70,000 acres total), focusing on resilience.",NS.G1-S2: Manage natural lands for resilience.,"NS, Goal 1 (NS.G1): Legally protect an additional 20,000 acres of carbon pools on natural lands and manage all new and existing natural areas (approx. 70,000 acres total), focusing on resilience.
+
+- NS.G1-S2: Manage natural lands for resilience",Natural Systems (NS),Named strategy under a quantified goal; identifies a specific intervention.,Adaptation,False,direct,Nature-Based Solutions
+Austin_US,sub,"NS.G1: Legally protect an additional 20,000 acres of carbon pools on natural lands and manage all new and existing natural areas (approx. 70,000 acres total), focusing on resilience.",NS.G1-S3: Increase community access and positive perceptions of public land.,"NS, Goal 1 (NS.G1): Legally protect an additional 20,000 acres of carbon pools on natural lands and manage all new and existing natural areas (approx. 70,000 acres total), focusing on resilience.
+
+- NS.G1-S3: Increase community access and positive perceptions of public land",Natural Systems (NS),Named strategy under a quantified goal; identifies a specific intervention.,Nature-Based Solutions,False,direct,
+Austin_US,sub,"NS.G1: Legally protect an additional 20,000 acres of carbon pools on natural lands and manage all new and existing natural areas (approx. 70,000 acres total), focusing on resilience.",NS.G1-S4: Protect water sources.,"NS, Goal 1 (NS.G1): Legally protect an additional 20,000 acres of carbon pools on natural lands and manage all new and existing natural areas (approx. 70,000 acres total), focusing on resilience.
+
+- NS.G1-S4: Protect water sources",Natural Systems (NS),Named strategy under a quantified goal; identifies a specific intervention.,Nature-Based Solutions,False,direct,
+Austin_US,parent,,"NS.G2: Protect 500,000 acres of farmland from development in the five-county region through legal protections and regenerative agriculture programs.","NS, Goal 2 (NS.G2): Protect 500,000 acres of farmland from development in the five-county region through legal protections and regenerative agriculture programs.
+
+- NS.G2-S1: Protect working lands
+
+- NS.G2-S2: Reform agricultural tax appraisals",Natural Systems (NS),Sets a quantified target/deadline.,Nature-Based Solutions,False,direct,
+Austin_US,sub,"NS.G2: Protect 500,000 acres of farmland from development in the five-county region through legal protections and regenerative agriculture programs.",NS.G2-S1: Protect working lands.,"NS, Goal 2 (NS.G2): Protect 500,000 acres of farmland from development in the five-county region through legal protections and regenerative agriculture programs.
+
+- NS.G2-S1: Protect working lands",Natural Systems (NS),Named strategy under a quantified goal; identifies a specific intervention.,Nature-Based Solutions,False,direct,
+Austin_US,sub,"NS.G2: Protect 500,000 acres of farmland from development in the five-county region through legal protections and regenerative agriculture programs.",NS.G2-S2: Reform agricultural tax appraisals.,"NS, Goal 2 (NS.G2): Protect 500,000 acres of farmland from development in the five-county region through legal protections and regenerative agriculture programs.
+
+- NS.G2-S2: Reform agricultural tax appraisals",Natural Systems (NS),Named strategy under a quantified goal; identifies a specific intervention.,Nature-Based Solutions,True,direct,
+Austin_US,sub,"NS.G2: Protect 500,000 acres of farmland from development in the five-county region through legal protections and regenerative agriculture programs.",NS.G2-S3: Support farmers through financial assistance.,"NS, Goal 2 (NS.G2): Protect 500,000 acres of farmland from development in the five-county region through legal protections and regenerative agriculture programs.
+
+- NS.G2-S3: Support farmers through financial assistance",Natural Systems (NS),Named strategy under a quantified goal; identifies a specific intervention.,Nature-Based Solutions,True,direct,
+Austin_US,sub,"NS.G2: Protect 500,000 acres of farmland from development in the five-county region through legal protections and regenerative agriculture programs.",NS.G2-S4: Provide farmers with resources.,"NS, Goal 2 (NS.G2): Protect 500,000 acres of farmland from development in the five-county region through legal protections and regenerative agriculture programs.
+
+- NS.G2-S4: Provide farmers with resources",Natural Systems (NS),Named strategy under a quantified goal; identifies a specific intervention.,Nature-Based Solutions,False,direct,
+Austin_US,sub,"NS.G2: Protect 500,000 acres of farmland from development in the five-county region through legal protections and regenerative agriculture programs.",NS.G2-S5: Expand composting.,"NS, Goal 2 (NS.G2): Protect 500,000 acres of farmland from development in the five-county region through legal protections and regenerative agriculture programs.
+
+- NS.G2-S5: Expand composting",Natural Systems (NS),Named strategy under a quantified goal; identifies a specific intervention.,Nature-Based Solutions,False,direct,
+Austin_US,sub,"NS.G2: Protect 500,000 acres of farmland from development in the five-county region through legal protections and regenerative agriculture programs.",NS.G2-S6: Strengthen workforce development for farmers.,"NS, Goal 2 (NS.G2): Protect 500,000 acres of farmland from development in the five-county region through legal protections and regenerative agriculture programs.
+
+- NS.G2-S6: Strengthen workforce development for farmers",Natural Systems (NS),Named strategy under a quantified goal; identifies a specific intervention.,Nature-Based Solutions,False,direct,
+Austin_US,parent,,"NS.G3: Achieve at least 50% citywide tree canopy cover by 2050, focusing on increasing canopy cover equitably.","NS, Goal 3 (NS.G3): Achieve at least 50% citywide tree canopy cover by 2050, focusing on increasing canopy cover equitably.
+
+- NS.G3-S1: Protect canopy cover on City lands
+
+- NS.G3-S2: Promote tree protections and landscape regulations",Natural Systems (NS),Sets a quantified target/deadline.,Nature-Based Solutions,False,direct,
+Austin_US,sub,"NS.G3: Achieve at least 50% citywide tree canopy cover by 2050, focusing on increasing canopy cover equitably.",NS.G3-S1: Protect canopy cover on City lands.,"NS, Goal 3 (NS.G3): Achieve at least 50% citywide tree canopy cover by 2050, focusing on increasing canopy cover equitably.
+
+- NS.G3-S1: Protect canopy cover on City lands",Natural Systems (NS),Named strategy under a quantified goal; identifies a specific intervention.,Nature-Based Solutions,False,direct,
+Austin_US,sub,"NS.G3: Achieve at least 50% citywide tree canopy cover by 2050, focusing on increasing canopy cover equitably.",NS.G3-S2: Promote tree protections and landscape regulations.,"NS, Goal 3 (NS.G3): Achieve at least 50% citywide tree canopy cover by 2050, focusing on increasing canopy cover equitably.
+
+- NS.G3-S2: Promote tree protections and landscape regulations",Natural Systems (NS),Named strategy under a quantified goal; identifies a specific intervention.,Nature-Based Solutions,False,direct,
+Austin_US,sub,"NS.G3: Achieve at least 50% citywide tree canopy cover by 2050, focusing on increasing canopy cover equitably.",NS.G3-S3: Increase community tree planting.,"NS, Goal 3 (NS.G3): Achieve at least 50% citywide tree canopy cover by 2050, focusing on increasing canopy cover equitably.
+
+- NS.G3-S3: Increase community tree planting",Natural Systems (NS),Named strategy under a quantified goal; identifies a specific intervention.,Nature-Based Solutions,True,direct,
+Austin_US,sub,"NS.G3: Achieve at least 50% citywide tree canopy cover by 2050, focusing on increasing canopy cover equitably.",NS.G3-S4: Promote tree health and resilience on private and non-City public lands.,"NS, Goal 3 (NS.G3): Achieve at least 50% citywide tree canopy cover by 2050, focusing on increasing canopy cover equitably.
+
+- NS.G3-S4: Promote tree health and resilience on private and non-City public lands",Natural Systems (NS),Named strategy under a quantified goal; identifies a specific intervention.,Nature-Based Solutions,False,direct,
+Austin_US,parent,,NS.G4: Include all City-owned lands under a management plan that results in neutral or negative carbon emissions and maximizes community benefits.,"NS, Goal 4 (NS.G4): Include all City-owned lands under a management plan that results in neutral or negative carbon emissions and maximizes community benefits.
+
+- NS.G4-S1: Prioritize carbon neutrality for public lands
+
+- NS.G4-S2: Reclaim public space and prioritize green infrastructure",Natural Systems (NS),Sets a quantified target/deadline.,Nature-Based Solutions,False,direct,Mitigation
+Austin_US,sub,NS.G4: Include all City-owned lands under a management plan that results in neutral or negative carbon emissions and maximizes community benefits.,NS.G4-S1: Prioritize carbon neutrality for public lands.,"NS, Goal 4 (NS.G4): Include all City-owned lands under a management plan that results in neutral or negative carbon emissions and maximizes community benefits.
+
+- NS.G4-S1: Prioritize carbon neutrality for public lands",Natural Systems (NS),Named strategy under a quantified goal; identifies a specific intervention.,Nature-Based Solutions,False,direct,Mitigation
+Austin_US,sub,NS.G4: Include all City-owned lands under a management plan that results in neutral or negative carbon emissions and maximizes community benefits.,NS.G4-S2: Reclaim public space and prioritize green infrastructure.,"NS, Goal 4 (NS.G4): Include all City-owned lands under a management plan that results in neutral or negative carbon emissions and maximizes community benefits.
+
+- NS.G4-S2: Reclaim public space and prioritize green infrastructure",Natural Systems (NS),Named strategy under a quantified goal; identifies a specific intervention.,Nature-Based Solutions,False,direct,
+Austin_US,sub,NS.G4: Include all City-owned lands under a management plan that results in neutral or negative carbon emissions and maximizes community benefits.,NS.G4-S3: Promote community stewardship.,"NS, Goal 4 (NS.G4): Include all City-owned lands under a management plan that results in neutral or negative carbon emissions and maximizes community benefits.
+
+- NS.G4-S3: Promote community stewardship",Natural Systems (NS),Named strategy under a quantified goal; identifies a specific intervention.,Nature-Based Solutions,False,direct,
+Austin_US,sub,NS.G4: Include all City-owned lands under a management plan that results in neutral or negative carbon emissions and maximizes community benefits.,NS.G4-S4: Promote carbon farming.,"NS, Goal 4 (NS.G4): Include all City-owned lands under a management plan that results in neutral or negative carbon emissions and maximizes community benefits.
+
+- NS.G4-S4: Promote carbon farming",Natural Systems (NS),Named strategy under a quantified goal; identifies a specific intervention.,Nature-Based Solutions,False,direct,Mitigation
