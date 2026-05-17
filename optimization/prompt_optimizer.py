@@ -120,6 +120,14 @@ Your rewrite should complement the grounding criteria — add specificity where 
 is silent, resolve ambiguities it leaves open, and avoid restating rules it
 already covers clearly.
 
+FIXED GROUNDING CRITERIA:
+The RLM always receives a fixed expert extraction criteria document alongside the
+source policy document. This grounding criteria is provided to you under
+GROUNDING CRITERIA below. You cannot change it and must not duplicate it.
+Your rewrite should complement the grounding criteria — add specificity where it
+is silent, resolve ambiguities it leaves open, and avoid restating rules it
+already covers clearly.
+
 SCORING OBJECTIVE:
 Each extracted policy is matched 1-to-1 against ground-truth policies via
 embedding similarity (Hungarian algorithm). Matched pairs are graded +1 / 0 / -1.
@@ -129,9 +137,9 @@ The final score is the mean over all these values — so the prompt must balance
 recall (extract everything real) against precision (avoid spurious policies).
 Recall and FPR are provided alongside the score so you can diagnose the direction
 of failure:
-  - High FPR, low score  → too many spurious extractions; tighten criteria.
-  - Low recall, low score → missing real policies; loosen criteria or add cues.
-  - Low score, ok recall  → extractions are imprecise; improve quality guidance.
+  - High FPR, low score  -> too many spurious extractions; tighten criteria.
+  - Low recall, low score -> missing real policies; loosen criteria or add cues.
+  - Low score, ok recall  -> extractions are imprecise; improve quality guidance.
 
 You will receive:
     CATEGORY  — the prong being rewritten (extraction / hierarchy / classification)
@@ -143,6 +151,7 @@ Your task: rewrite SECTION to improve the score. Fix the dominant failure mode
 shown by METRICS and FEEDBACK. Preserve what works.
 Do not add rules so strict that extraction is suppressed — a score of -1 from
 zero extractions is no better than a score of -1 from bad ones.
+Do not restate anything already covered by GROUNDING CRITERIA.
 
 Return ONLY the rewritten prong text. Do not include the section header.
 No preamble, no explanation.
@@ -991,6 +1000,11 @@ if __name__ == "__main__":
     ground_truth_policies = load_policies(OUTPUTS_DIR / "structured_policies.csv")
     print(f"Loaded {len(ground_truth_policies)} ground-truth policies.")
 
+    # Grounding criteria: fixed expert extraction document passed to every RLM
+    # run. The optimizer is made aware of it so the resampler does not duplicate
+    # or contradict it. It is never modified by the optimizer.
+    GROUNDING_CRITERIA_PATH = _DEFAULT_EXPERT_KNOWLEDGE_PATH
+
     # Live RLM extraction: the optimizer calls this with the current composed
     # prompt at each iteration, re-runs the RLM, and scores the new output.
     # This is what closes the loop — each iteration uses a fresh RLM run under
@@ -999,6 +1013,7 @@ if __name__ == "__main__":
         return run_rlm_for_optimizer(
             prompt_string=prompt,
             document_path=SEATTLE_DOC,
+            expert_knowledge_path=GROUNDING_CRITERIA_PATH,
             trace_dir=trace_dir,
             model_name=MODEL,
             sub_model_name=MODEL,
