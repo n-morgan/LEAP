@@ -1,0 +1,734 @@
+role,parent_statement,policy_statement,source_quote,section_header,extraction_rationale,primary_category,is_financial_instrument,climate_relevance,secondary_category
+individual,,The City will reduce Chicago's greenhouse gas emissions by a minimum of 62% by 2040.,"The 2022 CAP aims to chart an equitable path to reduce Chicago's GHG emissions by a minimum of 62% by 2040. Following the principles defined in this plan, this pathway prioritizes improving the lives of all Chicagoans by promoting environmental justice, generating household savings, improving community health, transitioning away from fossil-fuel dependency, and ensuring that all Chicago communities are prepared for the undeniable impacts of climate change, by 2040.",GHG REDUCTION Chicago's TARGETS,"This is a quantified citywide climate target with a deadline, clearly qualifying as a policy commitment. It is directly climate-related and serves as the umbrella emissions goal for the plan.",Mitigation,False,direct,
+parent,,"Pillar 1 commits Chicago to increase access to utility savings and renewable energy, prioritizing households, through building retrofits and community renewable energy access.","The five pillars support the high-level goals of the plan:
+
+Pillars
+
+1
+
+2
+
+3
+
+4
+
+5
+
+Increase access to utility savings and renewable energy, prioritizing households
+
+Build circular economies to create jobs and reduce waste
+
+Deliver a robust zero-emission mobility network that connects communities and improves air quality
+
+Drive equitable development of Chicago's clean-energy future
+
+Strengthen communities and protect health",CLIMATE ACTION STRATEGIES,"This is an umbrella initiative with multiple sub-actions listed beneath it, so it qualifies as a parent policy.",Mitigation,False,direct,
+sub,"Increase access to utility savings and renewable energy, prioritizing households","The City will retrofit residential buildings with 4 or fewer units by 20% by 2030 and 50% by 2040, prioritizing low- or moderate-income households.","A. Retrofit residential buildings with 4 or fewer units:20% by 2030 and 50%by2040, prioritizing low- or moder- ate-income households
+
+Smaller residential buildings, including the city's nearly 400,000 single-family homes and small multifamily properties, generated 14% of the city's total carbon emissions in 2017. These households can benefit from the same types of retrofits that apply to larger residential buildings.","Pillar 1 | Increase access to utility savings and renewable energy, prioritizing households",This is a quantified retrofit commitment with deadlines and a priority population. It is a specific action under Pillar 1.,Mitigation,False,direct,Resource Efficiency
+sub,"Increase access to utility savings and renewable energy, prioritizing households",The City will retrofit 20% of total 5+ unit residential buildings by 2030.,"B
+
+GHG Impacts
+
+◆◆◇
+
+City Partners
+
+CHA, DOB, DOH, DPD
+
+## Retrofit 20% of total 5+ unit residential buildings by 2030
+
+This action will bring improved efficiency and living conditions to nearly 140,000 units in large multifamily buildings.","Pillar 1 | Increase access to utility savings and renewable energy, prioritizing households",This is a quantified building retrofit target with a deadline. It is a concrete mitigation action through efficiency improvements.,Mitigation,False,direct,Resource Efficiency
+sub,"Increase access to utility savings and renewable energy, prioritizing households",The City will retrofit 20% of total industrial buildings by 2030.,"C
+
+GHG Impacts
+
+◆◆◇
+
+City Partners
+
+BACP, DOB, DPD
+
+## Retrofit 20% of total industrial buildings by 2030
+
+Industrial buildings use large amounts of energy for manufacturing and other processes, comprising 16.6% of the City's 2017 carbon footprint.","Pillar 1 | Increase access to utility savings and renewable energy, prioritizing households",This is a quantified retrofit target for industrial buildings. It is a direct climate mitigation measure.,Mitigation,False,direct,Resource Efficiency
+sub,"Increase access to utility savings and renewable energy, prioritizing households",The City will retrofit 90% of total city-owned and sister agency-owned buildings by 2035.,"D
+
+GHG Impacts
+
+◆◆◇
+
+## City Partners
+
+AIS, CCC, CDA, CDOT, Chicago Park District, CPS, CTA, DOB, DPD, DWM, PBC
+
+## Retrofit 90% of total city-owned and sister agency-owned buildings by 2035
+
+City and sister agency buildings include public schools, community centers, libraries, fire and police stations, offices, and other buildings that serve the public.","Pillar 1 | Increase access to utility savings and renewable energy, prioritizing households",This is a quantified retrofit mandate for public buildings with a deadline. It is a concrete operational climate policy.,Mitigation,False,direct,Resource Efficiency
+sub,"Increase access to utility savings and renewable energy, prioritizing households",The City will retrofit 20% of total commercial buildings by 2035.,"E
+
+GHG Impacts
+
+◆◆◆
+
+City Partners
+
+DOB, DPD
+
+## Retrofit 20% of total commercial buildings by 2035
+
+Commercial buildings include offices, restaurants, and stores.","Pillar 1 | Increase access to utility savings and renewable energy, prioritizing households",This is a quantified retrofit target for commercial buildings with a deadline. It is a direct mitigation action.,Mitigation,False,direct,Resource Efficiency
+sub,"Increase access to utility savings and renewable energy, prioritizing households",The City will install 5 megawatts of co-owned community solar projects by 2025.,"A
+
+## Install 5 megawatts of co-owned community solar projects by 2025
+
+By 2025, 5 megawatts of co-owned community solar projects will be installed within city limits, prioritizing households with the highest energy burden.","Pillar 1 | Increase access to utility savings and renewable energy, prioritizing households","This is a quantified renewable energy deployment commitment with a deadline. It is a direct mitigation policy and also a financial/public investment line in the plan context, but the action itself is operational rather than a standalone funding instrument.",Mitigation,False,direct,
+sub,"Increase access to utility savings and renewable energy, prioritizing households",The City will increase Chicago-based community renewables to 20 megawatts by 2025.,"B
+
+GHG Impacts
+
+◆◆◇
+
+City Partners
+
+BACP, DFSS, DPD
+
+## Increase Chicago-based community renewables to 20 megawatts by 2025
+
+By 2025, the City will increase Chicago-based community renewables to 20 megawatts.","Pillar 1 | Increase access to utility savings and renewable energy, prioritizing households",This is a quantified renewable energy target with a deadline. It is a direct mitigation action.,Mitigation,False,direct,
+sub,"Increase access to utility savings and renewable energy, prioritizing households",The City will increase community renewables subscriptions to achieve a 25% subscription rate by low-income and/or environmental justice low-income residents by 2030.,"C
+
+GHG Impacts
+
+◆◆◇
+
+City Partners
+
+BACP, DFSS, DPD
+
+## Increase community renewables subscriptions to achieve 25% subscribed by low-income and/ or environmental justice low-income residents by 2030
+
+By 2030, the City will increase community renewable subscriptions to achieve a 25% subscription rate by low-income and/or environmental justice low-income residents.","Pillar 1 | Increase access to utility savings and renewable energy, prioritizing households",This is a quantified access target for renewable energy subscriptions with a deadline and priority population. It is a direct climate policy.,Mitigation,False,direct,
+parent,,"Pillar 2 commits Chicago to build circular economies to create jobs and reduce waste through waste prevention, diversion, and reuse.","The five pillars support the high-level goals of the plan:
+
+Pillars
+
+1
+
+2
+
+3
+
+4
+
+5
+
+Increase access to utility savings and renewable energy, prioritizing households
+
+Build circular economies to create jobs and reduce waste
+
+Deliver a robust zero-emission mobility network that connects communities and improves air quality
+
+Drive equitable development of Chicago's clean-energy future
+
+Strengthen communities and protect health",CLIMATE ACTION STRATEGIES,"This is an umbrella initiative with multiple sub-actions listed beneath it, so it qualifies as a parent policy.",Resource Efficiency,False,direct,
+sub,Build circular economies to create jobs and reduce waste,The City will introduce community-wide organic waste collection and decomposition by 2025.,"A
+
+## Introduce community-wide organic waste collection and decomposition by 2025
+
+In households and restaurants, food waste is typically the largest portion of the waste stream. When sent to landfills, food waste causes detrimental methane emissions.",Pillar 2 | Build circular economies to create jobs and reduce waste,This is a specific waste management commitment with a deadline. It is a direct climate policy because it targets methane-generating waste disposal.,Resource Efficiency,False,direct,Mitigation
+sub,Build circular economies to create jobs and reduce waste,The City will implement equitable waste source prevention strategies by 2030.,"B
+
+GHG Impacts
+
+◆◇◇
+
+City Partners
+
+BACP, CDPH, DOB, DPD, DSS
+
+## Implement equitable waste source prevention strategies by 2030
+
+Eliminating waste, particularly by avoiding single-use products, brings many benefits.",Pillar 2 | Build circular economies to create jobs and reduce waste,This is a concrete waste prevention commitment with a deadline. It is a resource efficiency policy with climate benefits through reduced material throughput.,Resource Efficiency,False,direct,
+sub,Build circular economies to create jobs and reduce waste,"The City will divert 90% of commercial, industrial, and institutional waste by 2030.","C
+
+GHG Impacts
+
+◆◆◆
+
+City Partners
+
+CDPH, DOB, DPD, DSS
+
+## Divert 90% of commercial, industrial, and institutional waste by 2030
+
+Commercial and industrial waste generation refers to waste generated outside of homes, including offices, stores, restaurants, large institutions like schools and hospitals, and factories.",Pillar 2 | Build circular economies to create jobs and reduce waste,This is a quantified waste diversion target with a deadline. It is a direct resource efficiency policy.,Resource Efficiency,False,direct,Mitigation
+sub,Build circular economies to create jobs and reduce waste,The City will divert 75% of construction and demolition waste by 2030.,"D
+
+GHG Impacts
+
+◆◆◇
+
+City Partners
+
+CDPH, DOB, DPD, DSS
+
+## Divert 75% of construction and demolition waste by 2030
+
+By 2030, the city will divert 75% of construction and demolition waste from landfills and incineration.",Pillar 2 | Build circular economies to create jobs and reduce waste,This is a quantified diversion target with a deadline. It is a direct resource efficiency policy.,Resource Efficiency,False,direct,
+sub,Build circular economies to create jobs and reduce waste,The City will enable building design for disassembly and reuse by 2035.,"E
+
+GHG Impacts
+
+◆◇◇
+
+City Partners
+
+DOB, DPD
+
+## Enable building design for disassembly and reuse by 2035
+
+When materials are reused, they are kept out of landfills and new material manufacturing is avoided.",Pillar 2 | Build circular economies to create jobs and reduce waste,This is a specific design and construction commitment with a deadline. It is a resource efficiency policy focused on reuse and waste reduction.,Resource Efficiency,False,direct,
+sub,Build circular economies to create jobs and reduce waste,The City will divert 90% of residential waste by 2040.,"F
+
+GHG Impacts
+
+◆◆◆
+
+City Partners CDPH, DOB, DPD, DSS
+
+## Divert 90% of residential waste by 2040
+
+Smaller residential buildings in Chicago are currently served by the City's Blue and Black Cart Programs for recycling and garbage.",Pillar 2 | Build circular economies to create jobs and reduce waste,This is a quantified residential waste diversion target with a deadline. It is a direct resource efficiency policy.,Resource Efficiency,False,direct,
+parent,,Pillar 3 commits Chicago to deliver a robust zero-emission mobility network that connects communities and improves air quality.,"The five pillars support the high-level goals of the plan:
+
+Pillars
+
+1
+
+2
+
+3
+
+4
+
+5
+
+Increase access to utility savings and renewable energy, prioritizing households
+
+Build circular economies to create jobs and reduce waste
+
+Deliver a robust zero-emission mobility network that connects communities and improves air quality
+
+Drive equitable development of Chicago's clean-energy future
+
+Strengthen communities and protect health",CLIMATE ACTION STRATEGIES,"This is an umbrella initiative with multiple sub-actions listed beneath it, so it qualifies as a parent policy.",Resource Efficiency,False,direct,
+sub,Deliver a robust zero-emission mobility network that connects communities and improves air quality,The City will expand high-quality and low-stress on-street bikeways and off-street trails.,"A
+
+## Expand high-quality and low-stress on-street bikeways and off-street trails
+
+Chicago's bikeways network includes 345 miles of on-street facilities, in addition to 55 miles of off-street trails such as the Lakefront Trail and Major Taylor Trail.",Pillar 3 | Deliver a robust zero-emission mobility network that connects communities and improves air quality,This is a specific infrastructure expansion commitment. It is a resource efficiency policy because it improves low-carbon mobility and transport efficiency.,Resource Efficiency,False,direct,
+sub,Deliver a robust zero-emission mobility network that connects communities and improves air quality,The City will increase Divvy bikes and shared micromobility trips 30% by 2030.,"B
+
+GHG Impacts
+
+◆◇◇
+
+City Partners
+
+CDOT
+
+## Increase Divvy bikes and shared micromobility trips 30% by 2030
+
+Chicago's Divvy Bikes service is the largest bike-share program in the United States.",Pillar 3 | Deliver a robust zero-emission mobility network that connects communities and improves air quality,This is a quantified mode-shift target with a deadline. It is a resource efficiency policy aimed at reducing vehicle miles traveled.,Resource Efficiency,False,direct,
+sub,Deliver a robust zero-emission mobility network that connects communities and improves air quality,"The City will enable Chicagoans to walk, bike, take transit, or use shared micromobility for 45% of all trips by 2040.","C
+
+GHG Impacts
+
+◆◆◆
+
+City Partners
+
+CDOT, CTA, DPD
+
+## Enable Chicagoans to walk, bike, take transit, or use shared micromobility for 45% of all trips by 2040
+
+Decreasing the number of miles traveled by a vehicle, and in particular reducing single-occupancy vehicle trips, presents as significant opportunity to reduce Chicago's transporta -tion emissions.",Pillar 3 | Deliver a robust zero-emission mobility network that connects communities and improves air quality,This is a quantified mode-share target with a deadline. It is a resource efficiency policy focused on transport efficiency and emissions reduction.,Resource Efficiency,False,direct,Mitigation
+sub,Deliver a robust zero-emission mobility network that connects communities and improves air quality,"The City will update land use policies to encourage sustainable development, accessibility, and street safety by 2023.","A
+
+GHG Impacts
+
+◆◆◇
+
+City Partners
+
+CDOT, CTA,
+
+DOH, DPD
+
+## Update land use policies to encourage sustainable development, accessibility, and street safety by 2023
+
+Chicago has the country's second-largest public transportation system, with 8 train lines and 129 bus routes.",Pillar 3 | Deliver a robust zero-emission mobility network that connects communities and improves air quality,This is a regulatory/planning commitment with a deadline. It is a concrete policy lever for transit-oriented development and safer mobility.,Resource Efficiency,False,direct,
+sub,Deliver a robust zero-emission mobility network that connects communities and improves air quality,The City will expand use of commuter benefits by 2024.,"B
+
+GHG Impacts
+
+◆◇◇
+
+City Partners
+
+BACP, CDOT, CTA
+
+## Expand use of commuter benefits by 2024
+
+Providing incentives for workers to take transit can increase transit ridership.",Pillar 3 | Deliver a robust zero-emission mobility network that connects communities and improves air quality,This is a specific program expansion commitment with a deadline. It is a resource efficiency policy because it encourages lower-carbon commuting.,Resource Efficiency,False,indirect,
+sub,Deliver a robust zero-emission mobility network that connects communities and improves air quality,The City will require transportation demand management plans for new development by 2025.,"C
+
+GHG Impacts
+
+◆◆◇
+
+City Partners
+
+CDOT, DPD
+
+## Require transportation demand management plans for new development by 2025
+
+Transportation Demand Management (TDM) plans encourage the use of transit, bikes, and reduce single-occupancy vehicle trips while also reducing traffic congestion and associated emissions.",Pillar 3 | Deliver a robust zero-emission mobility network that connects communities and improves air quality,This is a regulatory requirement with a deadline. It is a concrete resource efficiency policy affecting travel demand.,Resource Efficiency,False,direct,Mitigation
+sub,Deliver a robust zero-emission mobility network that connects communities and improves air quality,The City will update citywide car and bike parking requirements by 2025.,"D
+
+GHG Impacts
+
+◆◆◇
+
+City Partners
+
+CDOT, DPD
+
+## Update citywide car and bike parking requirements by 2025
+
+The current zoning code parking minimums mandate that new developments build on-site car parking spaces based on 2004 zoning policy standards.",Pillar 3 | Deliver a robust zero-emission mobility network that connects communities and improves air quality,This is a zoning/code change with a deadline. It is a resource efficiency policy because it shapes transport demand and land use efficiency.,Resource Efficiency,False,direct,
+sub,Deliver a robust zero-emission mobility network that connects communities and improves air quality,The City will increase CTA ridership 20% by 2030.,"E
+
+GHG Impacts
+
+◆◆◆
+
+City Partners
+
+CDOT, CTA, DPD
+
+## Increase CTA ridership 20% by 2030
+
+When Chicagoans use more sustainable transportation modes, the number of miles traveled by vehicles will decrease and reduce GHG emissions.",Pillar 3 | Deliver a robust zero-emission mobility network that connects communities and improves air quality,This is a quantified transit ridership target with a deadline. It is a resource efficiency policy with direct emissions implications.,Resource Efficiency,False,direct,Mitigation
+sub,Deliver a robust zero-emission mobility network that connects communities and improves air quality,"The City will enable electric freight loading docks at commercial and industrial buildings, addressing new buildings by 2025 and existing buildings by 2030.","## Enable electric freight loading docks at commercial and industrial buildings, addressing new buildings by 2025 and existing buildings by 2030
+
+All electric vehicles, including freight vehicles, have range limits and require periodic charging. A robust vehicle charging infrastructure is needed across the city to make freight vehicle electrification feasible.",Pillar 3 | Deliver a robust zero-emission mobility network that connects communities and improves air quality,This is a specific infrastructure requirement with deadlines for new and existing buildings. It is a resource efficiency policy supporting freight electrification.,Resource Efficiency,False,direct,Mitigation
+sub,Deliver a robust zero-emission mobility network that connects communities and improves air quality,The City will support equitable electrification of ride-hail and taxi fleets by 2030.,"B
+
+GHG Impacts
+
+◆◆◆
+
+City Partners
+
+BACP, CDOT
+
+## Support equitable electrification of ride-hail and taxi fleets by 2030
+
+Both Uber and Lyft have committed to transition to zero-emission fleets by 2030.",Pillar 3 | Deliver a robust zero-emission mobility network that connects communities and improves air quality,This is a specific fleet electrification commitment with a deadline. It is a direct mitigation policy.,Mitigation,False,direct,
+sub,Deliver a robust zero-emission mobility network that connects communities and improves air quality,The City will enable 100% electrification of delivery fleets by 2035.,"C
+
+GHG Impacts
+
+◆◆◆
+
+City Partners
+
+BACP, CDOT
+
+## Enable 100% electrification of delivery fleets by 2035
+
+The last miles that packages travel from distribution centers to homes and businesses create significant GHG emissions and street-level air pollution.",Pillar 3 | Deliver a robust zero-emission mobility network that connects communities and improves air quality,This is a quantified fleet electrification target with a deadline. It is a direct mitigation policy.,Mitigation,False,direct,
+sub,Deliver a robust zero-emission mobility network that connects communities and improves air quality,The City will electrify 100% of the City's fleet by 2035.,"D
+
+GHG Impacts
+
+◆◆◆
+
+City Partners
+
+AIS, CDOT, CPS
+
+## Electrify 100% of the City's fleet by 2035
+
+With a fleet of more than 9,400 vehicles serviced at 13 maintenance facilities and 11 fuel sites citywide, the City has an opportunity to leverage an institutional process to alleviate inequitable pollution burdens.",Pillar 3 | Deliver a robust zero-emission mobility network that connects communities and improves air quality,This is a quantified municipal fleet electrification target with a deadline. It is a direct mitigation policy.,Mitigation,False,direct,
+sub,Deliver a robust zero-emission mobility network that connects communities and improves air quality,The City will achieve zero-emission transit fleets across Chicagoland by 2040.,"E
+
+GHG Impacts
+
+◆◆◆
+
+City Partners
+
+CTA, DOB, DPD, Metra, PACE
+
+## Achieve zero-emission transit fleets across Chicagoland by 2040
+
+In 2014, CTA was the first large transit agency in the United States to pilot electric buses.",Pillar 3 | Deliver a robust zero-emission mobility network that connects communities and improves air quality,This is a quantified transit fleet electrification target with a deadline. It is a direct mitigation policy.,Mitigation,False,direct,
+parent,,"Pillar 4 commits Chicago to drive equitable development of the city's clean-energy future through renewable energy, electrification, codes, fossil power transition, and storage.","The five pillars support the high-level goals of the plan:
+
+Pillars
+
+1
+
+2
+
+3
+
+4
+
+5
+
+Increase access to utility savings and renewable energy, prioritizing households
+
+Build circular economies to create jobs and reduce waste
+
+Deliver a robust zero-emission mobility network that connects communities and improves air quality
+
+Drive equitable development of Chicago's clean-energy future
+
+Strengthen communities and protect health",CLIMATE ACTION STRATEGIES,"This is an umbrella initiative with multiple sub-actions listed beneath it, so it qualifies as a parent policy.",Mitigation,False,direct,
+sub,Drive equitable development of Chicago's clean-energy future,"The City will aggregate 5,000 megawatts of clean renewable energy within a 250-mile radius of Chicago by 2030.","A
+
+GHG Impacts
+
+◆◆◆
+
+City Partners
+
+AIS, DPD
+
+## Aggregate 5,000 megawatts of clean renewable energy within a 250-mile radius of Chicago by 2030
+
+By 2030, Chicago will bolster its relationships with surrounding counties to promote the growth of clean renewable energy, aligned with Illinois' goal of reaching 100% clean energy statewide by 2050.",Pillar 4 | Drive equitable development of Chicago's clean-energy future,This is a quantified renewable energy procurement/deployment target with a deadline. It is a direct mitigation policy.,Mitigation,False,direct,
+sub,Drive equitable development of Chicago's clean-energy future,The City will install 30 megawatts of clean renewable energy projects on City property by 2030.,"B
+
+GHG Impacts
+
+◆◆◇
+
+City Partners
+
+AIS, CCC, CHA, CPS, DOB, DPD
+
+## Install 30 megawatts of clean renewable energy projects on City property by 2030
+
+The City will lead by example in the transition to clean energy by taking advantage of its physical assets.",Pillar 4 | Drive equitable development of Chicago's clean-energy future,"This is a quantified public investment/deployment commitment with a deadline. It is a direct mitigation policy and also a public investment line, but the action itself is operational rather than a standalone financial instrument.",Mitigation,False,direct,
+sub,Drive equitable development of Chicago's clean-energy future,The City will achieve 100% clean renewable energy community-wide by 2035.,"C
+
+GHG Impacts
+
+◆◆◆
+
+City Partners
+
+AIS, CCC, CHA, CPS, DOB, DPD
+
+## Achieve 100% clean renewable energy communitywide by 2035
+
+By 2035, the City will work with utilities to provide 100% clean renewable energy community-wide.",Pillar 4 | Drive equitable development of Chicago's clean-energy future,This is a quantified citywide renewable energy target with a deadline. It is a direct mitigation policy.,Mitigation,False,direct,
+sub,Drive equitable development of Chicago's clean-energy future,The City will enact policies that support electrified renovations and new construction by 2023.,"A
+
+GHG Impacts
+
+◆◆◇
+
+City Partners
+
+BACP, CDOT, DOB, DPD
+
+## Enact policies that support electrified renovations and new construction by 2023
+
+By 2023, the City will enable electrified renovations for all existing building types (residen -tial, commercial, and industrial) and new construction.",Pillar 4 | Drive equitable development of Chicago's clean-energy future,This is a policy/regulatory commitment with a deadline. It is a direct mitigation policy because it enables electrification.,Mitigation,False,direct,Resource Efficiency
+sub,Drive equitable development of Chicago's clean-energy future,The City will electrify 30% of total existing residential buildings by 2035.,"B
+
+GHG Impacts
+
+◆◆◆
+
+City Partners
+
+CDOT, CHA, DOB, DOH, DPD
+
+## Electrify 30% of total existing residential buildings by 2035
+
+Residential building electrification is one of the most important climate actions Chicagoans can take that also provides immediate health benefits for households.",Pillar 4 | Drive equitable development of Chicago's clean-energy future,This is a quantified electrification target with a deadline. It is a direct mitigation policy.,Mitigation,False,direct,
+sub,Drive equitable development of Chicago's clean-energy future,The City will electrify 20% of total existing industrial buildings by 2035.,"C
+
+GHG Impacts
+
+◆◆◇
+
+City Partners
+
+BACP, DOB, DPD
+
+## Electrify 20% of total existing industrial buildings by 2035
+
+In industrial buildings, fuel-intense processes are often related to heat generation for drying, melting, or cracking materials.",Pillar 4 | Drive equitable development of Chicago's clean-energy future,This is a quantified electrification target with a deadline. It is a direct mitigation policy.,Mitigation,False,direct,
+sub,Drive equitable development of Chicago's clean-energy future,The City will electrify 10% of total existing commercial buildings by 2035.,"D
+
+GHG Impacts
+
+◆◆◆
+
+City Partners
+
+DOB, DPD
+
+## Electrify 10% of total existing commercial buildings by 2035
+
+The ease of electrifying commercial buildings depends on many factors, including building size.",Pillar 4 | Drive equitable development of Chicago's clean-energy future,This is a quantified electrification target with a deadline. It is a direct mitigation policy.,Mitigation,False,direct,
+sub,Drive equitable development of Chicago's clean-energy future,The City will electrify 90% of total existing City-owned buildings by 2035.,"E
+
+GHG Impacts
+
+◆◆◇
+
+City Partners
+
+AIS, CDA, DOB, DPD, DWM, PBC
+
+## Electrify 90% of total existing City-owned buildings by 2035
+
+Because electrifying buildings requires new equipment and workforce techniques, the City can spur local capacity by transitioning most of its own buildings.",Pillar 4 | Drive equitable development of Chicago's clean-energy future,This is a quantified municipal electrification target with a deadline. It is a direct mitigation policy.,Mitigation,False,direct,
+sub,Drive equitable development of Chicago's clean-energy future,"The City will enable 2,500 new public passenger electric vehicle charging stations by 2035.","F
+
+GHG Impacts
+
+◆◆◇
+
+City Partners
+
+CDOT, CTA, DPD
+
+## Enable 2,500 new public passenger electric vehicle charging stations by 2035
+
+Electric vehicles provide a clean mobility option for those in communities where a car is a necessity, provide significant cost savings to drivers due to lower operation costs and fuel savings, reduce street-level air pollution, and lead to reduced GHG emissions if the charge source is powered with clean energy.",Pillar 4 | Drive equitable development of Chicago's clean-energy future,This is a quantified charging infrastructure deployment target with a deadline. It is a direct mitigation policy and also a resource efficiency measure for transport electrification.,Mitigation,False,direct,Resource Efficiency
+sub,Drive equitable development of Chicago's clean-energy future,"The City will strengthen policies that support installation of green roofs and walls, tree planting, and other vegetative cover by 2023.","A
+
+GHG Impacts
+
+◆◇◇
+
+City Partners
+
+AIS, CDOT, Chicago Park District, CFD, DOB, DPD, DSS
+
+## Strengthen policies that support installation of green roofs and walls, tree planting, and other vegetative cover by 2023
+
+By 2023, the City will enable green-roof and green-wall installations, tree planting, and other vegetative cover on both existing buildings and new construction.",Pillar 4 | Drive equitable development of Chicago's clean-energy future,This is a policy change supporting vegetative cover with a deadline. It is a nature-based solutions policy.,Nature-Based Solutions,False,direct,Mitigation
+sub,Drive equitable development of Chicago's clean-energy future,The City will enable net-zero-carbon construction by 2040.,"B
+
+GHG Impacts
+
+◆◆◆
+
+City Partners
+
+DOB, DPD, CFD
+
+## Enable net-zero-carbon construction by 2040
+
+In alignment with Building Decarbonization Working Group report by the Intergovernmental Panel on Climate Change, the City will enable net-zero-carbon construction by 2040.",Pillar 4 | Drive equitable development of Chicago's clean-energy future,This is a quantified construction standard commitment with a deadline. It is a direct mitigation policy.,Mitigation,False,direct,
+sub,Drive equitable development of Chicago's clean-energy future,The City will develop a fossil-fuel plants transition strategy by 2024.,"A
+
+GHG Impacts
+
+◆◆◆
+
+City Partners AIS
+
+By 2024, the City will develop a peaker plant (power plant used only when there is a high demand for electricity) transition strategy with guidance for an equitable, safe, and inclusive process.",Pillar 4 | Drive equitable development of Chicago's clean-energy future,This is a specific transition-planning commitment with a deadline. It is a direct mitigation policy because it addresses fossil power phaseout.,Mitigation,False,direct,
+sub,Drive equitable development of Chicago's clean-energy future,The City will ensure 150 megawatts of energy storage by 2025.,"A
+
+GHG Impacts
+
+◆◇◇
+
+City Partners
+
+AIS, CCC, CFD, CHA, CPS, DOB, DPD
+
+## Ensure 150 megawatts of energy storage by 2025
+
+Investing in energy storage capacity is necessary to enable a full transition to renewable energy.",Pillar 4 | Drive equitable development of Chicago's clean-energy future,This is a quantified storage target with a deadline. It is a direct mitigation policy supporting renewable integration.,Mitigation,False,direct,
+sub,Drive equitable development of Chicago's clean-energy future,"The City will encourage 1,000 megawatts of new energy demand reduction by 2030, and 3,000 megawatts by 2040.","B
+
+GHG Impacts
+
+◆◆◆
+
+City Partners
+
+AIS, CCC, CHA, CPS, DOB,DPD
+
+## Invest in 1,000 megawatts of demand response by 2024, and 3,000 megawatts by 2035
+
+Energy demand surges occur when many energy customers use significant amounts of energy at the same time (for example: using air conditioning during heat waves).",Pillar 4 | Drive equitable development of Chicago's clean-energy future,"This is a quantified demand reduction target with deadlines. It is a resource efficiency policy; the source text also frames it as demand response, but the core mechanism is reducing peak energy use.",Resource Efficiency,False,direct,Mitigation
+parent,,"Pillar 5 commits Chicago to strengthen communities and protect health through data collection, decision-making, and community resiliency.","The five pillars support the high-level goals of the plan:
+
+Pillars
+
+1
+
+2
+
+3
+
+4
+
+5
+
+Increase access to utility savings and renewable energy, prioritizing households
+
+Build circular economies to create jobs and reduce waste
+
+Deliver a robust zero-emission mobility network that connects communities and improves air quality
+
+Drive equitable development of Chicago's clean-energy future
+
+Strengthen communities and protect health",CLIMATE ACTION STRATEGIES,"This is an umbrella initiative with multiple sub-actions listed beneath it, so it qualifies as a parent policy.",Adaptation,False,direct,
+sub,Strengthen communities and protect health,The City will report energy burden by community area by 2023.,"A
+
+GHG Impacts
+
+◆◇◇
+
+City Partners
+
+CDPH, OERJ
+
+## Report energy burden by community area by 2023
+
+Energy burden is experienced when households spend so much income on electricity or gas bills that it is difficult to buy food, access transportation, and grow wealth.",Pillar 5 | Strengthen communities and protect health,"This is a reporting and measurement commitment with a deadline. It supports climate equity and energy affordability, but is not itself a financial instrument.",Resource Efficiency,False,direct,
+sub,Strengthen communities and protect health,The City will develop a water and soil quality measurement and mitigation strategy by 2023.,"B
+
+GHG Impacts
+
+◆◇◇
+
+City Partners
+
+AIS, Chicago Park District, DWM
+
+## Develop a water and soil quality measurement and mitigation strategy by 2023
+
+A commitment to advancing environmental justice recognizes the difference in exposure to contaminants based on proximity to sources of pollution.",Pillar 5 | Strengthen communities and protect health,This is a specific planning and mitigation commitment with a deadline. It is an adaptation policy because it addresses environmental conditions affecting community health.,Adaptation,False,direct,
+sub,Strengthen communities and protect health,The City will establish a robust outdoor air quality monitoring network by 2025.,"C
+
+GHG Impacts
+
+◆◇◇
+
+City Partners
+
+AIS, CDOT, CDPH, CPS, CTA
+
+## Establish a robust outdoor air quality monitoring network by 2025
+
+Exposure to pollutants such as ozone and PM2.5 (particulate matter that is 2.5 microns in size) is associated with increased risk of respiratory infections, lung irritation, asthma, cardiovascular disease, cancer, and early death.",Pillar 5 | Strengthen communities and protect health,This is a specific monitoring infrastructure commitment with a deadline. It is an adaptation/public health policy.,Adaptation,False,direct,
+sub,Strengthen communities and protect health,The City will publish clean energy just transition metrics by 2022.,"A
+
+GHG Impacts
+
+◆◇◇
+
+City Partners
+
+CDOT, CDPH, DPD
+
+## Publish clean energy just transition metrics by 2022
+
+The transition from fossil fuels to a clean-energy economy will certainly bring significant health and environmental benefits.",Pillar 5 | Strengthen communities and protect health,This is a metrics/reporting commitment with a deadline. It is a governance and accountability policy supporting climate transition.,Adaptation,False,direct,
+sub,Strengthen communities and protect health,The City will integrate community resilience and climate justice criteria into department-level strategic planning and annual budget setting by 2023.,"B
+
+GHG Impacts
+
+◆◇◇
+
+City Partners
+
+CDPH, DPD, OERJ
+
+## Integrate community resilience and climate justice criteria into department-level strategic planning and annual budget setting by 2023
+
+In alignment with the City's mission to advance structural change to deliver equitable transformation with our communities, departments will begin to intentionally consider how standard practices can be used to support or impair community resilience and climate justice.",Pillar 5 | Strengthen communities and protect health,This is a planning and budgeting requirement with a deadline. It is a direct adaptation/governance policy.,Adaptation,False,direct,
+sub,Strengthen communities and protect health,"The City will develop a Heat Vulnerability Index and integrate it into planning and development, community safety, and public health planning processes beginning in 2023.","C
+
+GHG Impacts
+
+◆◇◇
+
+City Partners
+
+CDPH, DFSS, DPD, MOPD,
+
+OEMC
+
+## Develop a Heat Vulnerability Index and integrate into planning and development, community safety, and public health planning processes beginning in 2023
+
+In 1995, Chicago experienced the loss of more than 700 residents during an extreme heat wave.",Pillar 5 | Strengthen communities and protect health,This is a specific adaptation planning tool with a start date. It directly addresses heat risk and vulnerability.,Adaptation,False,direct,
+sub,Strengthen communities and protect health,The City will publish citywide and community-level quality-of-life metrics on equity and sustainability by 2023.,"D
+
+GHG Impacts
+
+◆◇◇
+
+City Partners
+
+CDPH, OERJ
+
+## Publish citywide and community-level qualityof-life metrics on equity and sustainability by 2023
+
+Quality of life is commonly measured at the country or city level.",Pillar 5 | Strengthen communities and protect health,This is a reporting and accountability commitment with a deadline. It is a governance policy supporting climate equity and adaptation planning.,Adaptation,False,direct,
+sub,Strengthen communities and protect health,The City will assess and optimize community-level emergency management strategies related to climate preparedness by 2024.,"E
+
+GHG Impacts
+
+◆◇◇
+
+City Partners
+
+CDPH, DFSS, DPD, MOPD,
+
+OEMC
+
+## Assess and optimize community-level emergency management strategies related to climate preparedness by 2024
+
+The Office of Emergency Management and Communications (OEMC) is Chicago's lead coordinating agency during emergency situations, including weather-related incidents.",Pillar 5 | Strengthen communities and protect health,This is a specific emergency management planning commitment with a deadline. It is a direct adaptation policy.,Adaptation,False,direct,
+sub,Strengthen communities and protect health,The City will resource community-led climate infrastructure projects by 2022.,"A
+
+GHG Impacts
+
+◆◇◇
+
+City Partners
+
+DPD
+
+Pairing citywide infrastructure investments with community-designed resiliency projects creates more effective and relevant projects to those living within a community.",Pillar 5 | Strengthen communities and protect health,This is a resource allocation commitment with a deadline. It is a direct adaptation policy and qualifies as a financial instrument because it explicitly allocates money/resources to projects.,Adaptation,True,direct,
+sub,Strengthen communities and protect health,The City will integrate community resiliency strategies with the City's hazard mitigation planning by 2023.,"B
+
+GHG Impacts
+
+◆◇◇
+
+City Partners
+
+CDPH, DFSS, DPD, MOPD, OEMC
+
+## Integrate community resiliency strategies with the City's hazard mitigation planning by 2023
+
+As part of the City's regular hazard mitigation planning process, senior residents, people with disabilities, and residents living in high-risk geographic areas are recognized as most vulnerable to the negative impacts of hazards and natural disasters.",Pillar 5 | Strengthen communities and protect health,This is a planning integration commitment with a deadline. It is a direct adaptation policy.,Adaptation,False,direct,

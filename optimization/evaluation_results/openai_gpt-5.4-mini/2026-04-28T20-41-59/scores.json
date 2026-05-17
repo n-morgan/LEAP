@@ -1,0 +1,109 @@
+{
+  "location": "Austin_US",
+  "scores": {
+    "Mitigation": -0.9032258064516129,
+    "Adaptation": -1.0,
+    "Resource Efficiency": -0.8333333333333334,
+    "Nature-Based Solutions": -1.0
+  },
+  "recall": {
+    "Mitigation": 0.03225806451612903,
+    "Adaptation": 0.0,
+    "Resource Efficiency": 0.0,
+    "Nature-Based Solutions": 0.0
+  },
+  "fpr": {
+    "Mitigation": 0.6666666666666666,
+    "Adaptation": 1.0,
+    "Resource Efficiency": 1.0,
+    "Nature-Based Solutions": 0.0
+  },
+  "grades": {
+    "Mitigation::gt93_ext0_Austin will achieve net-zero community-wide greenhouse gas emissions by 2040.": {
+      "policy_id": "Austin will achieve net-zero community-wide greenhouse gas emissions by 2040.",
+      "grade": 1,
+      "reasoning": "The extracted policy exactly matches the ground-truth policy in scope (community-wide greenhouse gas emissions), commitment (will achieve), and deadline (by 2040). No source excerpt is provided to further verify, but relative to the ground truth this is a precise match.",
+      "similarity": 1.0,
+      "statement_match": true,
+      "role_match": false,
+      "category_match": true
+    },
+    "Resource Efficiency::gt68_ext1_Create green jobs and entrepreneurship opportunities that advance the goals of t": {
+      "policy_id": "Create green jobs and entrepreneurship opportunities that advance the goals of t",
+      "grade": 0,
+      "reasoning": "The extracted policy is directionally aligned with the ground-truth on creating jobs/entrepreneurship and prioritizing low-income communities and communities of color. However, it misses key specificity and mechanisms from the ground-truth: there is no mention of a workforce development program, repair and reuse skills training, job placement, local circular businesses, or prioritization of youth. The extracted language is broader and more aspirational ('create green jobs and entrepreneurship opportunities') rather than capturing the concrete programmatic commitment.",
+      "similarity": 0.6319496631622314,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": false
+    },
+    "Mitigation::gt57_ext2_Recognize and support existing community-led organizations, businesses, and prog": {
+      "policy_id": "Recognize and support existing community-led organizations, businesses, and prog",
+      "grade": 0,
+      "reasoning": "The extracted policy is directionally related in emphasizing community-led organizations and support, but it does not capture the specific ground-truth commitment. It omits the core focus on food choices (prepared and retail), the goals of affordability, cultural relevance, pro-climate and pro-health outcomes, the incentive/program mechanism, and minimizing displacement. Commitment is also softened from implementing community-driven programs to a broader recognition/support statement.",
+      "similarity": 0.6080735325813293,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": true
+    },
+    "Mitigation::gt12_ext3_Create a Texas Climate Collaborative linking elected officials, City staff, and ": {
+      "policy_id": "Create a Texas Climate Collaborative linking elected officials, City staff, and ",
+      "grade": -1,
+      "reasoning": "The extracted policy does not match the ground-truth policy in scope or mechanism. The ground-truth is about developing City of Austin design/construction specifications and purchasing agreements for healthy, low-carbon buildings, in partnership with other cities and states. The extracted policy instead describes creating a Texas Climate Collaborative among officials and staff across multiple Texas cities to implement climate plans. This is a different initiative with different actors, deliverables, and policy mechanism, so there is no meaningful match.",
+      "similarity": 0.5764473676681519,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": true
+    },
+    "Mitigation::gt4_ext4_Establish clear support and prioritization for local greenhouse gas reduction an": {
+      "policy_id": "Establish clear support and prioritization for local greenhouse gas reduction an",
+      "grade": -1,
+      "reasoning": "The extracted policy does not meaningfully match the ground-truth. The ground-truth focuses on prioritizing local emissions reduction investment and creating equitable workforce development/training opportunities for emerging building technologies via partnerships serving low-income communities and communities of color. The extracted policy instead emphasizes support for local GHG reduction, carbon removal, and offsets, and omits the workforce development, equity, partnerships, and building technology elements. It also introduces carbon dioxide removal and offsets, which are not present in the ground-truth.",
+      "similarity": 0.6110801100730896,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": true
+    },
+    "Mitigation::gt0_ext5_By 2030, achieve net-zero carbon for all new buildings and reduce emissions by 2": {
+      "policy_id": "By 2030, achieve net-zero carbon for all new buildings and reduce emissions by 2",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in scope, quantified targets, deadline, and commitment. It includes all three elements: net-zero carbon for all new buildings by 2030, a 25% emissions reduction for existing buildings, and a 30% reduction in natural gas-related emissions.",
+      "similarity": 0.9946694374084473,
+      "statement_match": true,
+      "role_match": false,
+      "category_match": true
+    },
+    "Mitigation::gt1_ext6_Pursue a comprehensive energy poverty mitigation strategy by partnering with tru": {
+      "policy_id": "Pursue a comprehensive energy poverty mitigation strategy by partnering with tru",
+      "grade": 0,
+      "reasoning": "The extracted policy matches the general intent of the ground-truth: pursuing a comprehensive energy poverty mitigation strategy through partnerships and programs aimed at equity. However, it omits key substantive elements of the ground-truth policy, namely that the strategy should ensure building repair, conservation, and renewable energy benefits flow to low-income communities and communities of color. Instead, it narrows the mechanism to outreach and program development with specific partner types. This is directionally correct but less specific on the actual benefits and target outcomes.",
+      "similarity": 0.8781718015670776,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": false
+    },
+    "Adaptation::gt27_ext7_Support and expand upon existing low-income weatherization programs.": {
+      "policy_id": "Support and expand upon existing low-income weatherization programs.",
+      "grade": -1,
+      "reasoning": "The extracted policy does not match the ground-truth policy. The ground truth is about increasing funding for the city's Housing Trust Fund and supporting capacity building for community development corporations, while the extracted policy focuses on low-income weatherization programs. These are different policy areas and mechanisms, with no meaningful overlap in scope or commitment.",
+      "similarity": 0.5552668571472168,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": false
+    }
+  },
+  "hierarchy_accuracy": 0.25,
+  "composite_score": 0.20516164015699237,
+  "extraction_precision": 0.2222222222222222,
+  "extraction_recall": 0.02127659574468085,
+  "extraction_f1": 0.03883495145631068,
+  "role_agreement": 0.25,
+  "parent_attribution_accuracy": 0.0,
+  "primary_category_agreement": 0.625,
+  "financial_instrument_agreement": 0.375,
+  "secondary_category_agreement": 0.0,
+  "plus_one_coverage": 0.02127659574468085,
+  "matched_count": 8,
+  "unmatched_extracted_count": 1,
+  "unmatched_ground_truth_count": 86
+}

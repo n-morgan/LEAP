@@ -1,0 +1,82 @@
+{
+  "location": "Hiroshima_JP",
+  "scores": {
+    "Mitigation": -0.8928571428571429,
+    "Adaptation": -1.0,
+    "Resource Efficiency": -1.0,
+    "Nature-Based Solutions": -1.0
+  },
+  "recall": {
+    "Mitigation": 0.38461538461538464,
+    "Adaptation": 1.0,
+    "Resource Efficiency": 0.0,
+    "Nature-Based Solutions": 1.0
+  },
+  "fpr": {
+    "Mitigation": 0.75,
+    "Adaptation": 1.0,
+    "Resource Efficiency": 1.0,
+    "Nature-Based Solutions": 1.0
+  },
+  "grades": {
+    "Mitigation::gt11_ext4_Share Hiroshima City's achievements with neighboring towns and consider systems ": {
+      "policy_id": "Share Hiroshima City's achievements with neighboring towns and consider systems ",
+      "grade": -1,
+      "reasoning": "The ground-truth is a specific quantitative target for cumulative dispersed power installations in city facilities (1 by FY2020, 8 by FY2030). The extracted policy instead discusses sharing achievements and considering promotion of various eco-friendly/next-generation energy systems regionally, with no mention of dispersed power installations, city facilities, or the FY2020/FY2030 numeric targets. This is a mismatch and omits the core commitment.",
+      "similarity": 0.6344684362411499,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt5_ext7_Establish the 'Hiroshima City regulation concerning the promotion of global warm": {
+      "policy_id": "Establish the 'Hiroshima City regulation concerning the promotion of global warm",
+      "grade": -1,
+      "reasoning": "The extracted policy describes establishing a regulation and regulatory plan system for global warming prevention, which does not match the ground-truth commitment about quantified targets for cumulative adoption of Eco Action 21 and ISO14001 by offices (500 by FY2020; 1,000 by FY2030). It omits the specific schemes, numbers, and deadlines and introduces a different mechanism not present in the ground truth.",
+      "similarity": 0.5834949016571045,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt0_ext15_Set greenhouse gas emissions reduction targets for Hiroshima City: FY2050 -80% v": {
+      "policy_id": "Set greenhouse gas emissions reduction targets for Hiroshima City: FY2050 -80% v",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth targets, baselines, and deadlines exactly: -80% vs FY2013 by FY2050, -30% vs FY2013 by FY2030, and -5% vs FY2013 by FY2020. It adds an extra baseline figure (-7% vs FY2005) not in the ground-truth, but this does not contradict the stated FY2013-based targets.",
+      "similarity": 0.923163652420044,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt13_ext21_Set municipal government operations GHG reduction targets for FY2020: -5.1% for ": {
+      "policy_id": "Set municipal government operations GHG reduction targets for FY2020: -5.1% for ",
+      "grade": 0,
+      "reasoning": "The extracted policy captures the FY2020 city-office operations target of 5.1% below FY2013, aligning with the ground truth for that element. However, it omits the FY2030 target of 30% below FY2013, which is a key quantified deadline in the ground truth. It also adds additional targets (city area -5%, sector/emission-type targets like offices -9.1%, waste processing -1.1%) that are not in the ground truth and could be unsupported. Overall directionally correct but incomplete and potentially overextended beyond the stated policy.",
+      "similarity": 0.7745121717453003,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt8_ext28_Introduce next generation vehicles by renewing >50% of public cars (excluding sp": {
+      "policy_id": "Introduce next generation vehicles by renewing >50% of public cars (excluding sp",
+      "grade": -1,
+      "reasoning": "The ground-truth policy is a quantified citywide ownership target for next-generation vehicles (19% by FY2020; 38% by FY2030). The extracted policy instead describes an operational action for public fleet renewal (>50% of public cars) plus eco-drive, with no matching citywide percentage targets or the FY2020/FY2030 deadlines. This is a different scope (public cars vs all owned vehicles) and omits the core quantified targets, so it does not meaningfully match the ground truth.",
+      "similarity": 0.5543460249900818,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": true
+    }
+  },
+  "hierarchy_accuracy": 0.8,
+  "composite_score": 0.5511083743842364,
+  "extraction_precision": 0.11363636363636363,
+  "extraction_recall": 0.35714285714285715,
+  "extraction_f1": 0.17241379310344826,
+  "role_agreement": 0.8,
+  "parent_attribution_accuracy": 1.0,
+  "primary_category_agreement": 1.0,
+  "financial_instrument_agreement": 1.0,
+  "secondary_category_agreement": 0.0,
+  "plus_one_coverage": 0.07142857142857142,
+  "matched_count": 5,
+  "unmatched_extracted_count": 39,
+  "unmatched_ground_truth_count": 9
+}

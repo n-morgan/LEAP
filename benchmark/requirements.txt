@@ -1,0 +1,8 @@
+numpy
+scipy
+openai
+anthropic
+google-generativeai
+pydantic>=2.0
+python-dotenv
+pyyaml

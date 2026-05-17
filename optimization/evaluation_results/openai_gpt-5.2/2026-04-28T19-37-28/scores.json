@@ -1,0 +1,163 @@
+{
+  "location": "Hiroshima_JP",
+  "scores": {
+    "Mitigation": -0.5,
+    "Adaptation": -1.0,
+    "Resource Efficiency": -0.8333333333333334,
+    "Nature-Based Solutions": -1.0
+  },
+  "recall": {
+    "Mitigation": 0.6153846153846154,
+    "Adaptation": 1.0,
+    "Resource Efficiency": 1.0,
+    "Nature-Based Solutions": 1.0
+  },
+  "fpr": {
+    "Mitigation": 0.875,
+    "Adaptation": 1.0,
+    "Resource Efficiency": 0.7222222222222222,
+    "Nature-Based Solutions": 1.0
+  },
+  "grades": {
+    "Mitigation::gt0_ext0_Set citywide greenhouse gas emissions reduction targets of 5% by FY2020, 30% by ": {
+      "policy_id": "Set citywide greenhouse gas emissions reduction targets of 5% by FY2020, 30% by ",
+      "grade": 1,
+      "reasoning": "The extracted policy accurately matches the ground-truth targets, baseline (FY2013), percentages (5%, 30%, 80%), and deadlines (FY2020, FY2030, FY2050). It preserves the commitment as explicit “targets” and does not add or omit mechanisms not present in the ground-truth.",
+      "similarity": 0.8088154792785645,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt2_ext7_Increase the share of newly-built ZEH to 50% by FY2020 and almost 100% by FY2030": {
+      "policy_id": "Increase the share of newly-built ZEH to 50% by FY2020 and almost 100% by FY2030",
+      "grade": -1,
+      "reasoning": "The ground-truth policy is about Hiroshima City aiming for nearly 100% adoption of ZEB in newly built apartment buildings by FY2030. The extracted policy instead refers to ZEH (not ZEB), applies to newly-built homes generally (not specifically apartment buildings), and adds an extra interim target of 50% by FY2020 that is not in the ground-truth. These differences change scope and substance, so it does not match.",
+      "similarity": 0.6412246823310852,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": false
+    },
+    "Mitigation::gt1_ext8_Increase the share of low-carbon houses in newly-built housing to 50% by FY2020.": {
+      "policy_id": "Increase the share of low-carbon houses in newly-built housing to 50% by FY2020.",
+      "grade": 0,
+      "reasoning": "The extracted policy matches the core target (50%) and deadline (FY2020) and is directionally consistent with the ground truth. However, it is less specific in scope: the ground truth specifies Hiroshima City and limits the measure to newly built detached houses, while the extraction broadens it to all newly-built housing and omits the city context. With no source excerpt provided, accuracy can only be judged against the ground truth, and the scope mismatch prevents a full match.",
+      "similarity": 0.7345709204673767,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": false
+    },
+    "Mitigation::gt3_ext9_Increase the number of introduced household fuel cells to 15,000 by FY2020 and 5": {
+      "policy_id": "Increase the number of introduced household fuel cells to 15,000 by FY2020 and 5",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly: it specifies household fuel cell installation targets of 15,000 by FY2020 and 56,000 by FY2030, with clear quantified milestones and deadlines. No contradictions or missing key details relative to the ground-truth.",
+      "similarity": 0.7709954977035522,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Resource Efficiency::gt4_ext10_Increase the rate of citizens who have introduced LED lighting for more than 80%": {
+      "policy_id": "Increase the rate of citizens who have introduced LED lighting for more than 80%",
+      "grade": 1,
+      "reasoning": "The extracted policy accurately matches the ground-truth target and timeline: it specifies >80% household LED lighting, adoption by 50% of citizens by FY2020, and near-100% by FY2030. Commitment is stated as an explicit target (“increase the rate…to”), with no material omissions or contradictions relative to the ground-truth.",
+      "similarity": 0.7856771945953369,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt5_ext14_Increase introductions of Eco Action 21 and ISO14001 to 500 by FY2020 and 1,000 ": {
+      "policy_id": "Increase introductions of Eco Action 21 and ISO14001 to 500 by FY2020 and 1,000 ",
+      "grade": 1,
+      "reasoning": "The extracted policy accurately matches the ground-truth target (cumulative adoption/introductions of Eco Action 21 and ISO14001 by offices), includes both quantified milestones (500 by FY2020; 1,000 by FY2030) and preserves the commitment level implied by “targets.” No conflicting or hallucinated details are introduced.",
+      "similarity": 0.7480079531669617,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt6_ext15_Increase the rate of offices using LED lights for lighting to 88.1% by FY2020 an": {
+      "policy_id": "Increase the rate of offices using LED lights for lighting to 88.1% by FY2020 an",
+      "grade": 1,
+      "reasoning": "The extracted policy accurately matches the ground-truth: it specifies the same quantified targets (88.1% and almost 100%) and deadlines (FY2020 and FY2030) for increasing LED lighting use in offices. No key mechanisms are added or contradicted, and specificity is preserved.",
+      "similarity": 0.7733015418052673,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": false
+    },
+    "Mitigation::gt7_ext16_Increase the rate of offices introducing BEMS to 13% by FY2020 and 47% by FY2030": {
+      "policy_id": "Increase the rate of offices introducing BEMS to 13% by FY2020 and 47% by FY2030",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth precisely: it specifies BEMS adoption in offices, includes the same quantified targets (13% by FY2020; 47% by FY2030), and reflects the same commitment (a stated target to increase adoption). No contradictions or missing key details relative to the ground-truth.",
+      "similarity": 0.7307116389274597,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": false
+    },
+    "Mitigation::gt8_ext20_Increase the rate of owned next generation vehicles to 19% by FY2020 and 38% by ": {
+      "policy_id": "Increase the rate of owned next generation vehicles to 19% by FY2020 and 38% by ",
+      "grade": 1,
+      "reasoning": "The extracted policy precisely matches the ground-truth target, including the subject (owned next-generation vehicles), the quantified targets (19% and 38%), and the deadlines (FY2020 and FY2030). Commitment strength and mechanism are consistent with the ground-truth framing (a target to increase rates).",
+      "similarity": 0.7267765998840332,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt9_ext21_Increase public transport users in the city to 598,000 people/day by FY2020.": {
+      "policy_id": "Increase public transport users in the city to 598,000 people/day by FY2020.",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in target (598,000 people/day), scope (public transport use in the city), and deadline (by FY2020). No material details are missing or altered.",
+      "similarity": 0.6857808232307434,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": false
+    },
+    "Mitigation::gt10_ext25_Reduce waste amount per person per day to 826 g/person/day by FY2020 and reduce ": {
+      "policy_id": "Reduce waste amount per person per day to 826 g/person/day by FY2020 and reduce ",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly, including both quantified targets (826 g/person/day and 295,000 tons/year) and the deadline (by FY2020), with no added or missing elements. Although the source excerpt is not provided for verification, relative to the stated ground-truth this is accurate and specific.",
+      "similarity": 0.7856342196464539,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": false
+    },
+    "Mitigation::gt11_ext36_Introduce dispersed power in city facilities (cumulative) to 1 by FY2020 and 8 b": {
+      "policy_id": "Introduce dispersed power in city facilities (cumulative) to 1 by FY2020 and 8 b",
+      "grade": 0,
+      "reasoning": "The extracted policy correctly captures the ground-truth commitment on cumulative dispersed power installations in city facilities: 1 by FY2020 and 8 by FY2030. However, it adds an additional target about increasing smart communities (3 by FY2020 and 10 by FY2030) that is not present in the provided ground-truth and cannot be verified without the source excerpt. This extra, ungrounded content reduces accuracy, so the match is only partial.",
+      "similarity": 0.7204771041870117,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt12_ext38_Share Hiroshima City's achievements with neighboring towns and develop systems a": {
+      "policy_id": "Share Hiroshima City's achievements with neighboring towns and develop systems a",
+      "grade": -1,
+      "reasoning": "The ground-truth policy is a quantified target for the number of cumulative smart communities (3 by FY2020; 10 by FY2030). The extracted policy instead discusses sharing achievements with neighboring towns and promoting various energy technologies across the greater Hiroshima area, with no mention of smart communities or the specific numeric targets and deadlines. It does not match the scope or specificity of the ground-truth.",
+      "similarity": 0.6215076446533203,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": true
+    },
+    "Mitigation::gt13_ext47_Set government operations (city office) GHG reduction targets of 5.1% by FY2020 ": {
+      "policy_id": "Set government operations (city office) GHG reduction targets of 5.1% by FY2020 ",
+      "grade": 0,
+      "reasoning": "The extracted policy correctly captures the core quantified targets, baseline (FY2013), scope (government/city office operations), and deadlines (FY2020, FY2030) matching the ground-truth. However, it adds extra detail about \"emission-type sub-targets for offices, waste, sewage, and water supply\" that is not present in the provided ground-truth, and no source excerpt is available to verify that addition. This makes it directionally accurate but not strictly matched/verified.",
+      "similarity": 0.8036195039749146,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": true
+    }
+  },
+  "hierarchy_accuracy": 0.9285714285714286,
+  "composite_score": 0.5442142857142858,
+  "extraction_precision": 0.14754098360655737,
+  "extraction_recall": 0.6428571428571429,
+  "extraction_f1": 0.24,
+  "role_agreement": 0.9285714285714286,
+  "parent_attribution_accuracy": 1.0,
+  "primary_category_agreement": 0.5714285714285714,
+  "financial_instrument_agreement": 1.0,
+  "secondary_category_agreement": 0.0,
+  "plus_one_coverage": 0.6428571428571429,
+  "matched_count": 14,
+  "unmatched_extracted_count": 47,
+  "unmatched_ground_truth_count": 0
+}

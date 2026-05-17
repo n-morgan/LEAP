@@ -1,0 +1,874 @@
+{
+  "location": "Austin_US",
+  "scores": {
+    "Mitigation": -0.573170731707317,
+    "Adaptation": -0.6666666666666666,
+    "Resource Efficiency": -0.8536585365853658,
+    "Nature-Based Solutions": -0.4782608695652174
+  },
+  "recall": {
+    "Mitigation": 0.2903225806451613,
+    "Adaptation": 0.16666666666666666,
+    "Resource Efficiency": 0.16666666666666666,
+    "Nature-Based Solutions": 0.35
+  },
+  "fpr": {
+    "Mitigation": 0.8835616438356164,
+    "Adaptation": 0.9473684210526315,
+    "Resource Efficiency": 0.9344262295081968,
+    "Nature-Based Solutions": 0.8888888888888888
+  },
+  "grades": {
+    "Mitigation::gt53_ext1_AUSTIN CLIMATE EQUITY PLAN | 7\n\nAustin will achieve net-zero community-wide": {
+      "policy_id": "AUSTIN CLIMATE EQUITY PLAN | 7\n\nAustin will achieve net-zero community-wide",
+      "grade": -1,
+      "reasoning": "The extracted policy does not match the ground-truth policy. The ground-truth is a specific transportation equity commitment: leading a just transition to an electrified regional transportation system through collaboration with workforce and community groups so low-income communities and communities of color benefit. The extracted text instead states a broad net-zero community-wide goal and omits the transportation focus, just transition framing, target beneficiaries, and collaboration mechanism. This is not a meaningful match.",
+      "similarity": 0.6062064170837402,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": true
+    },
+    "Mitigation::gt93_ext2_Austin will achieve net-zero community-wide greenhouse gas emissions by 2040.": {
+      "policy_id": "Austin will achieve net-zero community-wide greenhouse gas emissions by 2040.",
+      "grade": 1,
+      "reasoning": "The extracted policy exactly matches the ground-truth policy in scope ('community-wide greenhouse gas emissions'), commitment ('will achieve'), and deadline ('by 2040'). No discrepancies or missing details are present.",
+      "similarity": 1.0,
+      "statement_match": true,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt8_ext4_- Reduce community-wide greenhouse gas emissions from refrigerant leakage by 25%": {
+      "policy_id": "- Reduce community-wide greenhouse gas emissions from refrigerant leakage by 25%",
+      "grade": 0,
+      "reasoning": "The extracted policy is directionally related to refrigerant leakage reduction, matching the general topic of reducing emissions from refrigerants. However, it does not capture the ground-truth policy’s core mechanism and scope: partnering with commercial refrigeration and HVAC stakeholders to create incentives for leak detection, prevention, and repair. Instead, it introduces a quantified 25% community-wide emissions reduction target that is not present in the ground truth. Because the intent overlaps but key delivery mechanisms are missing and specificity is misaligned, this is only a partial match.",
+      "similarity": 0.6679635047912598,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": false
+    },
+    "Mitigation::gt14_ext5_- Reduce the embodied carbon footprint of building materials used in local const": {
+      "policy_id": "- Reduce the embodied carbon footprint of building materials used in local const",
+      "grade": 0,
+      "reasoning": "The extracted policy is directionally related to reducing impacts from building materials, but it does not match the ground-truth on key elements. The ground-truth centers on creating a performance framework and educational programming, addressing both lifecycle and health impacts, and prioritizing low-income communities and communities of color. The extraction instead introduces a specific 40% embodied carbon reduction target that is not reflected in the ground-truth, omits the implementation mechanisms, omits health impacts, and omits the equity focus. Because the source excerpt is not provided, this cannot be verified against document text, but relative to the ground-truth it is only a partial, imprecise match rather than a full one.",
+      "similarity": 0.5608251094818115,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": true
+    },
+    "Mitigation::gt63_ext6_- Reduce greenhouse gas emissions from institutional, commercial, and government": {
+      "policy_id": "- Reduce greenhouse gas emissions from institutional, commercial, and government",
+      "grade": -1,
+      "reasoning": "The extracted policy does not match the ground-truth commitment. The ground truth is a recruitment/adoption target: get at least 50% of local large institutional purchasers and at least 2,500 local organizations to adopt sustainability procurement standards or guidelines. The extracted policy instead claims a 50% emissions reduction from purchasing, which changes the scope, target type, and mechanism entirely. It omits the adoption/standards focus and the 2,500 organizations target, and introduces a hallucinated emissions-reduction outcome not supported by the ground-truth wording.",
+      "similarity": 0.64527428150177,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": true
+    },
+    "Mitigation::gt65_ext17_The largest reduction from this baseline will come from Austin Energy's 2030 Res": {
+      "policy_id": "The largest reduction from this baseline will come from Austin Energy's 2030 Res",
+      "grade": -1,
+      "reasoning": "The extracted policy does not match the ground-truth policy. The ground truth is about waste reduction, organics composting, and recycling aligned with the 2023 Austin Resource Recovery Comprehensive Plan. The extracted policy instead refers to reductions coming from Austin Energy's 2030 Resource Plan, which is a different sector and mechanism. This is not a meaningful match and appears unrelated to the stated waste policy.",
+      "similarity": 0.5731093287467957,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": true
+    },
+    "Mitigation::gt49_ext23_income communities and communities of color. This may include green infrastructu": {
+      "policy_id": "income communities and communities of color. This may include green infrastructu",
+      "grade": -1,
+      "reasoning": "The extracted text does not match the ground-truth policy. The ground-truth is about expanding culturally competent outreach on EV charging incentives and installation to specific audiences (community groups, professional organizations, unions, and property managers). The extracted text instead lists possible project types for low-income communities and communities of color, including EV charging station installation among many unrelated items. It omits the outreach component, the culturally competent framing, the incentives aspect, and the target audiences. This is not a meaningful match.",
+      "similarity": 0.5667746067047119,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": false
+    },
+    "Mitigation::gt0_ext35_By 2030, achieve net-zero carbon* for all new buildings and reduce emissions by ": {
+      "policy_id": "By 2030, achieve net-zero carbon* for all new buildings and reduce emissions by ",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth policy exactly in scope, deadline, quantified targets, and covered sectors/mechanisms. It includes the 2030 deadline, net-zero carbon for all new buildings, a 25% emissions reduction for existing buildings, and a 30% reduction in natural gas-related emissions. The asterisk after 'net-zero carbon' does not materially change the meaning.",
+      "similarity": 0.9884294867515564,
+      "statement_match": true,
+      "role_match": false,
+      "category_match": true
+    },
+    "Mitigation::gt5_ext36_By 2030, reduce community-wide greenhouse gas emissions from refrigerant leakage": {
+      "policy_id": "By 2030, reduce community-wide greenhouse gas emissions from refrigerant leakage",
+      "grade": 1,
+      "reasoning": "The extracted policy exactly matches the ground-truth policy in target (25% reduction), scope (community-wide greenhouse gas emissions from refrigerant leakage), and deadline (by 2030). Commitment and specificity are fully preserved.",
+      "similarity": 1.0,
+      "statement_match": true,
+      "role_match": false,
+      "category_match": false
+    },
+    "Mitigation::gt11_ext37_By 2030, reduce the embodied carbon footprint of building materials used in loca": {
+      "policy_id": "By 2030, reduce the embodied carbon footprint of building materials used in loca",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in scope, target, baseline, and deadline: a 40% reduction in embodied carbon footprint of building materials used in local construction by 2030 from a 2020 baseline. The trailing asterisk does not change the substance. With no source excerpt provided, there is no evidence of contradiction.",
+      "similarity": 0.9821349382400513,
+      "statement_match": true,
+      "role_match": false,
+      "category_match": true
+    },
+    "Resource Efficiency::gt16_ext38_By 2030, equitably achieve a community-wide water demand of approximately 152,00": {
+      "policy_id": "By 2030, equitably achieve a community-wide water demand of approximately 152,00",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth on the key quantified target (approximately 152,000 acre-feet per year), deadline (by 2030), scope (community-wide water demand), equity framing, and delivery mechanism (implementing Water Forward strategies/plan). 'Water Forward Plan' is a minor wording variation from 'Water Forward strategies' and does not change the commitment.",
+      "similarity": 0.9781964421272278,
+      "statement_match": true,
+      "role_match": false,
+      "category_match": false
+    },
+    "Mitigation::gt3_ext43_Strategy 3: Achieve energy-efficient, net-zero carbon buildings": {
+      "policy_id": "Strategy 3: Achieve energy-efficient, net-zero carbon buildings",
+      "grade": 0,
+      "reasoning": "The extracted policy matches the general direction of the ground-truth by identifying a strategy to achieve energy-efficient, net-zero carbon buildings. However, it omits key specifics present in the ground-truth: the delivery mechanisms (new energy codes, amendments, incentives, education, and utility collaboration) and the scope covering both new and existing buildings. With no source excerpt provided, accuracy cannot be further verified, so this is directionally correct but too vague to earn a full match.",
+      "similarity": 0.7381048798561096,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": false
+    },
+    "Mitigation::gt1_ext48_Ensure all new programs are created with equity principles, are guided by commun": {
+      "policy_id": "Ensure all new programs are created with equity principles, are guided by commun",
+      "grade": 0,
+      "reasoning": "The extracted policy is directionally aligned with the ground truth in focusing on low-income communities and communities of color, partnerships, and energy-related services such as weatherization. However, it shifts the scope toward equity principles for new programs and prioritizing net-zero carbon buildings, which is not the core formulation of the ground-truth policy. It also misses key elements of the comprehensive energy poverty mitigation strategy, especially the explicit commitment to ensure building repair, conservation, and renewable energy benefits flow to those communities. With no source excerpt provided, this is best scored as a partial but imprecise match rather than a full match.",
+      "similarity": 0.7220872640609741,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt6_ext55_Strategy 1: Capture and destroy old refrigerants": {
+      "policy_id": "Strategy 1: Capture and destroy old refrigerants",
+      "grade": 0,
+      "reasoning": "The extracted policy matches the general intent of the ground-truth by referring to capturing and destroying old refrigerants. However, it omits key specifics present in the ground-truth: there is no mention of developing a program, using pricing as the mechanism, or targeting older high-ozone-depleting and high-global-warming-potential refrigerants. With no source excerpt provided to verify wording, this is best scored as directionally correct but too vague and incomplete.",
+      "similarity": 0.7583464980125427,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": true
+    },
+    "Mitigation::gt7_ext56_Strategy 2: Improve building codes to encourage cleaner refrigerants": {
+      "policy_id": "Strategy 2: Improve building codes to encourage cleaner refrigerants",
+      "grade": 0,
+      "reasoning": "The extracted policy matches the general topic and intent of the ground-truth: improving building codes to encourage lower-impact refrigerants. However, it is less specific and omits key details from the ground-truth, including following revised building code developments, pursuing local code amendments and actions, the emphasis on low- and no-GWP refrigerants, and the timing qualifier 'as soon as feasible.' With no source excerpt provided, this is directionally correct but too vague to count as a full match.",
+      "similarity": 0.7282546758651733,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": true
+    },
+    "Mitigation::gt9_ext58_Strategy 4: Awareness and training for HVAC service providers": {
+      "policy_id": "Strategy 4: Awareness and training for HVAC service providers",
+      "grade": 0,
+      "reasoning": "The extracted policy matches the general topic of the ground-truth—awareness and training for HVAC providers—but it is less specific. It omits key elements from the ground-truth: the inclusion of building stakeholders, the focus on refrigerant management, and leak prevention, detection, and repair. It also frames the item as a broad strategy title rather than a clear commitment to create a campaign. With no source excerpt provided, this is best judged as directionally correct but too vague.",
+      "similarity": 0.7031058073043823,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": false
+    },
+    "Mitigation::gt13_ext61_For example, encourage lower-carbon building materials, whole-building lifecycle": {
+      "policy_id": "For example, encourage lower-carbon building materials, whole-building lifecycle",
+      "grade": 0,
+      "reasoning": "The extracted policy is directionally aligned with the ground-truth on promoting lower-carbon building materials and deconstruction/reuse practices. However, it shifts scope to City-funded projects and purchasing policies, while the ground-truth specifically emphasizes integrating these practices into city incentive programs and transitioning voluntary guidance into development agreements over time. The key delivery mechanism and progression from voluntary guidance to stronger agreements are missing, so the match is only partial and less specific.",
+      "similarity": 0.7440593838691711,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt15_ext63_Strategy 2: Incentivize lower-carbon materials": {
+      "policy_id": "Strategy 2: Incentivize lower-carbon materials",
+      "grade": 0,
+      "reasoning": "The extracted policy is directionally aligned with the ground-truth because both concern reducing emissions from building materials. However, it is much vaguer and misses key specifics: the ground-truth emphasizes prioritizing partnerships in local materials markets and names high-impact materials such as glass, steel, aluminum, concrete, drywall, insulation, and carpet. The extraction only states a broad strategy to incentivize lower-carbon materials, omitting the delivery mechanism (partnerships in local markets) and the specific material scope.",
+      "similarity": 0.642929196357727,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": false
+    },
+    "Mitigation::gt4_ext70_Leverage and align with existing local and national efforts to create equitable ": {
+      "policy_id": "Leverage and align with existing local and national efforts to create equitable ",
+      "grade": -1,
+      "reasoning": "The extracted policy does not meaningfully match the ground-truth. The ground-truth focuses on prioritizing local emissions-reduction investment and creating equitable workforce development and training opportunities for emerging building technologies through partnerships serving low-income communities and communities of color. The extracted policy instead discusses aligning with existing efforts on materials decarbonization and collaboration among businesses. It misses the core commitments around local investment, workforce training, emerging building technologies, and specific community-serving partnerships, and introduces a different mechanism and scope.",
+      "similarity": 0.6845456957817078,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt2_ext75_Develop and implement targeted outreach efforts to enhance water conservation pr": {
+      "policy_id": "Develop and implement targeted outreach efforts to enhance water conservation pr",
+      "grade": -1,
+      "reasoning": "The extracted policy does not meaningfully match the ground-truth. The ground-truth is about improving understanding of energy savings and climate impacts for residents and building owners through outreach, culturally relevant communications, expanded benchmarking requirements, and improved access to energy and water data. The extracted policy shifts scope to water conservation program participation, public input, and resident decision-making, omitting the core elements of energy/climate education, building owners, benchmarking, and data access. This is a different policy focus rather than an imprecise summary.",
+      "similarity": 0.6463510990142822,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": false
+    },
+    "Resource Efficiency::gt18_ext76_Strategy 2: Evaluate water conservation, customer assistance, and workforce deve": {
+      "policy_id": "Strategy 2: Evaluate water conservation, customer assistance, and workforce deve",
+      "grade": 0,
+      "reasoning": "The extracted policy is directionally aligned with the ground truth: it correctly identifies evaluating participation criteria for water conservation, customer assistance, and workforce development programs. However, it omits key specificity and intent from the ground truth, namely that the evaluation is meant to address structural barriers to participation and expand enrollment for low-income customers. With no source excerpt provided, this is best scored as an incomplete but related match rather than a full match.",
+      "similarity": 0.7514746189117432,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": true
+    },
+    "Resource Efficiency::gt17_ext78_Create partnerships across City departments and with community organizations to ": {
+      "policy_id": "Create partnerships across City departments and with community organizations to ",
+      "grade": -1,
+      "reasoning": "The extracted policy does not match the ground-truth policy. The ground-truth is about enhancing community engagement and partnerships to advance equity through specific Water Forward strategies (advanced metering, incentives, and ordinances). The extracted policy shifts the focus to workforce development and water/green jobs, which is a different objective and omits the core equity and Water Forward strategy mechanisms. With no source excerpt provided, there is no evidence supporting this as an equivalent policy.",
+      "similarity": 0.6539610624313354,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": false
+    },
+    "Mitigation::gt19_ext81_Develop methodologies to quantify how customer reduction in water demand also re": {
+      "policy_id": "Develop methodologies to quantify how customer reduction in water demand also re",
+      "grade": 0,
+      "reasoning": "The extracted policy partially matches the ground-truth by focusing on quantifying the relationship between reduced water demand and reduced energy use. However, it omits key elements of the ground-truth: pursuing synergistic water conservation and energy management efforts, and doing so through programs and partnerships. It is directionally correct but narrower in scope and misses important delivery mechanisms.",
+      "similarity": 0.7052252888679504,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt10_ext82_## Strategy 5: Reduce the volume of refrigerants\n\nEmphasize the link between des": {
+      "policy_id": "## Strategy 5: Reduce the volume of refrigerants\n\nEmphasize the link between des",
+      "grade": 1,
+      "reasoning": "The extracted policy is a close match to the ground-truth. It preserves the core commitment to reduce and prevent refrigerant use 'to the extent possible' and specifically emphasizes refrigerants with high global warming potential/high GWP. While phrased as a strategy and adding a design linkage, it does not materially alter the scope or strength of the policy. No quantified targets or deadlines exist in the ground truth, so none are missing.",
+      "similarity": 0.8087369203567505,
+      "statement_match": true,
+      "role_match": false,
+      "category_match": true
+    },
+    "Mitigation::gt20_ext85_By 2030, 80% of new non-residential development is located within the city's Ima": {
+      "policy_id": "By 2030, 80% of new non-residential development is located within the city's Ima",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth on target (80%), timeline (by 2030), subject (new non-residential development), and location requirement (within the city's activity centers and corridors). Adding 'Imagine Austin' is a minor specificity difference that does not change the core commitment. Despite the source excerpt not being provided, relative to the ground-truth this is a precise and accurate match.",
+      "similarity": 0.7998824119567871,
+      "statement_match": true,
+      "role_match": false,
+      "category_match": true
+    },
+    "Mitigation::gt25_ext86_By 2027, preserve and produce 135,000 housing units, including 60,000 affordable": {
+      "policy_id": "By 2027, preserve and produce 135,000 housing units, including 60,000 affordable",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth nearly exactly on target, deadline, and spatial mechanism: 135,000 housing units by 2027, including 60,000 affordable units, with 75% of new housing within half a mile of activity centers and corridors. The added references to 'affordable housing units*' and 'Imagine Austin' do not alter the substance and are consistent with the stated policy framing. No material omission or contradiction is present.",
+      "similarity": 0.8410139083862305,
+      "statement_match": true,
+      "role_match": false,
+      "category_match": true
+    },
+    "Mitigation::gt29_ext87_By 2030, 50% of trips in Austin are made using public transit, biking, walking, ": {
+      "policy_id": "By 2030, 50% of trips in Austin are made using public transit, biking, walking, ",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth closely in target, deadline, geography, and modal scope: 50% of trips in Austin by 2030 via public transit, biking, walking, carpooling, or avoided through working from home. The wording shifts from 'ensure' to a declarative formulation, but the commitment level and substantive meaning are effectively preserved. No material omissions or contradictions.",
+      "similarity": 0.9485647678375244,
+      "statement_match": true,
+      "role_match": false,
+      "category_match": false
+    },
+    "Mitigation::gt22_ext90_Strategy 2: Work with employers on location and amenities": {
+      "policy_id": "Strategy 2: Work with employers on location and amenities",
+      "grade": 0,
+      "reasoning": "The extracted policy is directionally aligned with the ground truth because both concern working with employers on business location. However, it is less specific and omits key scope and mechanism details from the ground truth: it drops 'medium and large employers,' 'business sites,' and the geographic focus on 'growth centers and along corridors.' It also adds 'amenities,' which is not present in the ground-truth wording. With no source excerpt provided, this is best scored as a vague but partially matching extraction rather than an exact match.",
+      "similarity": 0.5908339619636536,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": false
+    },
+    "Mitigation::gt32_ext93_Improve the physical access to and through the transit stop/station area to be a": {
+      "policy_id": "Improve the physical access to and through the transit stop/station area to be a",
+      "grade": 0,
+      "reasoning": "The extracted policy is directionally aligned with the ground-truth on improving access at transit stops/stations, but it misses important specificity and scope. It omits the partnership/engagement mechanism and the explicit focus on low-income communities, communities of color, and people with disabilities. It also narrows the commitment to physical accessibility rather than improving stops, stations, and access to these facilities more broadly.",
+      "similarity": 0.6890552043914795,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": false
+    },
+    "Mitigation::gt23_ext95_Provide diverse amenities and family-friendly spaces adjacent to mobility hubs.": {
+      "policy_id": "Provide diverse amenities and family-friendly spaces adjacent to mobility hubs.",
+      "grade": -1,
+      "reasoning": "The extracted policy does not match the ground-truth commitment. The ground truth is to create community mobility hubs adjacent to transit stops that provide first-/last-mile mobility options and a complete trip experience. The extraction instead focuses on 'diverse amenities and family-friendly spaces adjacent to mobility hubs,' which omits the core action (creating mobility hubs), the adjacency to transit stops, and the key mechanism of offering first- and last-mile mobility options. It narrows and distorts the policy rather than capturing its main scope.",
+      "similarity": 0.7136927843093872,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt24_ext97_Focus parking reduction strategies on large employers to lessen the potential ne": {
+      "policy_id": "Focus parking reduction strategies on large employers to lessen the potential ne",
+      "grade": 0,
+      "reasoning": "The extracted policy is directionally aligned with the ground-truth in that it targets parking policy at large employers and discusses reducing incentives for driving from free or subsidized parking. However, it misses the core specific commitment to phase out free employee parking at city facilities and near the transit priority network, and it omits the replacement mechanism of offering commuter benefit options. The extracted text is more explanatory/rationale-focused than a clear policy commitment, so it is correct in intent but too vague and incomplete on scope, mechanism, and specificity.",
+      "similarity": 0.7104994058609009,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": false
+    },
+    "Mitigation::gt50_ext99_Ensure all City policies for reduced parking, remote work, and telecommuting ali": {
+      "policy_id": "Ensure all City policies for reduced parking, remote work, and telecommuting ali",
+      "grade": -1,
+      "reasoning": "The extracted policy does not meaningfully match the ground-truth policy. The ground truth is about transportation electrification in the Austin-Round Rock-San Marcos area, with a focus on adopting policies and technologies to maximize economic and health benefits and support industry growth. The extracted policy instead focuses on reduced parking, remote work, telecommuting, and reducing single-occupancy vehicle trips under the Imagine Austin Comprehensive Plan. This is a different policy area and mechanism, with no clear electrification component or matching regional scope.",
+      "similarity": 0.5551596283912659,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": false
+    },
+    "Adaptation::gt26_ext111_Strategy 3: Enhance community engagement for affordable housing and antidisplace": {
+      "policy_id": "Strategy 3: Enhance community engagement for affordable housing and antidisplace",
+      "grade": 0,
+      "reasoning": "The extracted policy is directionally aligned with the ground-truth on the theme of community engagement around affordable housing and displacement. However, it is much vaguer and misses key specifics from the ground-truth: direct engagement with communities vulnerable to displacement, connecting them with services, and proactive monitoring of at-risk affordable housing properties to preserve or extend affordability. It also does not clearly capture the delivery mechanisms. With no source excerpt provided, this is best scored as an imprecise partial match rather than a full match.",
+      "similarity": 0.7509962320327759,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": false
+    },
+    "Mitigation::gt31_ext113_Strategy 2: Promote free transportation options": {
+      "policy_id": "Strategy 2: Promote free transportation options",
+      "grade": 0,
+      "reasoning": "The extracted policy is directionally aligned with the ground-truth in focusing on free transportation options, but it is much less specific. It omits the commitment to create comprehensive, user-friendly resources that connect community members to those options, and it does not capture the inclusion of expanded free transit access. With no source excerpt provided, there is no basis to confirm stronger specificity or mechanism.",
+      "similarity": 0.6534065008163452,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": false
+    },
+    "Mitigation::gt34_ext116_Strategy 5: Enhance bicycle education and training": {
+      "policy_id": "Strategy 5: Enhance bicycle education and training",
+      "grade": 0,
+      "reasoning": "The extracted policy is directionally related to the ground-truth because both concern bicycle education/training. However, it misses the key specific commitments: providing free or reduced-price bicycles, targeting communities of color, and training police officers on bicycle laws and racial profiling. It also omits the equity-focused delivery mechanism and any concrete scope. Since no source excerpt is provided, accuracy to source cannot be further verified, but relative to the ground-truth this is too vague for a full match.",
+      "similarity": 0.6149129867553711,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": true
+    },
+    "Mitigation::gt35_ext117_Strategy 6: Improve sidewalks, urban trails, and crossings": {
+      "policy_id": "Strategy 6: Improve sidewalks, urban trails, and crossings",
+      "grade": 0,
+      "reasoning": "The extracted policy is directionally aligned with the ground-truth because it concerns sidewalks and urban trails. However, it misses key specifics: there is no mention of updating the Sidewalk Plan and Urban Trails Plan, no emphasis on equity, and no reference to meaningful community engagement. It also adds 'crossings,' which is not in the ground-truth. Without the source excerpt, this is best graded as a partial but vague match rather than a full match.",
+      "similarity": 0.6764352321624756,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": false
+    },
+    "Mitigation::gt21_ext119_## Strategy 1: Plan for complete communities\n\nAdopt Complete Communities plans t": {
+      "policy_id": "## Strategy 1: Plan for complete communities\n\nAdopt Complete Communities plans t",
+      "grade": 1,
+      "reasoning": "The extracted policy closely matches the ground-truth in scope, commitment, and specificity. It preserves the core action ('Adopt Complete Communities plans') and the key objectives: reversing historical racist impacts, addressing displacement, and preserving neighborhoods in communities of color. The phrase 'areas experiencing displacement' is a slight paraphrase of 'address displacement' but retains the same substantive meaning. No contradiction or material omission is present.",
+      "similarity": 0.8716405034065247,
+      "statement_match": true,
+      "role_match": false,
+      "category_match": true
+    },
+    "Adaptation::gt27_ext121_## Strategy 2: Fund affordable housing\n\nIncrease funding for the City's current ": {
+      "policy_id": "## Strategy 2: Fund affordable housing\n\nIncrease funding for the City's current ",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth closely in scope, commitment, and mechanism. It correctly identifies increasing funding for the city's Housing Trust Fund and supporting capacity building for community development corporations. There are no quantified targets or deadlines in the ground truth, so none are missing. The added heading 'Strategy 2: Fund affordable housing' is consistent with the policy and does not alter its meaning.",
+      "similarity": 0.8382917642593384,
+      "statement_match": true,
+      "role_match": false,
+      "category_match": false
+    },
+    "Mitigation::gt30_ext122_## Strategy 1: Expand and improve public transportation\n\nWork with the Austin Tr": {
+      "policy_id": "## Strategy 1: Expand and improve public transportation\n\nWork with the Austin Tr",
+      "grade": 1,
+      "reasoning": "The extracted policy exactly matches the ground-truth policy in scope, commitment, and mechanism: it states working with the Austin Transit Partnership to implement Project Connect and to expand and improve public transportation services. There is no loss of specificity or change in commitment strength.",
+      "similarity": 0.8595496416091919,
+      "statement_match": true,
+      "role_match": false,
+      "category_match": false
+    },
+    "Mitigation::gt37_ext123_This should include a strategy to implement a City of Austin telework policy enc": {
+      "policy_id": "This should include a strategy to implement a City of Austin telework policy enc",
+      "grade": 0,
+      "reasoning": "The extracted policy correctly captures a key specific element of the ground-truth: implementing a City of Austin telework policy with a quantified target of encouraging no less than 85% of eligible City employees to participate. However, it omits the broader alignment with transportation mode-shift goals and the second substantive target of contributing toward 15% of Austin residents working from home by 2039. Because it matches the core city-employee telework commitment but misses important scope and deadline details, it is directionally correct but incomplete.",
+      "similarity": 0.8563289642333984,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": false
+    },
+    "Mitigation::gt36_ext124_- Whenever appropriate, encourage City partners, consultants, contractors, and s": {
+      "policy_id": "- Whenever appropriate, encourage City partners, consultants, contractors, and s",
+      "grade": 0,
+      "reasoning": "The extracted policy is directionally aligned with the ground-truth: both promote remote work/telework and flexible commute policies to reduce single-occupancy vehicle trips. However, it softens the commitment from 'Actively promote' to 'Whenever appropriate, encourage,' narrows and shifts the audience to external parties ('City partners, consultants, contractors, and stakeholders') rather than the broader policy intent, and omits the explicit purpose of maintaining and further reducing single-occupancy vehicle trips. It adds a specific '50% mode-shift goal' not present in the ground-truth. Overall, this is a partial but imprecise match rather than a full one.",
+      "similarity": 0.729110836982727,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": false
+    },
+    "Mitigation::gt38_ext125_By 2030, 40% of total vehicle miles traveled in Austin are electrified, and elec": {
+      "policy_id": "By 2030, 40% of total vehicle miles traveled in Austin are electrified, and elec",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth target, scope, and deadline exactly: 40% of total vehicle miles traveled in Austin electrified by 2030, with EV ownership diverse across cultural, geographic, and economic dimensions. The added statement about approximately 460,000 electric vehicles is extra detail not present in the ground truth, but it does not contradict it. Commitment strength is slightly rephrased from 'electrify'/'ensure' to a declarative outcome, but the substance remains equivalent.",
+      "similarity": 0.8973323702812195,
+      "statement_match": true,
+      "role_match": false,
+      "category_match": true
+    },
+    "Mitigation::gt39_ext126_Strategy 1: Conduct an EV Community Needs Assessment": {
+      "policy_id": "Strategy 1: Conduct an EV Community Needs Assessment",
+      "grade": 0,
+      "reasoning": "The extracted policy matches the core action in the ground-truth: conducting an EV Community Needs Assessment. However, it is less specific and omits key details present in the ground-truth, namely that the assessment should identify mobility, electrification, and justice needs and inform an EV adoption growth plan. With no source excerpt provided, this is directionally correct but incomplete rather than a full match.",
+      "similarity": 0.7346359491348267,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": true
+    },
+    "Mitigation::gt40_ext127_Strategy 2: Create equitable incentives for buying and leasing EVs": {
+      "policy_id": "Strategy 2: Create equitable incentives for buying and leasing EVs",
+      "grade": 0,
+      "reasoning": "The extracted policy matches the general intent of the ground-truth: creating equitable incentives for buying and leasing electric vehicles. However, it omits key specificity and scope from the ground-truth, including collaboration with community partners, the requirement that incentives be inclusive and accessible, and the prioritization of low-income communities, communities of color, and areas with limited transit access. With no source excerpt provided, this is directionally correct but too vague to count as a full match.",
+      "similarity": 0.7358831763267517,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": false
+    },
+    "Mitigation::gt41_ext128_Strategy 3: Reduce tolls for EVs in the Eastern Crescent": {
+      "policy_id": "Strategy 3: Reduce tolls for EVs in the Eastern Crescent",
+      "grade": 0,
+      "reasoning": "The extracted policy matches the general topic of reducing tolls for EVs in the Eastern Crescent, but it omits key specificity and scope from the ground truth: it does not mention partnership with mobility authorities, the reduced or eliminated rates, the target beneficiaries (low-income communities and communities of color), or the route/destination detail (from the Eastern Crescent to central Austin). With no source excerpt provided, this is directionally correct but too vague to count as a full match.",
+      "similarity": 0.681242823600769,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": true
+    },
+    "Mitigation::gt42_ext129_Strategy 4: Launch an e-bike and electric car-sharing program": {
+      "policy_id": "Strategy 4: Launch an e-bike and electric car-sharing program",
+      "grade": 0,
+      "reasoning": "The extracted policy matches the general action in the ground-truth: launching an e-bike and electric car-sharing program. However, it omits key specificity and scope from the ground-truth, namely that the program is centered on low-income communities and communities of color and is intended to provide low-cost zero-emissions mobility. With no source excerpt provided, this is directionally correct but incomplete rather than a full match.",
+      "similarity": 0.7285847067832947,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": true
+    },
+    "Mitigation::gt43_ext130_Strategy 5: Electrify public sector fleet vehicles": {
+      "policy_id": "Strategy 5: Electrify public sector fleet vehicles",
+      "grade": 0,
+      "reasoning": "The extracted policy matches the general topic and direction of the ground-truth (public sector fleet electrification) but omits key specificity and commitment details. It does not capture that the policy is to encourage fleets in the Austin-Round Rock-San Marcos region to commit to buying 100% electric vehicles, nor the conditions 'when available, cost-competitive, and operationally suitable.' With no source excerpt provided, this is best graded as directionally correct but too vague.",
+      "similarity": 0.6716423034667969,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": true
+    },
+    "Mitigation::gt44_ext132_By 2030, transition 100% of the gig, rideshare, public health, and delivery vehi": {
+      "policy_id": "By 2030, transition 100% of the gig, rideshare, public health, and delivery vehi",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth closely in scope, target, timeline, and mechanism. It preserves the 2030 deadline, the 100% electrification target, the covered fleet types (gig, rideshare, public health, and delivery), and the sequencing beginning with private fleets in the Eastern Crescent. It also captures the delivery mechanisms: pilots, support, regulation, incentives, and education. 'Technical support' is a slightly more specific rendering of 'support' and 'rapid electrification' does not materially alter the commitment. Overall this is a specific and accurate match.",
+      "similarity": 0.9761443138122559,
+      "statement_match": true,
+      "role_match": false,
+      "category_match": false
+    },
+    "Mitigation::gt45_ext133_By 2030, Austin has a compelling and equitably distributed mix of level 1, 2, an": {
+      "policy_id": "By 2030, Austin has a compelling and equitably distributed mix of level 1, 2, an",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth closely on scope, deadline, equity, charging types, and quantified target: by 2030, an equitably distributed mix of level 1, level 2, and DC fast charging sufficient to accommodate 40% of total vehicle miles traveled. The added details about 226 MW load and 37,000 ports do not conflict with the ground-truth. Although 'has a compelling' is slightly different from 'develop,' the overall commitment and specificity are preserved.",
+      "similarity": 0.7430696487426758,
+      "statement_match": true,
+      "role_match": false,
+      "category_match": true
+    },
+    "Mitigation::gt47_ext134_By 2030, the City will have a network of intelligent charging that supports grid": {
+      "policy_id": "By 2030, the City will have a network of intelligent charging that supports grid",
+      "grade": 1,
+      "reasoning": "The extracted policy closely matches the ground-truth in target, deadline, and mechanism. It preserves the 2030 deadline, the core commitment to build a network of intelligent charging, and the intended outcomes: grid reliability, resilience, efficiency, lower emissions, accessibility, and lower costs. It also captures the mechanism to incentivize internet-connected charging infrastructure. The added detail about managing charging start/end times and rate over 24 hours is consistent with 'intelligent' and 'internet-connected' charging rather than contradictory. Commitment strength is comparable, with only minor wording differences ('the City will have' vs. 'build') that do not materially change the policy intent.",
+      "similarity": 0.8546507358551025,
+      "statement_match": true,
+      "role_match": false,
+      "category_match": false
+    },
+    "Mitigation::gt46_ext138_Strategy 1: Create a network with more low-cost, accessible charging stations": {
+      "policy_id": "Strategy 1: Create a network with more low-cost, accessible charging stations",
+      "grade": 0,
+      "reasoning": "The extracted policy matches the general intent of expanding a low-cost, accessible EV charging network, which aligns with the ground-truth. However, it is less specific and omits key delivery mechanisms and actors: the ground-truth explicitly says to continue incentivizing EV charging installation by the city, businesses, manufacturers, and third parties, while the extraction only states to create a network with more charging stations. Without the incentive mechanism and named responsible parties, the match is directionally correct but incomplete.",
+      "similarity": 0.6731973886489868,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": true
+    },
+    "Mitigation::gt54_ext142_Strategy 1: Create a regional coalition to support EVs": {
+      "policy_id": "Strategy 1: Create a regional coalition to support EVs",
+      "grade": 0,
+      "reasoning": "The extracted policy is directionally related to EV support, but it does not match the ground-truth policy’s specific scope or mechanism. The ground truth focuses on creating a robust electric transportation economic cluster in Central Texas by supporting new and existing local EV supply-chain companies. The extraction instead says 'create a regional coalition to support EVs,' which captures a general EV-support intent but omits the economic-cluster objective, the Central Texas/local supply-chain focus, and the support for companies as the delivery mechanism. With no source excerpt provided, this is best graded as a vague partial match rather than a contradiction.",
+      "similarity": 0.6359277963638306,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": false
+    },
+    "Mitigation::gt48_ext152_## Strategy 3: Adopt new energy and building codes\n\nAdopt new energy and buildin": {
+      "policy_id": "## Strategy 3: Adopt new energy and building codes\n\nAdopt new energy and buildin",
+      "grade": 1,
+      "reasoning": "The extracted policy closely matches the ground-truth in scope and intent. It preserves the core commitment to adopt new energy and building codes, addresses future EV charging needs, and lowers barriers to installing charging infrastructure more equitably. The phrasing 'simplifying the charging network' is a slight embellishment not present in the ground-truth, but it does not materially alter the policy. Both versions are similarly broad and lack quantified targets or deadlines, so specificity is aligned.",
+      "similarity": 0.8813644051551819,
+      "statement_match": true,
+      "role_match": false,
+      "category_match": true
+    },
+    "Mitigation::gt51_ext153_## Strategy 1: Create a regional coalition to support EVs\n\nThe City will take th": {
+      "policy_id": "## Strategy 1: Create a regional coalition to support EVs\n\nThe City will take th",
+      "grade": 1,
+      "reasoning": "The extracted policy closely matches the ground-truth in scope, commitment, and specificity. It captures that the city will lead creation of a regional coalition, the purpose is to support EV adoption, and the geographic scope is the five-county metropolitan area/MSA. The extracted version is slightly less specific because it omits the stakeholder composition (government, business, and community), but the core commitment and target are accurately preserved.",
+      "similarity": 0.8024181127548218,
+      "statement_match": true,
+      "role_match": false,
+      "category_match": true
+    },
+    "Mitigation::gt52_ext154_## Strategy 2: Pilot and adopt new technology\n\nAustin will continue to pilot and": {
+      "policy_id": "## Strategy 2: Pilot and adopt new technology\n\nAustin will continue to pilot and",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth closely in scope, commitment, and specificity. It preserves the core commitment to continue piloting and early-adopting emerging transportation electrification technologies, and it correctly includes the equity provision that low-income communities and communities of color should access the benefits first. The slight wording change from 'ensure ... access the benefits first' to 'ensure ... can access the benefits first' does not materially weaken or alter the meaning.",
+      "similarity": 0.8497943878173828,
+      "statement_match": true,
+      "role_match": false,
+      "category_match": true
+    },
+    "Nature-Based Solutions::gt55_ext156_By 2030, ensure all Austinites can access a food system that is communitydriven,": {
+      "policy_id": "By 2030, ensure all Austinites can access a food system that is communitydriven,",
+      "grade": 1,
+      "reasoning": "The extracted policy closely matches the ground-truth in scope, deadline, and substantive commitments. It preserves the 2030 target and the key mechanisms/priorities: community-driven food system, addressing food insecurity, regenerative agriculture, dietary agency, plant-based foods, and minimizing food waste. The only minor difference is adding 'health' to 'dietary and health agency' versus 'dietary agency,' which does not materially change the policy intent. Overall this is a specific and accurate match.",
+      "similarity": 0.9924085736274719,
+      "statement_match": true,
+      "role_match": false,
+      "category_match": true
+    },
+    "Mitigation::gt60_ext157_By 2030, reduce greenhouse gas emissions from institutional, commercial, and gov": {
+      "policy_id": "By 2030, reduce greenhouse gas emissions from institutional, commercial, and gov",
+      "grade": 1,
+      "reasoning": "The extracted policy exactly matches the ground-truth policy in scope (institutional, commercial, and government purchasing), target (at least 50% reduction in greenhouse gas emissions), and deadline (by 2030). Commitment strength and specificity are fully preserved. No source excerpt is provided to check against, but relative to the ground truth this is an exact match.",
+      "similarity": 1.0000001192092896,
+      "statement_match": true,
+      "role_match": false,
+      "category_match": true
+    },
+    "Mitigation::gt56_ext158_Strategy 1: Support institutional food purchasing": {
+      "policy_id": "Strategy 1: Support institutional food purchasing",
+      "grade": 0,
+      "reasoning": "The extracted policy matches the general topic of institutional food purchasing, which is part of the ground-truth policy. However, it is much less specific: it omits the purchasing framework, support for supply-chain infrastructure, the regional food system network, and the goal of increasing institutional and corporate procurement of pro-climate, pro-health food options. With no source excerpt provided, this is directionally correct but too vague to count as a full match.",
+      "similarity": 0.6572936177253723,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": true
+    },
+    "Mitigation::gt58_ext161_Join or develop a program similar to Zero Foodprint to generate funding to suppo": {
+      "policy_id": "Join or develop a program similar to Zero Foodprint to generate funding to suppo",
+      "grade": 0,
+      "reasoning": "The extracted policy is directionally related to promoting a pro-climate, pro-health food system, but it does not match the ground-truth policy’s core commitment. The ground truth focuses on developing community-driven programs and tools to equitably engage and empower Austin communities to make affordable and culturally relevant food choices. The extracted policy instead emphasizes joining or developing a funding program for local food organizations and producers, which shifts the mechanism and target audience away from community engagement and consumer empowerment. With no source excerpt provided to verify wording, this is at best a partial thematic match rather than a specific or accurate capture.",
+      "similarity": 0.6624667644500732,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": true
+    },
+    "Nature-Based Solutions::gt80_ext162_Create a subsidized community-supported agriculture model for local regenerative": {
+      "policy_id": "Create a subsidized community-supported agriculture model for local regenerative",
+      "grade": 0,
+      "reasoning": "The extracted policy is directionally related to supporting regenerative agriculture and mentions communities of color, but it does not match the ground-truth closely. The ground-truth focuses on supporting farmers starting regenerative agriculture through access to land and other resources, with prioritization for farmers of color. The extracted policy instead proposes a subsidized community-supported agriculture model for local producers and shifts the beneficiary focus to producers who employ low-income communities and communities of color. This changes both the mechanism (CSA subsidy vs. land/resource access) and the target group (employers/community beneficiaries vs. farmers starting regenerative agriculture). With no source text available to verify, this is only a partial thematic match and lacks alignment on the core delivery mechanism and prioritization.",
+      "similarity": 0.671600341796875,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": false
+    },
+    "Mitigation::gt57_ext165_Enhance incentives to make pro-climate, pro-health food choices more affordable,": {
+      "policy_id": "Enhance incentives to make pro-climate, pro-health food choices more affordable,",
+      "grade": 0,
+      "reasoning": "The extracted policy is directionally aligned with the ground-truth on making pro-climate, pro-health food choices more affordable through incentives. However, it omits several important elements: the community-driven nature of the programs, the focus on culturally relevant prepared and retail food choices, and the commitment to minimizing displacement. The added example of farmers' markets is narrower than the ground-truth and not enough to capture the full scope. With no source excerpt provided, this is best scored as a partial but imprecise match.",
+      "similarity": 0.7212110757827759,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": true
+    },
+    "Adaptation::gt61_ext167_Strategy 1: Measure institutional lifecycle emissions": {
+      "policy_id": "Strategy 1: Measure institutional lifecycle emissions",
+      "grade": 0,
+      "reasoning": "The extracted policy is directionally aligned with the ground-truth because both concern measuring lifecycle emissions. However, it is significantly less specific: it omits the non-residential purchasing scope, the inclusion of other impacts beyond greenhouse gases, and the commitment to establish a baseline for tracking progress. With no source excerpt provided to verify wording, this is best scored as an imprecise partial match rather than a full match.",
+      "similarity": 0.6329628825187683,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": false
+    },
+    "Mitigation::gt62_ext168_Strategy 2: Strengthen the City's sustainable purchasing program": {
+      "policy_id": "Strategy 2: Strengthen the City's sustainable purchasing program",
+      "grade": 0,
+      "reasoning": "The extracted policy matches the general intent of the ground-truth: strengthening Austin's sustainable procurement/purchasing program. However, it is less specific and omits key scope/details from the ground-truth, notably that it is the City of Austin's Sustainable Procurement Program and that it is intended to serve as a local and national model. With no source excerpt provided, accuracy can only be judged against the ground-truth, and this is directionally correct but incomplete.",
+      "similarity": 0.7320878505706787,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": false
+    },
+    "Mitigation::gt12_ext179_Provide resources for the City of Austin's vendor pool to educate them on how th": {
+      "policy_id": "Provide resources for the City of Austin's vendor pool to educate them on how th",
+      "grade": -1,
+      "reasoning": "The extracted policy does not meaningfully match the ground-truth. The ground-truth is a specific commitment to develop design and construction specifications and purchasing agreements for healthy, low-carbon buildings, in partnership with other cities and states. The extracted policy instead focuses on providing educational resources to the City of Austin's vendor pool about sustainability goals through contracting. This changes the mechanism, omits the low-carbon building specifications and purchasing agreements, and drops the intergovernmental partnership element.",
+      "similarity": 0.6844841241836548,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt64_ext183_Strategy 4: Expand the City's Circular Economy Program": {
+      "policy_id": "Strategy 4: Expand the City's Circular Economy Program",
+      "grade": 0,
+      "reasoning": "The extracted policy matches the core topic and action in the ground-truth—expanding the City's Circular Economy Program—but omits the specific scope and intended outcomes: reducing consumption, supporting internal reuse and sharing, supporting circular organizations, and youth engagement. With no source excerpt provided to verify stronger wording, this is directionally correct but too vague to count as a full match.",
+      "similarity": 0.7160251140594482,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": false
+    },
+    "Mitigation::gt66_ext184_Strategy 1: Promote waste reduction and reuse": {
+      "policy_id": "Strategy 1: Promote waste reduction and reuse",
+      "grade": 0,
+      "reasoning": "The extracted policy is directionally consistent with the ground-truth because it captures the general intent to promote waste reduction and reuse. However, it is much less specific: it omits the concrete mechanism of consumer awareness campaigns, the focus on repair and the waste management hierarchy, and the named examples such as reuse challenges, Fix-It clinics, and the Austin Reuse Directory. With no source excerpt provided, there is no basis to verify stronger alignment. This is therefore a vague but related match.",
+      "similarity": 0.671197772026062,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": false
+    },
+    "Resource Efficiency::gt67_ext187_Strategy 2: Create Eco-hubs": {
+      "policy_id": "Strategy 2: Create Eco-hubs",
+      "grade": 0,
+      "reasoning": "The extracted policy matches the core action of creating Eco-hubs, which aligns with the ground-truth directionally. However, it omits key specificity from the ground truth: that the Eco-hubs should be equitably distributed across neighborhoods and that they provide borrowing, reuse, and repair services. With no source excerpt provided to verify wording, this is best graded as a partial but underspecified match rather than a full match.",
+      "similarity": 0.6603730320930481,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": true
+    },
+    "Resource Efficiency::gt68_ext188_Strategy 3: Create a workforce development program for the circular economy": {
+      "policy_id": "Strategy 3: Create a workforce development program for the circular economy",
+      "grade": 0,
+      "reasoning": "The extracted policy matches the general scope of the ground-truth by identifying a workforce development program for the circular economy, which aligns with repair/reuse and local circular business development. However, it omits key specifics from the ground-truth: the program’s focus on repair and reuse skills, job placement, entrepreneurship, and the prioritization of low-income communities, youth, and communities of color. With no source excerpt provided, there is also no evidence of stronger commitment language or additional mechanism detail. Directionally correct but too vague.",
+      "similarity": 0.6999301910400391,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": true
+    },
+    "Resource Efficiency::gt69_ext189_Strategy 4: Offer incentives for products that have lower negative environmental": {
+      "policy_id": "Strategy 4: Offer incentives for products that have lower negative environmental",
+      "grade": 0,
+      "reasoning": "The extracted policy matches the general direction of the ground-truth by proposing incentives for products with lower environmental and social impacts. However, it omits key specificity and mechanisms from the ground-truth: there is no mention of financial incentives, point-of-sale rebates, sales tax holidays, repair services, rentals, or alternatives to single-use plastics. With no source excerpt provided to verify wording, this is best scored as directionally correct but too vague and incomplete.",
+      "similarity": 0.6354480981826782,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": true
+    },
+    "Adaptation::gt28_ext190_Develop incentives in collaboration with low-income communities and communities ": {
+      "policy_id": "Develop incentives in collaboration with low-income communities and communities ",
+      "grade": 0,
+      "reasoning": "The extracted policy partially matches the ground-truth by referencing collaboration with low-income communities and communities of color, but it omits major elements: people with disabilities, the housing review and anti-displacement program design context, culturally relevant outreach, subsidized units, and the focus on gentrifying areas. It also changes the mechanism from inclusion in review/design to a vague commitment to develop incentives. Directionally related but substantially less specific and incomplete.",
+      "similarity": 0.6728615164756775,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": false
+    },
+    "Mitigation::gt70_ext192_Strategy 5: Retool the bulk pick-up collection program": {
+      "policy_id": "Strategy 5: Retool the bulk pick-up collection program",
+      "grade": 0,
+      "reasoning": "The extracted policy is directionally aligned with the ground-truth because both concern changing the bulky/bulk item collection program. However, it is substantially less specific: it omits the key mechanism and intended outcomes in the ground-truth—namely reviewing and modifying policies/programs so viable items are resold, repaired, or recycled. Without those details, the extraction captures the topic but not the full commitment or delivery approach.",
+      "similarity": 0.6191491484642029,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": false
+    },
+    "Mitigation::gt59_ext193_## Strategy 4: Conduct a food waste root cause analysis\n\nConduct a food waste ro": {
+      "policy_id": "## Strategy 4: Conduct a food waste root cause analysis\n\nConduct a food waste ro",
+      "grade": 0,
+      "reasoning": "The extracted policy matches the core action and quantified target: conduct a food waste root cause analysis and implement changes to increase food waste reduction practices by 50%. However, it omits an important scope detail present in the ground truth: that the 50% increase applies across single-family, multi-family, and commercial properties. With no source excerpt provided to verify wording, this is directionally correct but less specific than the ground truth.",
+      "similarity": 0.8266725540161133,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": false
+    },
+    "Nature-Based Solutions::gt71_ext194_By 2030, legally protect an additional 20,000 acres of carbon pools on natural l": {
+      "policy_id": "By 2030, legally protect an additional 20,000 acres of carbon pools on natural l",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth closely in target, deadline, acreage, and mechanism: protect an additional 20,000 acres by 2030 and manage roughly 70,000 acres of natural areas for resilience. 'Focusing on resilience' is equivalent in meaning to 'for resilience.' No material loss of specificity or commitment is evident.",
+      "similarity": 0.9901998043060303,
+      "statement_match": true,
+      "role_match": false,
+      "category_match": true
+    },
+    "Nature-Based Solutions::gt76_ext195_By 2030, protect 500,000 acres of farmland from development in the fivecounty re": {
+      "policy_id": "By 2030, protect 500,000 acres of farmland from development in the fivecounty re",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth almost exactly in scope, target, deadline, and mechanism: 500,000 acres of farmland, by 2030, in the five-county region, through legal protections or regenerative agriculture programs. The only difference is a minor formatting/typographical issue ('fivecounty region*'), which does not change the meaning.",
+      "similarity": 0.9873442649841309,
+      "statement_match": true,
+      "role_match": false,
+      "category_match": true
+    },
+    "Nature-Based Solutions::gt88_ext196_By 2030, include all City-owned lands under a management plan that results in ne": {
+      "policy_id": "By 2030, include all City-owned lands under a management plan that results in ne",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth exactly in scope, deadline, target, and mechanism: all city-owned lands, by 2030, under a management plan resulting in neutral or negative carbon emissions and maximizing community co-benefits. Commitment strength and specificity are fully preserved.",
+      "similarity": 0.9904048442840576,
+      "statement_match": true,
+      "role_match": false,
+      "category_match": false
+    },
+    "Nature-Based Solutions::gt72_ext206_Focus acquisition of new conservation lands in the Travis County Eastern Plannin": {
+      "policy_id": "Focus acquisition of new conservation lands in the Travis County Eastern Plannin",
+      "grade": 0,
+      "reasoning": "The extracted policy is directionally related to conservation in eastern Travis County, but it does not match the ground-truth commitment closely enough for a full match. It shifts from 'identify and legally protect additional woodland, grassland, and wetland systems' to a more general 'focus acquisition of new conservation lands,' omitting the specific ecosystem types and the legal protection element. It also leaves out the equity prioritization for low-income communities and communities of color. With no source excerpt provided to verify wording, this is best graded as a partial, vague match rather than a contradiction.",
+      "similarity": 0.6561920046806335,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": false
+    },
+    "Nature-Based Solutions::gt73_ext207_Strategy 2: Manage natural lands for resilience": {
+      "policy_id": "Strategy 2: Manage natural lands for resilience",
+      "grade": 0,
+      "reasoning": "The extracted policy is directionally aligned with the ground-truth on managing natural lands for climate resilience, but it is notably less specific and weaker in scope. It omits key elements from the ground-truth: preparing lands for climate change, avoiding catastrophic carbon loss, and doing so through active, intentional, and holistic management. With no source excerpt to verify wording, this is best graded as a partial match rather than a full one.",
+      "similarity": 0.7042118310928345,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": true
+    },
+    "Adaptation::gt75_ext220_Strategy 4: Protect water sources": {
+      "policy_id": "Strategy 4: Protect water sources",
+      "grade": 0,
+      "reasoning": "The extracted policy matches the general topic of the ground-truth by identifying protection of water sources, but it is much less specific. It omits key details from the ground-truth: protecting both quantity and quality, the purposes of municipal supply and environmental flows, and the specific climate-driven threats (heat, drought, flood, wildfire). With no source excerpt provided, this is best graded as directionally correct but vague rather than a full match.",
+      "similarity": 0.5887272357940674,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": false
+    },
+    "Nature-Based Solutions::gt77_ext221_Strategy 1: Protect working lands": {
+      "policy_id": "Strategy 1: Protect working lands",
+      "grade": 0,
+      "reasoning": "The extracted policy is directionally aligned with the ground truth because 'Protect working lands' broadly overlaps with protecting farmland from development. However, it is much less specific: it omits the identification of prime and locally significant farmlands, the five-county regional scope, the anti-development commitment, and the delivery mechanisms (bonds, land trusts, conservation easements, similar methods). With no source excerpt provided, this cannot be confirmed against document text, but relative to the ground truth it is too vague for a full match.",
+      "similarity": 0.6098133325576782,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": true
+    },
+    "Nature-Based Solutions::gt79_ext222_Counties and/or County extension offices in the 5-county region should jointly f": {
+      "policy_id": "Counties and/or County extension offices in the 5-county region should jointly f",
+      "grade": -1,
+      "reasoning": "The extracted policy does not match the ground-truth policy’s core commitment. Ground truth is about providing direct financial assistance to farmers in the five-county region, especially farmers of color, to implement carbon-related soil or regenerative agriculture practices. The extracted policy instead proposes jointly funding a regional staff position focused on easements, technical assistance, and education/certification. This changes both the delivery mechanism and beneficiaries, and omits the emphasis on direct financial support and prioritization of farmers of color.",
+      "similarity": 0.6562067866325378,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": true
+    },
+    "Nature-Based Solutions::gt78_ext224_Strategy 2: Reform agricultural tax appraisals": {
+      "policy_id": "Strategy 2: Reform agricultural tax appraisals",
+      "grade": 0,
+      "reasoning": "The extracted policy is directionally aligned with the ground-truth because both concern reforming agricultural tax appraisals. However, it is less specific and incomplete: it omits the local and federal scope, does not mention exemption issues, and does not capture the stated purpose of addressing desertification and soil loss. With no source excerpt provided, there is no basis to confirm stronger commitment or added mechanism beyond the broad reform intent.",
+      "similarity": 0.5795881152153015,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": true
+    },
+    "Nature-Based Solutions::gt92_ext230_Explore leasing public lands to for-profit farms in exchange for using sustainab": {
+      "policy_id": "Explore leasing public lands to for-profit farms in exchange for using sustainab",
+      "grade": -1,
+      "reasoning": "The extracted policy does not meaningfully match the ground-truth. The ground-truth is specifically about exploring low-carbon and carbon farming practices in food forests and community gardens on public lands to improve sequestration, plant growth, fertilizer use, and soil water retention. The extracted policy instead focuses on leasing public lands to for-profit farms, with conditions tied to broad sustainable practices and public benefits like workforce development or food donation. This changes the scope, actors, mechanism, and intended outcomes, and omits the core carbon-farming/sequestration elements.",
+      "similarity": 0.6127268671989441,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": false
+    },
+    "Mitigation::gt81_ext231_Strategy 5: Expand composting": {
+      "policy_id": "Strategy 5: Expand composting",
+      "grade": 0,
+      "reasoning": "The extracted policy is directionally aligned with the ground-truth because both concern expanding composting. However, it is less specific and shifts the emphasis: the ground-truth is specifically to expand the use of compost generated by local composting programs, while the extracted policy only says 'Expand composting,' which could mean increasing composting activity rather than use of locally generated compost. With no source excerpt provided, this is a partial but imprecise match rather than a fully correct one.",
+      "similarity": 0.7137119174003601,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": false
+    },
+    "Nature-Based Solutions::gt82_ext232_Strategy 6: Strengthen workforce development for farmers": {
+      "policy_id": "Strategy 6: Strengthen workforce development for farmers",
+      "grade": 0,
+      "reasoning": "The extracted policy is directionally aligned with the ground-truth because both concern building the agricultural workforce. However, it is much vaguer and omits key specifics from the ground-truth: job creation, youth programs, the goal of a generational shift in farming, and the emphasis on aspiring farmers of color. With no source excerpt provided, there is no basis to confirm stronger alignment. This is an imprecise match rather than a full capture of the policy.",
+      "similarity": 0.641525387763977,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": true
+    },
+    "Nature-Based Solutions::gt83_ext235_Strategy 1: Protect canopy cover on City lands": {
+      "policy_id": "Strategy 1: Protect canopy cover on City lands",
+      "grade": -1,
+      "reasoning": "The extracted policy does not match the ground-truth policy. The ground truth is a citywide outcome target with a quantified goal (at least 50% canopy cover), a deadline (by 2050), and an equity focus. The extraction instead names a narrower strategy limited to protecting canopy cover on City lands, omitting the citywide scope, the 50% target, the 2050 timeline, and the equitable increase commitment. This is not just vague; it changes the policy scope and misses the core commitment.",
+      "similarity": 0.6629419326782227,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": true
+    },
+    "Nature-Based Solutions::gt85_ext236_Strategy 2: Promote tree protections and landscape regulations": {
+      "policy_id": "Strategy 2: Promote tree protections and landscape regulations",
+      "grade": 0,
+      "reasoning": "The extracted policy matches the general direction of the ground-truth by mentioning tree protections and landscape regulations. However, it omits several specific elements from the ground-truth: the 'no net loss of tree canopy' outcome, the scope limited to 'private developments,' and the alternative mechanism of 'developer and homeowners association incentives.' With no source excerpt provided, this is best graded as directionally correct but incomplete rather than a full match.",
+      "similarity": 0.7209765315055847,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": true
+    },
+    "Nature-Based Solutions::gt87_ext245_Provide City-funded grants to homeowner's associations, neighborhood groups, res": {
+      "policy_id": "Provide City-funded grants to homeowner's associations, neighborhood groups, res",
+      "grade": 0,
+      "reasoning": "The extracted policy partially matches the ground-truth: it correctly identifies city financial assistance for tree care targeted to residents/small businesses in low-income communities and communities of color. However, it narrows and alters the mechanism to city-funded grants for specific recipients, omits technical assistance, omits tree planting, and completely misses the commitment to create a tree, water, and soil management and resilience guide. With no source excerpt to verify wording, this is directionally correct but materially incomplete.",
+      "similarity": 0.710846483707428,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": true
+    },
+    "Nature-Based Solutions::gt89_ext247_Strategy 1: Prioritize carbon neutrality for public lands": {
+      "policy_id": "Strategy 1: Prioritize carbon neutrality for public lands",
+      "grade": 0,
+      "reasoning": "The extracted policy captures the core direction to prioritize carbon neutrality in public lands, which partially matches the ground-truth. However, it omits the important additional element of 'community benefits' and narrows the scope from 'public land acquisition and management practices' to only 'public lands' generally. With no source excerpt provided to verify wording, this is directionally correct but incomplete and less specific than the ground-truth.",
+      "similarity": 0.7428277730941772,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": false
+    },
+    "Adaptation::gt90_ext248_Strategy 2: Reclaim public space and prioritize green infrastructure": {
+      "policy_id": "Strategy 2: Reclaim public space and prioritize green infrastructure",
+      "grade": 0,
+      "reasoning": "The extracted policy matches the general intent of the ground-truth by focusing on reclaiming public space and prioritizing green infrastructure. However, it is less specific: it omits the scope of spaces to be identified and reclaimed (mono-use, underused, and unconventional), and does not mention the intended outcomes of increasing community access and ecological function. With no source excerpt provided, this is directionally correct but incomplete rather than a full match.",
+      "similarity": 0.7481135725975037,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": false
+    },
+    "Nature-Based Solutions::gt91_ext257_Strategy 3: Promote community stewardship": {
+      "policy_id": "Strategy 3: Promote community stewardship",
+      "grade": 0,
+      "reasoning": "The extracted policy matches the general intent of the ground-truth by identifying 'Promote community stewardship,' but it omits important scope and specificity present in the reference: stewardship and management of neighborhood public lands, and the purpose of ensuring higher levels of care and maintenance. With no source excerpt provided, there is no basis to verify stronger alignment, so this is directionally correct but incomplete.",
+      "similarity": 0.6951174139976501,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": true
+    },
+    "Nature-Based Solutions::gt74_ext260_## Strategy 3: Increase community access and positive perceptions of public land": {
+      "policy_id": "## Strategy 3: Increase community access and positive perceptions of public land",
+      "grade": 1,
+      "reasoning": "The extracted policy closely matches the ground-truth in scope and commitment: both state that natural/public lands should be accessible to and positively perceived by the community. The wording is slightly simplified and omits the explicit outcome clause about providing greater community value and support for conservation and stewardship, but the core commitment is preserved without contradiction. Given the source excerpt is not provided and the main intent is accurately captured, this is a strong match.",
+      "similarity": 0.7876750826835632,
+      "statement_match": true,
+      "role_match": false,
+      "category_match": false
+    },
+    "Nature-Based Solutions::gt84_ext262_Keep the Soil\n\nCovered\n\nBuild Soil\n\nMinimize\n\nOrganic Content Synthetic Inputs\n\n": {
+      "policy_id": "Keep the Soil\n\nCovered\n\nBuild Soil\n\nMinimize\n\nOrganic Content Synthetic Inputs\n\n",
+      "grade": 1,
+      "reasoning": "The extracted policy explicitly states: \"Strategy 1: Protect canopy cover on City lands\" and \"Adopt a 'no net loss' policy for tree canopy on public lands.\" This matches the ground-truth policy in scope (public/City lands), commitment (adopt a policy), and specificity (no net loss for tree canopy). Although the extraction includes unrelated surrounding text, the relevant policy is captured accurately and completely.",
+      "similarity": 0.6362366676330566,
+      "statement_match": true,
+      "role_match": false,
+      "category_match": true
+    },
+    "Nature-Based Solutions::gt86_ext264_## Strategy 3: Increase community tree planting\n\nIncrease City funding for commu": {
+      "policy_id": "## Strategy 3: Increase community tree planting\n\nIncrease City funding for commu",
+      "grade": 1,
+      "reasoning": "The extracted policy matches the ground-truth policy essentially verbatim in scope, commitment, and target population: it calls to increase city funding for community tree-planting programs focused on low-income communities and communities of color. Although neither version includes quantified targets, deadlines, or detailed mechanisms, the extraction accurately preserves the same level of specificity and commitment as the ground truth.",
+      "similarity": 0.8583210706710815,
+      "statement_match": true,
+      "role_match": false,
+      "category_match": true
+    }
+  },
+  "hierarchy_accuracy": 0.22580645161290322,
+  "composite_score": 0.2624911865036931,
+  "extraction_precision": 0.0996309963099631,
+  "extraction_recall": 0.2872340425531915,
+  "extraction_f1": 0.14794520547945206,
+  "role_agreement": 0.22580645161290322,
+  "parent_attribution_accuracy": 0.05263157894736842,
+  "primary_category_agreement": 0.5591397849462365,
+  "financial_instrument_agreement": 0.6881720430107527,
+  "secondary_category_agreement": 0.0,
+  "plus_one_coverage": 0.2872340425531915,
+  "matched_count": 93,
+  "unmatched_extracted_count": 178,
+  "unmatched_ground_truth_count": 1
+}

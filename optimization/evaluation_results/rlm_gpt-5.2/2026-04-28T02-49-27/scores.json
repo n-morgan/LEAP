@@ -1,0 +1,55 @@
+{
+  "location": "Hiroshima_JP",
+  "scores": {
+    "Mitigation": -0.9259259259259259,
+    "Adaptation": -1.0,
+    "Resource Efficiency": -1.0,
+    "Nature-Based Solutions": 0.0
+  },
+  "recall": {
+    "Mitigation": 0.15384615384615385,
+    "Adaptation": 1.0,
+    "Resource Efficiency": 0.0,
+    "Nature-Based Solutions": 1.0
+  },
+  "fpr": {
+    "Mitigation": 0.875,
+    "Adaptation": 1.0,
+    "Resource Efficiency": 1.0,
+    "Nature-Based Solutions": 0.0
+  },
+  "grades": {
+    "Mitigation::gt0_ext0_Set Long-term Target greenhouse gas reduction target: Compared to FY2013 ▲ 80% b": {
+      "policy_id": "Set Long-term Target greenhouse gas reduction target: Compared to FY2013 ▲ 80% b",
+      "grade": 0,
+      "reasoning": "1) Ground-truth policy: Hiroshima City sets three GHG reduction targets relative to FY2013—▲80% by FY2050, ▲30% by FY2030, and ▲5% by FY2020.\n2) Extracted policy: only states the long-term target—“Compared to FY2013 ▲80% by FY2050.”\n3) Source-document check: the source table (REPL hits around ~11586–11934) explicitly lists all three targets: “Long-term Target FY2050 Compared to FY2013 ▲80%”, “Mid-term Target FY2030 Compared to FY2013 ▲30%”, and “Short-term Target FY2020 Compared to FY2013 ▲5% (Compared to FY2005 ▲7%).”\n4) Evaluation: the extraction is accurate but incomplete versus the ground-truth because it omits the mid- and short-term targets.\n5) Per rubric, this is directionally correct but missing key details (additional quantified targets/deadlines), so grade = 0.",
+      "similarity": 0.7260587215423584,
+      "statement_match": false,
+      "role_match": true,
+      "category_match": true
+    },
+    "Mitigation::gt13_ext17_Government operations: implement main measures by emission source and estimated ": {
+      "policy_id": "Government operations: implement main measures by emission source and estimated ",
+      "grade": 0,
+      "reasoning": "The ground-truth policy is a specific, quantified, time-bound commitment for Hiroshima City government operations (city-office GHG): 5.1% below FY2013 by FY2020 and 30% below FY2013 by FY2030. The extracted policy (“implement main measures by emission source and estimated reduction of greenhouse gas emissions”) is in the right scope (government operations) and aligns with the general mechanism (implement measures and estimate reductions), but it does not include the core commitment details—baseline year, numerical targets, or deadlines. Therefore it is directionally correct but too vague/imprecise to be a full match.",
+      "similarity": 0.5856935381889343,
+      "statement_match": false,
+      "role_match": false,
+      "category_match": true
+    }
+  },
+  "hierarchy_accuracy": 0.5,
+  "composite_score": 0.47305555555555556,
+  "extraction_precision": 0.06451612903225806,
+  "extraction_recall": 0.14285714285714285,
+  "extraction_f1": 0.08888888888888889,
+  "role_agreement": 0.5,
+  "parent_attribution_accuracy": 1.0,
+  "primary_category_agreement": 1.0,
+  "financial_instrument_agreement": 1.0,
+  "secondary_category_agreement": 0.0,
+  "plus_one_coverage": 0.0,
+  "matched_count": 2,
+  "unmatched_extracted_count": 29,
+  "unmatched_ground_truth_count": 12
+}
